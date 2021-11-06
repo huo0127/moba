@@ -78,12 +78,6 @@
 .el-aside {
     color: #333;
 }
-
-.el-main {
-    flex: 0.5;
-    display: block;
-    margin: auto;
-}
 </style>
 
 

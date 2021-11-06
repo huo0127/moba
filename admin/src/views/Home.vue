@@ -55,4 +55,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.el-main {
+    margin: 0%;
+}
 </style>
