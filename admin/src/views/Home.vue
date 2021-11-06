@@ -37,7 +37,7 @@ export default {
                 xAxis: {
                     data: ['廣告', '文章', '分類', '英雄', '裝備']
                 },
-                yAxis: {},
+                yAxis: { name: '數量' },
                 series: [
                     {
                         name: '总数',

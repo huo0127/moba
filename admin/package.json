@@ -14,7 +14,6 @@
     "element-ui": "^2.4.5",
     "tslib": "^2.3.1",
     "vue": "^2.6.10",
-    "vue-echarts": "^6.0.0",
     "vue-router": "^3.0.3",
     "vue2-editor": "^2.6.6"
   },
