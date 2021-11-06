@@ -59,7 +59,7 @@
                 <span>王小虎</span>
             </el-header>
 
-            <el-main style="display: block; margin: auto">
+            <el-main>
                 <router-view :key="$route.path"></router-view>
             </el-main>
         </el-container>
@@ -68,7 +68,7 @@
 
 
 
-<style lang="scss">
+<style lang='scss' scoped>
 .el-header {
     background-color: #b3c0d1;
     color: #333;
@@ -79,10 +79,10 @@
     color: #333;
 }
 
-.el-container {
-    .el-main {
-        flex: 0.5;
-    }
+.el-main {
+    flex: 0.5;
+    display: block;
+    margin: auto;
 }
 </style>
 
