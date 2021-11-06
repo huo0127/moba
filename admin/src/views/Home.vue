@@ -1,18 +1,58 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+    <div class="home">
+        <div class="myChart" :style="{ width: '800px', height: '400px' }"></div>
+    </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
 export default {
-  name: 'home',
-  components: {
-    HelloWorld
-  }
+    name: 'Home',
+    data() {
+        return {
+            echartsData: []
+        }
+    },
+    mounted() {
+        this.fetchEcharts()
+        this.drawEcharts()
+    },
+    watch: {
+        echartsData() {
+            this.drawEcharts()
+        }
+    },
+    methods: {
+        async fetchEcharts() {
+            const res = await this.$http.get('echarts')
+            this.echartsData = res.data
+        },
+        drawEcharts() {
+            // 基于准备好的dom，初始化echarts实例
+            let myChart = this.$echarts.init(document.querySelector('.myChart'))
+            // 绘制图表
+            myChart.setOption({
+                color: ['#5470C6'],
+                title: { text: '後臺數據總數' },
+                tooltip: {},
+                xAxis: {
+                    data: ['廣告', '文章', '分類', '英雄', '裝備']
+                },
+                yAxis: {},
+                series: [
+                    {
+                        name: '总数',
+                        type: 'bar',
+                        data: this.echartsData,
+                        showBackground: true,
+                        backgroundStyle: {
+                            color: 'rgba(180, 180, 180, 0.2)'
+                        }
+                    }
+                ]
+            })
+        }
+    }
 }
 </script>
+<style lang="scss" scoped>
+</style>

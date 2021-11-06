@@ -2,7 +2,13 @@ module.exports = app => {
   const express = require('express')
   const assert = require('http-assert')
   const jwt = require('jsonwebtoken')
+  const Ad = require('../../models/Ad')
   const AdminUser = require('../../models/AdminUser')
+  const Article = require('../../models/Article')
+  const Category = require('../../models/Category')
+  const Hero = require('../../models/Hero')
+  const Item = require('../../models/Item')
+
   const router = express.Router({
     mergeParams: true,
   })
@@ -44,6 +50,7 @@ module.exports = app => {
   const resourceMiddleware = require('../../middleware/resource')
   app.use('/admin/api/rest/:resource', authMiddleware(), resourceMiddleware(), router)
 
+  // 上傳阿里雲
   const multer = require('multer')
   const MAO = require('multer-aliyun-oss')
   const upload = multer({
@@ -66,7 +73,6 @@ module.exports = app => {
   app.post('/admin/api/login', async (req, res) => {
     const { username, password } = req.body
     // 1.根据用户名找用户
-
     const user = await AdminUser.findOne({ username }).select('+password')
     assert(user, 422, '用户不存在')
     // 2.校验密码
@@ -75,6 +81,15 @@ module.exports = app => {
     // 3.返回token
     const token = jwt.sign({ id: user._id }, app.get('secret'))
     res.send({ token })
+  })
+
+  app.get('/admin/api/echarts', authMiddleware(), async (req, res) => {
+    const ad = await Ad.find().countDocuments()
+    const article = await Article.find().countDocuments()
+    const category = await Category.find().countDocuments()
+    const hero = await Hero.find().countDocuments()
+    const item = await Item.find().countDocuments()
+    res.send([ad, article, category, hero, item])
   })
 
   // 错误处理函数

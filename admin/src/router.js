@@ -20,6 +20,7 @@ import AdList from './views/AdList.vue'
 import AdminUserEdit from './views/AdminUserEdit.vue'
 import AdminUserList from './views/AdminUserList.vue'
 
+import Home from './views/Home.vue'
 
 Vue.use(Router)
 
@@ -28,9 +29,10 @@ const router = new Router({
     { path: '/login', name: 'login', component: Login, meta: { isPublic: true } },
     {
       path: '/',
-      name: 'main',
       component: Main,
+      redirect: '/home',
       children: [
+        { path: 'home', name: 'home', component: Home, meta: { title: '首页' } },
         { path: '/categories/create', component: CategoryEdit },
         { path: '/categories/edit/:id', component: CategoryEdit, props: true },
         { path: '/categories/list', component: CategoryList },
@@ -54,13 +56,11 @@ const router = new Router({
         { path: '/admin_users/create', component: AdminUserEdit },
         { path: '/admin_users/edit/:id', component: AdminUserEdit, props: true },
         { path: '/admin_users/list', component: AdminUserList },
-
-      ]
+      ],
     },
-
-  ]
+  ],
 })
-router.beforeEach((to, from ,next) => {
+router.beforeEach((to, from, next) => {
   if (!to.meta.isPublic && !localStorage.token) {
     return next('/login')
   }
