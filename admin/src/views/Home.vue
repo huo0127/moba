@@ -54,8 +54,10 @@ export default {
     }
 }
 </script>
-<style lang="scss" scoped>
-.el-main {
-    margin: 0%;
+<style scoped>
+.myChart {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 84px);
 }
 </style>
