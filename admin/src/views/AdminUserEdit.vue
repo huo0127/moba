@@ -1,12 +1,11 @@
 <template>
   <div class="about">
-    <h1>{{id ? '编辑' : '新建'}}管理员</h1>
+    <h1>{{ id ? '編輯' : '新建' }}管理员</h1>
     <el-form label-width="120px" @submit.native.prevent="save">
-      
       <el-form-item label="用户名">
         <el-input v-model="model.username"></el-input>
       </el-form-item>
-      <el-form-item label="密码">
+      <el-form-item label="密碼">
         <el-input type="text" v-model="model.password"></el-input>
       </el-form-item>
       <el-form-item>
@@ -21,14 +20,13 @@ export default {
   props: {
     id: {}
   },
-  data(){
+  data() {
     return {
-      model: {},
-      
+      model: {}
     }
   },
   methods: {
-    async save(){
+    async save() {
       let res
       if (this.id) {
         res = await this.$http.put(`rest/admin_users/${this.id}`, this.model)
@@ -41,14 +39,12 @@ export default {
         message: '保存成功'
       })
     },
-    async fetch(){
+    async fetch() {
       const res = await this.$http.get(`rest/admin_users/${this.id}`)
       this.model = res.data
-    },
-    
-    
+    }
   },
-  created(){
+  created() {
     this.id && this.fetch()
   }
 }

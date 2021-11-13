@@ -18,11 +18,13 @@ module.exports = app => {
     const model = await req.Model.create(req.body)
     res.send(model)
   })
+
   // 更新资源
   router.put('/:id', async (req, res) => {
     const model = await req.Model.findByIdAndUpdate(req.params.id, req.body)
     res.send(model)
   })
+
   // 删除资源
   router.delete('/:id', async (req, res) => {
     await req.Model.findByIdAndDelete(req.params.id)
@@ -30,43 +32,60 @@ module.exports = app => {
       success: true,
     })
   })
+
   // 资源列表
   router.get('/', async (req, res) => {
     const queryOptions = {}
     if (req.Model.modelName === 'Category') {
       queryOptions.populate = 'parent'
     }
-    const items = await req.Model.find().setOptions(queryOptions).limit(100)
+    const items = await req.Model.find().setOptions(queryOptions).limit(200)
     res.send(items)
   })
-  // 123
+
   // 资源详情
   router.get('/:id', async (req, res) => {
     const model = await req.Model.findById(req.params.id)
     res.send(model)
   })
+
+  // 編輯英雄詳情
+  router.get('/skills/:id', async (req, res) => {
+    const data = await Hero.findById(req.params.id).lean()
+    res.send(data)
+  })
+
   // 登录校验中间件
   const authMiddleware = require('../../middleware/auth')
   const resourceMiddleware = require('../../middleware/resource')
   app.use('/admin/api/rest/:resource', authMiddleware(), resourceMiddleware(), router)
 
   // 上傳阿里雲
+  // const multer = require('multer')
+  // const MAO = require('multer-aliyun-oss')
+  // const upload = multer({
+  // dest: __dirname + '/../../uploads',
+  //   storage: MAO({
+  //     config: {
+  //       region: 'oss-cn-hongkong',
+  //       accessKeyId: 'LTAI5tLuZAsekz93dpNX7PTD',
+  //       accessKeySecret: 'Oc6VbuGz9IbHnTTTehcO2ehXGJJQFq',
+  //       bucket: 'vue-lol',
+  //     },
+  //   }),
+  // })
+  // app.post('/admin/api/upload', authMiddleware(), upload.single('file'), async (req, res) => {
+  //   const file = req.file
+  //   // file.url = `http://test.huo0127.com/uploads/${file.filename}`
+  //   res.send(file)
+  // })
+
+  // 上傳本地
   const multer = require('multer')
-  const MAO = require('multer-aliyun-oss')
-  const upload = multer({
-    // dest: __dirname + '/../../uploads',
-    storage: MAO({
-      config: {
-        region: 'oss-cn-hongkong',
-        accessKeyId: 'LTAI5tLuZAsekz93dpNX7PTD',
-        accessKeySecret: 'Oc6VbuGz9IbHnTTTehcO2ehXGJJQFq',
-        bucket: 'vue-lol',
-      },
-    }),
-  })
+  const upload = multer({ dest: __dirname + '/../../uploads' })
   app.post('/admin/api/upload', authMiddleware(), upload.single('file'), async (req, res) => {
     const file = req.file
-    // file.url = `http://test.huo0127.com/uploads/${file.filename}`
+    file.url = `http://localhost:3000/uploads/${file.filename}`
     res.send(file)
   })
 

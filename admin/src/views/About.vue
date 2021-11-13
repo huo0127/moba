@@ -1,5 +1,23 @@
 <template>
   <div class="about">
-    <h1>This is an about page</h1>
+    <h2>about</h2>
+    <ul v-for="(item, index) in items" :key="index">
+      <li>
+        {{ avatar }}
+        {{ name }}
+      </li>
+    </ul>
   </div>
 </template>
+<script>
+export default {
+  data() {
+    return {
+      items: {
+        name: ann,
+        avatar: [{ skins: 'http://www.google.com' }]
+      }
+    }
+  }
+}
+</script>

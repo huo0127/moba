@@ -4,8 +4,8 @@ import router from './router'
 
 // 創建axios實例
 const http = axios.create({
-  baseURL: process.env.VUE_APP_API_URL || '/admin/api',
-  // baseURL: 'http://localhost:3000/admin/api',
+  // baseURL: process.env.VUE_APP_API_URL || '/admin/api',
+  baseURL: 'http://localhost:3000/admin/api',
   timeout: 5000, // 請求超過時間
 })
 
