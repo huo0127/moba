@@ -27,17 +27,74 @@ module.exports = app => {
 
   // 删除资源
   router.delete('/:id', async (req, res) => {
+    // 禁止删除有子分类的父级分类
+    if (req.Model.modelName === 'Category') {
+
+      const parent = await req.Model.findById(req.params.id)
+
+      const children = await req.Model.aggregate([
+        { $match: { parent: parent._id } },
+        {
+          $lookup: {
+            from: 'Category',
+            localField: '_id',
+            foreignField: 'cate',
+            as: 'children'
+          }
+        }
+      ])
+
+      assert(children.length < 1, 403, '无法删除')
+    }
+
     await req.Model.findByIdAndDelete(req.params.id)
-    res.send({
-      success: true,
-    })
+    res.send({ message: '删除成功' })
   })
 
   // 资源列表
-  router.get('/', async (req, res) => {
+  router.get('/', async (req, res,) => {
     const queryOptions = {}
     if (req.Model.modelName === 'Category') {
-      queryOptions.populate = 'parent'
+      const parents = await req.Model.find().where({
+        parent: null
+      }).lean()
+      for (let i = 0; i < parents.length; i++) {
+
+        parents[i].children = await req.Model.aggregate([
+          { $match: { parent: parents[i]._id } },
+          {
+            $lookup: {
+              from: 'Category',
+              localField: '_id',
+              foreignField: 'parent',
+              as: 'children'
+            }
+          }
+        ])
+
+        const lenth = parents[i].children.length
+
+        for (let j = 0; j < lenth; j++) {
+          // console.log((parents[i].children)[j]);
+
+          (parents[i].children)[j].children = await req.Model.aggregate([
+            { $match: { parent: (parents[i].children)[j]._id } },
+            {
+              $lookup: {
+                from: 'Category',
+                localField: '_id',
+                foreignField: 'parent',
+                as: 'children'
+              }
+            }
+          ])
+        }
+
+      }
+
+      return res.send(parents)
+
+
     }
     const items = await req.Model.find().setOptions(queryOptions).limit(200)
     res.send(items)
@@ -49,11 +106,7 @@ module.exports = app => {
     res.send(model)
   })
 
-  // 編輯英雄詳情
-  router.get('/skills/:id', async (req, res) => {
-    const data = await Hero.findById(req.params.id).lean()
-    res.send(data)
-  })
+
 
   // 登录校验中间件
   const authMiddleware = require('../../middleware/auth')

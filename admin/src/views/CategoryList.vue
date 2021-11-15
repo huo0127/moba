@@ -1,52 +1,195 @@
 <template>
   <div>
-    <h1>分類列表</h1>
-    <el-table :data="items">
-      <el-table-column prop="_id" label="ID" width="240"></el-table-column>
-      <el-table-column prop="parent.name" label="上级分類"></el-table-column>
-      <el-table-column prop="name" label="分類名称"></el-table-column>
-      <el-table-column fixed="right" label="操作" width="180">
-        <template slot-scope="scope">
-          <el-button type="text" size="small" @click="$router.push(`/categories/edit/${scope.row._id}`)"
-            >編輯</el-button
-          >
-          <el-button type="text" size="small" @click="remove(scope.row)">删除</el-button>
+    <el-card>
+      <el-button style="margin-bottom: 1rem" type="primary" icon="el-icon-plus" @click="addCate">添加分類</el-button>
+      <tree-table
+        :data="cateList"
+        show-index
+        index-text="序号"
+        :columns="columns"
+        :expand-type="false"
+        :selection-type="false"
+        border
+      >
+        <template slot="operate" slot-scope="scope">
+          <el-button size="mini" type="primary" icon="el-icon-edit" @click="editCateClick(scope.row)">编辑</el-button>
+          <el-button size="mini" type="danger" icon="el-icon-delete" @click="remove(scope.row)">删除</el-button>
         </template>
-      </el-table-column>
-    </el-table>
+      </tree-table>
+    </el-card>
+
+    <!-- 添加分类对话框 -->
+    <el-dialog title="添加分类" :visible.sync="addDialogVisible" width="50%" @closed="addDialogClose">
+      <el-form label-width="80px">
+        <el-form-item label="分类名称">
+          <el-input maxlength="10" v-model.trim="newModel.name"></el-input>
+        </el-form-item>
+
+        <el-form-item label="选择分类">
+          <el-cascader
+            :props="cateProps"
+            :options="cateList"
+            v-model="newModel.parent"
+            clearable
+            @change="handleChange"
+          ></el-cascader>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="okAdd">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- 编辑分类对话框 -->
+    <el-dialog title="编辑分类" :visible.sync="editDialogVisible" width="50%">
+      <el-form label-width="70px">
+        <el-form-item label="分类名称">
+          <el-input v-model="model.name"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="okEdit">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
-
+ 
 <script>
 export default {
+  name: 'CategoryEdit',
+
   data() {
     return {
-      items: []
+      newModel: {},
+      model: {},
+      // 分类列表数据
+      cateList: [],
+      cateProps: {
+        checkStrictly: true,
+        expandTrigger: 'hover',
+        value: '_id',
+        label: 'name',
+        children: 'children',
+        emitPath: false
+      },
+      columns: [
+        {
+          label: '分类名称',
+          prop: 'name',
+          align: 'center',
+          headerAlign: 'center'
+        },
+        {
+          label: '操作',
+          type: 'template',
+          template: 'operate',
+          align: 'center',
+          headerAlign: 'center'
+        }
+      ],
+      id: '',
+      editDialogVisible: false,
+      addDialogVisible: false
     }
   },
   methods: {
-    async fetch() {
-      const res = await this.$http.get('rest/categories')
-      this.items = res.data
+    // 获取分类列表
+    async getCateList() {
+      const res = await this.$http.get(`rest/categories`)
+      const data = res.data
+      // 处理分类数据
+      for (const item1 of data) {
+        // 第一层
+        if (item1.children && item1.children.length === 0) {
+          item1.children = null
+          continue
+        }
+
+        for (const item2 of item1.children) {
+          // 第二层
+          if (item2.children && item2.children.length === 0) {
+            item2.children = null
+            continue
+          }
+
+          for (const item3 of item2.children) {
+            // 第三层
+            item3.children = null
+            item3.disabled = true
+          }
+        }
+      }
+
+      // console.log(data);
+
+      this.cateList = data
     },
-    remove(row) {
-      this.$confirm(`是否確定要删除分類 "${row.name}"`, '提示', {
-        confirmButtonText: '確定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(async() => {
-        const res = await this.$http.delete(`rest/categories/${row._id}`)
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
+
+    handleChange() {
+      // console.log(this.model.parent);
+    },
+
+    // 添加分类
+    addCate() {
+      this.addDialogVisible = true
+    },
+
+    async okAdd() {
+      const res = await this.$http.post('rest/categories', this.newModel)
+      if (!res) return
+      this.$message.success('添加分類成功')
+      this.getCateList()
+      this.addDialogVisible = false
+    },
+
+    addDialogClose() {
+      this.newModel = {}
+    },
+
+    // 编辑分类
+    async editCateClick(row) {
+      this.id = row._id
+      const res = await await this.$http.get(`rest/categories/${row._id}`)
+      // console.log(res.data);
+      this.model = res.data
+      this.editDialogVisible = true
+    },
+
+    async okEdit() {
+      const res = await this.$http.put(`rest/categories/${this.id}`, this.model)
+      if (!res) return
+      this.$message.success('编辑分类成功')
+      this.getCateList()
+      this.editDialogVisible = false
+    },
+
+    // 删除分类
+    async remove(row) {
+      try {
+        await this.$confirm(`是否確定要删除分類 ${row.name}`, '提示', {
+          confirmButtonText: '確定',
+          cancelButtonText: '取消',
+          type: 'warning'
         })
-        this.fetch()
-      })
+
+        if (row.children && row.children.length > 0) return this.$message.error('無法删除包含子分類的父级分類')
+
+        const res = await this.$http.delete(`rest/categories/${row._id}`)
+        if (!res) return
+        this.$message.success('删除分類成功')
+        this.getCateList()
+      } catch (error) {
+        this.$message.info('已取消删除')
+      }
     }
   },
   created() {
-    this.fetch()
+    this.getCateList()
   }
 }
 </script>
-
+ 
+<style scoped>
+</style>

@@ -132,7 +132,6 @@ export default {
       categories: [],
       items: [],
       heroes: [],
-      skills: [],
       model: {
         name: '',
         avatar: '',
@@ -170,17 +169,12 @@ export default {
     async fetchHeroes() {
       const res = await this.$http.get(`rest/heroes`)
       this.heroes = res.data
-    },
-    async fetchSkills() {
-      const res = await this.$http.get(`skills/${this.id}`)
-      this.model = res.data
     }
   },
   created() {
     this.fetchItems()
     this.fetchCategories()
     this.fetchHeroes()
-    this.fetchSkills()
     this.id && this.fetch()
   }
 }

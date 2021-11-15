@@ -25,23 +25,18 @@
 export default {
   data() {
     return {
-      items: [],
-      skills: []
+      items: []
     }
   },
   created() {
     this.fetch()
-    this.fetchSkills()
   },
   methods: {
     async fetch() {
       const res = await this.$http.get('rest/heroes')
       this.items = res.data
     },
-    async fetchSkills() {
-      const res = await this.$http.get('rest/skills')
-      this.skills = res.data
-    },
+
     remove(row) {
       this.$confirm(`是否確定要删除分類 "${row.name}"`, '提示', {
         confirmButtonText: '確定',
