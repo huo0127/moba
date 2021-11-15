@@ -36,7 +36,7 @@
 
           <el-form-item label="類型">
             <el-select v-model="model.categories" multiple>
-              <el-option v-for="item of categories" :key="item._id" :label="item.name" :value="item._id"></el-option>
+              <el-option v-for="item of heroCateList" :key="item._id" :label="item.name" :value="item._id"></el-option>
             </el-select>
           </el-form-item>
 
@@ -129,7 +129,7 @@ export default {
   },
   data() {
     return {
-      categories: [],
+      heroCateList: null,
       items: [],
       heroes: [],
       model: {
@@ -160,7 +160,12 @@ export default {
     },
     async fetchCategories() {
       const res = await this.$http.get(`rest/categories`)
-      this.categories = res.data
+      for (const cate of res.data) {
+        if (cate.name === '英雄分類') {
+          this.heroCateList = cate.children
+          break
+        }
+      }
     },
     async fetchItems() {
       const res = await this.$http.get(`rest/items`)

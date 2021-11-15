@@ -38,7 +38,7 @@ module.exports = app => {
           $lookup: {
             from: 'Category',
             localField: '_id',
-            foreignField: 'cate',
+            foreignField: 'categories',
             as: 'children'
           }
         }

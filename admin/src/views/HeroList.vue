@@ -18,6 +18,16 @@
         </template>
       </el-table-column>
     </el-table>
+    <!-- 
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="pageParams.pagenum"
+      :page-sizes="[5, 8, 10, 15]"
+      :page-size="pageParams.pagesize"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total"
+    ></el-pagination> -->
   </div>
 </template>
 
@@ -25,7 +35,12 @@
 export default {
   data() {
     return {
-      items: []
+      items: [],
+      pageParams: {
+        pagenum: 1,
+        pagesize: 5
+      },
+      total: 0
     }
   },
   created() {
@@ -33,7 +48,8 @@ export default {
   },
   methods: {
     async fetch() {
-      const res = await this.$http.get('rest/heroes')
+      const res = await this.$http.get('rest/heroes', this.pageParams)
+      this.total = res.data.total
       this.items = res.data
     },
 

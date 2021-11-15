@@ -18,7 +18,7 @@
         </el-upload>
       </el-form-item>
       <el-form-item label="描述">
-        <el-input v-model="model.description" type="textarea"></el-input>
+        <el-input v-model="model.plaintext" type="textarea"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" native-type="submit">保存</el-button>
