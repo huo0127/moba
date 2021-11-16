@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from './views/Login.vue'
 import Main from './views/Main.vue'
-import CategoryEdit from './views/CategoryEdit.vue'
 import CategoryList from './views/CategoryList.vue'
 
 import ItemEdit from './views/ItemEdit.vue'
@@ -33,8 +32,7 @@ const router = new Router({
       redirect: '/home',
       children: [
         { path: 'home', name: 'home', component: Home, meta: { title: '首页' } },
-        { path: '/categories/create', component: CategoryEdit },
-        { path: '/categories/edit/:id', component: CategoryEdit, props: true },
+
         { path: '/categories/list', component: CategoryList },
 
         { path: '/items/create', component: ItemEdit },

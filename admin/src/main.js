@@ -3,7 +3,7 @@ import App from './App.vue'
 import './plugins/element.js'
 import router from './router'
 import echarts from 'echarts'
-import http from './http'
+import http from './api/http'
 
 import TreeTable from 'vue-table-with-tree-grid'
 

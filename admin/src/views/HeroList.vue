@@ -1,37 +1,54 @@
 <template>
   <div>
     <h1>英雄列表</h1>
-    <el-table :data="items">
-      <el-table-column prop="_id" label="ID" width="240"></el-table-column>
-      <el-table-column prop="name" label="名稱"></el-table-column>
+    <el-card>
+      <el-row>
+        <el-col :span="6">
+          <el-input maxlength="8" clearable placeholder="请输入英雄名称" v-model="heroQuery"></el-input>
+        </el-col>
+        <el-col :span="3">
+          <el-button style="margin-left: 20px" type="primary" icon="el-icon-search" @click="searchHero">搜索</el-button>
+        </el-col>
+      </el-row>
+      <el-table :data="items" border stripe>
+        <el-table-column type="index" width="240"></el-table-column>
+        <el-table-column prop="name" label="名稱"></el-table-column>
+        <el-table-column prop="name" label="位置">
+          <template slot-scope="scope">
+            <span>
+              {{ scope.row.categories.map((item) => item.name).join(' / ') }}
+            </span>
+          </template>
+        </el-table-column>
 
-      <el-table-column prop="avatar" label="头像">
-        <template slot-scope="scope">
-          <img :src="scope.row.avatar" class="hero-image" />
-        </template>
-      </el-table-column>
+        <el-table-column prop="avatar" label="头像">
+          <template slot-scope="scope">
+            <img :src="scope.row.avatar" class="hero-image" />
+          </template>
+        </el-table-column>
 
-      <el-table-column fixed="right" label="操作" width="180">
-        <template slot-scope="scope">
-          <el-button type="text" size="small" @click="$router.push(`/heroes/edit/${scope.row._id}`)">編輯</el-button>
-          <el-button type="text" size="small" @click="remove(scope.row)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- 
-    <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="pageParams.pagenum"
-      :page-sizes="[5, 8, 10, 15]"
-      :page-size="pageParams.pagesize"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="total"
-    ></el-pagination> -->
+        <el-table-column fixed="right" label="操作" width="180">
+          <template slot-scope="scope">
+            <el-button type="text" size="small" @click="$router.push(`/heroes/edit/${scope.row._id}`)">編輯</el-button>
+            <el-button type="text" size="small" @click="remove(scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="pageParams.pagenum"
+        :page-sizes="[5, 8, 10, 15]"
+        :page-size="pageParams.pagesize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
+    </el-card>
   </div>
 </template>
 
 <script>
+import { getHeroList } from '@/./api/admin/hero'
 export default {
   data() {
     return {
@@ -40,17 +57,18 @@ export default {
         pagenum: 1,
         pagesize: 5
       },
-      total: 0
+      total: 0,
+      heroQuery: ''
     }
   },
   created() {
-    this.fetch()
+    this.getHeroList()
   },
   methods: {
-    async fetch() {
-      const res = await this.$http.get('rest/heroes', this.pageParams)
+    async getHeroList() {
+      const res = await getHeroList(this.pageParams)
+      this.items = res.data.data
       this.total = res.data.total
-      this.items = res.data
     },
 
     remove(row) {
@@ -66,6 +84,19 @@ export default {
         })
         this.fetch()
       })
+    },
+    handleSizeChange(pagesize) {
+      this.pageParams.pagesize = pagesize
+      this.getHeroList()
+    },
+    handleCurrentChange(pagenum) {
+      this.pageParams.pagenum = pagenum
+      this.getHeroList()
+    },
+    async searchHero() {
+      this.pageParams.query = this.heroQuery
+      this.pageParams.pagenum = 1
+      this.getHeroList(this.pageParams)
     }
   }
 }
@@ -73,5 +104,25 @@ export default {
 <style>
 .hero-image {
   border: 2px solid #000;
+  width: 50px;
+  height: 50px;
+}
+
+.el-pagination {
+  margin-top: 15px;
+  text-align: center;
+}
+.el-table {
+  margin-top: 15px;
+}
+.el-card {
+  position: relative;
+  margin-top: 15px;
+  padding: 5px 15px;
+}
+.el-table tr td,
+.el-table tr th {
+  text-align: center !important;
+  font-size: 13px !important;
 }
 </style>

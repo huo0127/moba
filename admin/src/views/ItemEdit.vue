@@ -3,7 +3,7 @@
     <h1>{{ id ? '編輯' : '新建' }}物品</h1>
     <el-form label-width="120px" @submit.native.prevent="save">
       <el-form-item label="名稱">
-        <el-input v-model="model.name"></el-input>
+        <el-input v-model="formData.name"></el-input>
       </el-form-item>
       <el-form-item label="圖標">
         <el-upload
@@ -13,12 +13,12 @@
           :show-file-list="false"
           :on-success="afterUpload"
         >
-          <img v-if="model.iconPath" :src="model.iconPath" class="avatar" />
+          <img v-if="formData.iconPath" :src="formData.iconPath" class="avatar" />
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
       </el-form-item>
-      <el-form-item label="描述">
-        <el-input v-model="model.plaintext" type="textarea"></el-input>
+      <el-form-item label="簡述">
+        <el-input v-model="formData.plaintext" type="textarea"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" native-type="submit">保存</el-button>
@@ -28,26 +28,27 @@
 </template>
 
 <script>
+import { getItem, updateItem, createItem } from '@/api/admin/item'
 export default {
   props: {
     id: {}
   },
   data() {
     return {
-      model: {}
+      formData: {}
     }
   },
   methods: {
     afterUpload(res) {
-      this.$set(this.model, 'iconPath', res.url)
-      // this.model.icon = res.url
+      this.$set(this.formData, 'iconPath', res.url)
+      // this.formData.icon = res.url
     },
     async save() {
       let res
       if (this.id) {
-        res = await this.$http.put(`rest/items/${this.id}`, this.model)
+        res = await updateItem(this.id, this.formData)
       } else {
-        res = await this.$http.post('rest/items', this.model)
+        res = await createItem(this.formData)
       }
       this.$router.push('/items/list')
       this.$message({
@@ -56,8 +57,8 @@ export default {
       })
     },
     async fetch() {
-      const res = await this.$http.get(`rest/items/${this.id}`)
-      this.model = res.data
+      const res = await getItem(this.id)
+      this.formData = res.data
     }
   },
   created() {

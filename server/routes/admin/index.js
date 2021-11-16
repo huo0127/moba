@@ -51,13 +51,61 @@ module.exports = app => {
     res.send({ message: '删除成功' })
   })
 
-  // 资源列表
-  router.get('/', async (req, res,) => {
-    const queryOptions = {}
+  //获取列表
+  router.get('/', async (req, res, next) => {
+
+    // if (Object.keys(req.query).length === 0) return next()
+    if (!(req.query.pagenum || req.query.pagesize)) return next()
+    const pagenum = Number(req.query.pagenum)
+    const pagesize = Number(req.query.pagesize)
+    const skipNum = (pagenum - 1) * pagesize
+    const total = await req.Model.countDocuments()
+    let data
+    if (req.query.query) {
+      data = await req.Model.find({ name: req.query.query }).skip(skipNum).limit(pagesize).populate('categories')
+    } else {
+      data = await req.Model.find().skip(skipNum).limit(pagesize).populate('categories')
+    }
+    res.send({
+      total,
+      data
+    })
+
+  }, async (req, res) => {
+
     if (req.Model.modelName === 'Category') {
       const parents = await req.Model.find().where({
         parent: null
       }).lean()
+
+      // const tree = async parents => {
+      //   return await parents.map(async item => {
+      //     const children = await req.Model.aggregate([
+      //       { $match: { parent: item._id } },
+      //       {
+      //         $lookup: {
+      //           from: 'Category',
+      //           localField: '_id',
+      //           foreignField: 'parent',
+      //           as: 'children'
+      //         }
+      //       }
+      //     ])
+
+      //     if(children.length < 1) return item
+
+      //     item.children = children
+      //     tree(item.children)
+
+      //     return item
+
+      //   })
+
+      // }
+      // const data = await Promise.all(tree(parents))
+
+      // return res.send(data)
+
       for (let i = 0; i < parents.length; i++) {
 
         parents[i].children = await req.Model.aggregate([
@@ -94,10 +142,34 @@ module.exports = app => {
 
       return res.send(parents)
 
-
     }
-    const items = await req.Model.find().setOptions(queryOptions).limit(200)
-    res.send(items)
+
+    const queryOptions = {}
+    if (req.Model.modelName === 'Article') {
+      queryOptions.populate = 'categories'
+    }
+
+    if (req.Model.modelName === 'Hero') {
+      if (req.query.query) {
+        const model = await Hero.find({ name: req.query.query })
+        res.send(model)
+      } else {
+        const model = await req.Model.find().setOptions(queryOptions)
+        return res.send(model)
+      }
+    }
+    if (req.Model.modelName === 'Item') {
+      if (req.query.query) {
+        const model = await Item.find({ name: req.query.query })
+        res.send(model)
+      } else {
+        const model = await req.Model.find().setOptions(queryOptions)
+        return res.send(model)
+      }
+    }
+    const model = await req.Model.find().setOptions(queryOptions)
+    res.send(model)
+
   })
 
   // 资源详情
