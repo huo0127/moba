@@ -3,7 +3,7 @@ import http from '../http'
 // 新建物品
 export function createItem (data) {
   return http({
-    url: 'rest/items',
+    url: '/rest/items',
     method: 'post',
     data
   })
@@ -12,14 +12,14 @@ export function createItem (data) {
 // 根據 id 查詢物品
 export function getItem (itemId) {
   return http({
-    url: `rest/items/${itemId}`
+    url: `/rest/items/${itemId}`
   })
 }
 
 // 根據 id 編輯物品
 export function updateItem (itemId, data) {
   return http({
-    url: `rest/items/${itemId}`,
+    url: `/rest/items/${itemId}`,
     method: 'put',
     data
   })
@@ -28,7 +28,7 @@ export function updateItem (itemId, data) {
 // 根據 id 刪除物品
 export function deleteItem (itemId) {
   return http({
-    url: `rest/items/${itemId}`,
+    url: `/rest/items/${itemId}`,
     method: 'delete'
   })
 }

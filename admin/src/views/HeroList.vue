@@ -10,7 +10,7 @@
           <el-button style="margin-left: 20px" type="primary" icon="el-icon-search" @click="searchHero">搜索</el-button>
         </el-col>
       </el-row>
-      <el-table :data="items" border stripe>
+      <el-table :data="heroList" border stripe>
         <el-table-column type="index" width="240"></el-table-column>
         <el-table-column prop="name" label="名稱"></el-table-column>
         <el-table-column prop="name" label="位置">
@@ -48,11 +48,11 @@
 </template>
 
 <script>
-import { getHeroList } from '@/./api/admin/hero'
+import { getHeroList, deleteHero } from '@/./api/admin/hero'
 export default {
   data() {
     return {
-      items: [],
+      heroList: [],
       pageParams: {
         pagenum: 1,
         pagesize: 5
@@ -67,7 +67,7 @@ export default {
   methods: {
     async getHeroList() {
       const res = await getHeroList(this.pageParams)
-      this.items = res.data.data
+      this.heroList = res.data.data
       this.total = res.data.total
     },
 
@@ -77,7 +77,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async() => {
-        const res = await this.$http.delete(`rest/heroes/${row._id}`)
+        const res = await deleteHero(row._id)
         this.$message({
           type: 'success',
           message: '删除成功!'
@@ -103,9 +103,9 @@ export default {
 </script>
 <style>
 .hero-image {
-  border: 2px solid #000;
-  width: 50px;
-  height: 50px;
+  border: 1px solid #000;
+  width: 48px;
+  height: 48px;
 }
 
 .el-pagination {

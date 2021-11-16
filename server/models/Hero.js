@@ -13,6 +13,7 @@ const schema = new mongoose.Schema({
     cost: { type: String },
     range: { type: String },
     description: { type: String },
+    video: { type: String },
   }],
 
   startItems: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'Item' }],
@@ -22,6 +23,11 @@ const schema = new mongoose.Schema({
   counters: [{
     hero: { type: mongoose.SchemaTypes.ObjectId, ref: 'Hero' },
   }],
+
+  skins: [{
+    name: { type: String },
+    img: { type: String, }
+  }]
 })
 
 module.exports = mongoose.model('Hero', schema, 'heroes')

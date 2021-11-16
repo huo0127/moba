@@ -27,6 +27,7 @@
           </template>
         </el-table-column>
       </el-table>
+
       <!-- 分頁器 -->
       <el-pagination
         @size-change="handleSizeChange"
@@ -42,7 +43,7 @@
 </template>
 
 <script>
-import { getItemList, deleteItem } from '@/api/admin/item'
+import { getItemList } from '@/api/admin/item'
 export default {
   data() {
     return {
