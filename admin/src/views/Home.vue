@@ -54,10 +54,3 @@ export default {
   }
 }
 </script>
-<style scoped>
-.myChart {
-  position: relative;
-  width: 100%;
-  height: calc(100vh - 84px);
-}
-</style>

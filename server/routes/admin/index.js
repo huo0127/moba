@@ -53,8 +53,6 @@ module.exports = app => {
 
   //获取列表
   router.get('/', async (req, res, next) => {
-
-    // if (Object.keys(req.query).length === 0) return next()
     if (!(req.query.pagenum || req.query.pagesize)) return next()
     const pagenum = Number(req.query.pagenum)
     const pagesize = Number(req.query.pagesize)
@@ -70,44 +68,13 @@ module.exports = app => {
       total,
       data
     })
-
   }, async (req, res) => {
 
     if (req.Model.modelName === 'Category') {
       const parents = await req.Model.find().where({
         parent: null
       }).lean()
-
-      // const tree = async parents => {
-      //   return await parents.map(async item => {
-      //     const children = await req.Model.aggregate([
-      //       { $match: { parent: item._id } },
-      //       {
-      //         $lookup: {
-      //           from: 'Category',
-      //           localField: '_id',
-      //           foreignField: 'parent',
-      //           as: 'children'
-      //         }
-      //       }
-      //     ])
-
-      //     if(children.length < 1) return item
-
-      //     item.children = children
-      //     tree(item.children)
-
-      //     return item
-
-      //   })
-
-      // }
-      // const data = await Promise.all(tree(parents))
-
-      // return res.send(data)
-
       for (let i = 0; i < parents.length; i++) {
-
         parents[i].children = await req.Model.aggregate([
           { $match: { parent: parents[i]._id } },
           {
@@ -119,12 +86,8 @@ module.exports = app => {
             }
           }
         ])
-
         const lenth = parents[i].children.length
-
         for (let j = 0; j < lenth; j++) {
-          // console.log((parents[i].children)[j]);
-
           (parents[i].children)[j].children = await req.Model.aggregate([
             { $match: { parent: (parents[i].children)[j]._id } },
             {
@@ -137,17 +100,15 @@ module.exports = app => {
             }
           ])
         }
-
       }
-
       return res.send(parents)
-
     }
 
     const queryOptions = {}
     if (req.Model.modelName === 'Article') {
       queryOptions.populate = 'categories'
     }
+
 
     if (req.Model.modelName === 'Hero') {
       if (req.query.query) {
@@ -158,18 +119,10 @@ module.exports = app => {
         return res.send(model)
       }
     }
-    if (req.Model.modelName === 'Item') {
-      if (req.query.query) {
-        const model = await Item.find({ name: req.query.query })
-        res.send(model)
-      } else {
-        const model = await req.Model.find().setOptions(queryOptions)
-        return res.send(model)
-      }
-    }
+
+
     const model = await req.Model.find().setOptions(queryOptions)
     res.send(model)
-
   })
 
   // 资源详情
@@ -183,7 +136,8 @@ module.exports = app => {
   // 登录校验中间件
   const authMiddleware = require('../../middleware/auth')
   const resourceMiddleware = require('../../middleware/resource')
-  app.use('/admin/api/rest/:resource', authMiddleware(), resourceMiddleware(), router)
+  // app.use('/admin/api/rest/:resource', authMiddleware(), resourceMiddleware(), router)
+  app.use('/admin/api/rest/:resource', resourceMiddleware(), router)
 
   // 上傳阿里雲
   // const multer = require('multer')
@@ -221,10 +175,15 @@ module.exports = app => {
     assert(user, 422, '用户不存在')
     // 2.校验密码
     const isValid = require('bcrypt').compareSync(password, user.password)
-    assert(isValid, 422, '密码错误')
+    assert(isValid, 422, '密碼錯誤')
     // 3.返回token
     const token = jwt.sign({ id: user._id }, app.get('secret'))
     res.send({ token })
+  })
+
+  app.post('/admin/api/logout', async (req, res) => {
+
+    return res.redirect('/login')
   })
 
   app.get('/admin/api/echarts', authMiddleware(), async (req, res) => {

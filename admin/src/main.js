@@ -3,16 +3,19 @@ import App from './App.vue'
 import './plugins/element.js'
 import router from './router'
 import echarts from 'echarts'
+import dayjs from 'dayjs'
+
 import http from './api/http'
 
 import TreeTable from 'vue-table-with-tree-grid'
-
 Vue.component('tree-table', TreeTable)
+
 
 Vue.config.productionTip = false
 
 Vue.prototype.$http = http
 Vue.prototype.$echarts = echarts
+Vue.prototype.$dayjs = dayjs;
 
 Vue.mixin({
   computed: {

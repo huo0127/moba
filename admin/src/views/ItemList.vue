@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { getItemList } from '@/api/admin/item'
+import { getItemList, deleteItem } from '@/api/admin/item'
 export default {
   data() {
     return {
@@ -62,7 +62,7 @@ export default {
       this.itemList = res.data.data
       this.total = res.data.total
     },
-    remove(row) {
+    async remove(row) {
       this.$confirm(`是否確定要删除分類 "${row.name}"`, '提示', {
         confirmButtonText: '確定',
         cancelButtonText: '取消',

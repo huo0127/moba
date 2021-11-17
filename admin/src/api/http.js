@@ -1,4 +1,6 @@
 import axios from 'axios'
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
 import Vue from 'vue'
 import router from '../router'
 
@@ -12,24 +14,24 @@ const http = axios.create({
 // request攔截器
 http.interceptors.request.use(
   function (config) {
+    NProgress.start() //開啟進度條
     // Do something before request is sent
     if (localStorage.token) {
       config.headers.Authorization = 'Bearer ' + localStorage.token
     }
     return config
   },
-  function (error) {
-    // Do something with request error
-    return Promise.reject(error)
-  }
+
 )
 
 // response攔截器
 http.interceptors.response.use(
   res => {
+    NProgress.done() //停止進度條
     return res
   },
   err => {
+    NProgress.done() //停止進度條
     if (err.response.data.message) {
       Vue.prototype.$message({
         type: 'error',

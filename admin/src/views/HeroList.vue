@@ -4,7 +4,7 @@
     <el-card>
       <el-row>
         <el-col :span="6">
-          <el-input maxlength="8" clearable placeholder="请输入英雄名称" v-model="heroQuery"></el-input>
+          <el-input maxlength="8" clearable placeholder="請輸入英雄名稱" v-model="heroQuery"></el-input>
         </el-col>
         <el-col :span="3">
           <el-button style="margin-left: 20px" type="primary" icon="el-icon-search" @click="searchHero">搜索</el-button>
@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { getHeroList, deleteHero } from '@/./api/admin/hero'
+import { getHeroList, deleteHero } from '@/api/admin/hero'
 export default {
   data() {
     return {
@@ -78,11 +78,12 @@ export default {
         type: 'warning'
       }).then(async() => {
         const res = await deleteHero(row._id)
+        if (!res) return
         this.$message({
           type: 'success',
           message: '删除成功!'
         })
-        this.fetch()
+        this.getHeroList()
       })
     },
     handleSizeChange(pagesize) {

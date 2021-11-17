@@ -3,15 +3,15 @@
     <h1>{{ id ? '編輯' : '新建' }}文章</h1>
     <el-form label-width="120px" @submit.native.prevent="save">
       <el-form-item label="所属分類">
-        <el-select v-model="model.categories" multiple>
+        <el-select v-model="articleList.categories" multiple>
           <el-option v-for="item in categories" :key="item._id" :label="item.name" :value="item._id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="標題">
-        <el-input v-model="model.title"></el-input>
+        <el-input v-model="articleList.name"></el-input>
       </el-form-item>
       <el-form-item label="詳情">
-        <vue-editor v-model="model.body" useCustomImageHandler @imageAdded="handleImageAdded"></vue-editor>
+        <vue-editor v-model="articleList.body" useCustomImageHandler @imageAdded="handleImageAdded"></vue-editor>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" native-type="submit">保存</el-button>
@@ -22,7 +22,8 @@
 
 <script>
 import { VueEditor } from 'vue2-editor'
-
+import { updateArticle, createArticle, getArticle } from '@/api/admin/article'
+import { getCateList } from '@/api/admin/category'
 export default {
   props: {
     id: {}
@@ -32,7 +33,7 @@ export default {
   },
   data() {
     return {
-      model: {},
+      articleList: {},
       categories: []
     }
   },
@@ -47,9 +48,9 @@ export default {
     async save() {
       let res
       if (this.id) {
-        res = await this.$http.put(`rest/articles/${this.id}`, this.model)
+        res = await updateArticle(this.id, this.articleList)
       } else {
-        res = await this.$http.post('rest/articles', this.model)
+        res = await createArticle(this.articleList)
       }
       this.$router.push('/articles/list')
       this.$message({
@@ -57,18 +58,19 @@ export default {
         message: '保存成功'
       })
     },
-    async fetch() {
-      const res = await this.$http.get(`rest/articles/${this.id}`)
-      this.model = res.data
+    async getArticle() {
+      const res = await getArticle(this.id)
+      this.articleList = res.data
     },
-    async fetchCatgories() {
-      const res = await this.$http.get(`rest/categories`)
-      this.categories = res.data
+    async getCateList() {
+      const res = await getCateList()
+      const data = res.data.find(item => item.name === '新聞資訊')
+      this.categories = data.children
     }
   },
   created() {
-    this.fetchCatgories()
-    this.id && this.fetch()
+    this.getCateList()
+    this.id && this.getArticle()
   }
 }
 </script>
