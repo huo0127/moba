@@ -7,7 +7,7 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">廣告</div>
-          <count-to :start-val="0" :end-val="total.data.ads" :duration="3000" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="total.ads" :duration="3000" class="card-panel-num" />
         </div>
       </div>
     </el-col>
@@ -18,7 +18,7 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">文章</div>
-          <count-to :start-val="0" :end-val="total.data.article" :duration="3000" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="total.article" :duration="3000" class="card-panel-num" />
         </div>
       </div>
     </el-col>
@@ -29,7 +29,7 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">分類</div>
-          <count-to :start-val="0" :end-val="total.data.category" :duration="3000" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="total.category" :duration="3000" class="card-panel-num" />
         </div>
       </div>
     </el-col>
@@ -40,7 +40,7 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">英雄</div>
-          <count-to :start-val="0" :end-val="total.data.hero" :duration="3000" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="total.hero" :duration="3000" class="card-panel-num" />
         </div>
       </div>
     </el-col>
@@ -51,7 +51,7 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">裝備</div>
-          <count-to :start-val="0" :end-val="total.data.item" :duration="3600" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="total.item" :duration="3600" class="card-panel-num" />
         </div>
       </div>
     </el-col>
@@ -64,7 +64,13 @@ import CountTo from 'vue-count-to'
 export default {
   data() {
     return {
-      total: {}
+      total: {
+        ads: 0,
+        item: 0,
+        hero: 0,
+        category: 0,
+        article: 0
+      }
     }
   },
   components: {
@@ -76,7 +82,11 @@ export default {
   methods: {
     async totalCount() {
       const res = await totalCount()
-      this.total = res
+      const item = res
+      // :end-val必須是Number，後端傳過來的是json格式，所以必須轉換一下
+      for (const key in item) {
+        this.total = item[key]
+      }
     }
   }
 }
