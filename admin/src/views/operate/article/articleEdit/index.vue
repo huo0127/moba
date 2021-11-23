@@ -62,11 +62,11 @@ export default {
     },
     async getArticle() {
       const res = await getArticle(this.id)
-      this.articleList = res
+      this.articleList = res.data
     },
     async getCateList() {
       const res = await getCateList()
-      const data = res.find(item => item.name === '新聞資訊')
+      const data = res.data.find(item => item.name === '新聞資訊')
       this.categories = data.children
     }
   },
