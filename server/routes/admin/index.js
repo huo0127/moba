@@ -9,6 +9,8 @@ module.exports = app => {
   const Hero = require('../../models/Hero')
   const Item = require('../../models/Item')
 
+  const response = require('../../utils/response')
+
   const router = express.Router({
     mergeParams: true,
   })
@@ -17,19 +19,20 @@ module.exports = app => {
   router.post('/', async (req, res) => {
     const model = await req.Model.create(req.body)
     res.send(model)
+    // response(res, 200, '成功', model)
   })
 
   // 更新资源
   router.put('/:id', async (req, res) => {
     const model = await req.Model.findByIdAndUpdate(req.params.id, req.body)
     res.send(model)
+    // response(res, 200, '編輯完成', model)
   })
 
   // 删除资源
   router.delete('/:id', async (req, res) => {
     // 禁止删除有子分类的父级分类
     if (req.Model.modelName === 'Category') {
-
       const parent = await req.Model.findById(req.params.id)
 
       const children = await req.Model.aggregate([
@@ -39,9 +42,9 @@ module.exports = app => {
             from: 'Category',
             localField: '_id',
             foreignField: 'categories',
-            as: 'children'
-          }
-        }
+            as: 'children',
+          },
+        },
       ])
 
       assert(children.length < 1, 403, '无法删除')
@@ -49,89 +52,103 @@ module.exports = app => {
 
     await req.Model.findByIdAndDelete(req.params.id)
     res.send({ message: '删除成功' })
+    // response(res, 200, '刪除成功')
   })
 
   //获取列表
-  router.get('/', async (req, res, next) => {
-    if (!(req.query.pagenum || req.query.pagesize)) return next()
-    const pagenum = Number(req.query.pagenum)
-    const pagesize = Number(req.query.pagesize)
-    const skipNum = (pagenum - 1) * pagesize
-    const total = await req.Model.countDocuments()
-    let data
-    if (req.query.query) {
-      data = await req.Model.find({ name: req.query.query }).skip(skipNum).limit(pagesize).populate('categories')
-    } else {
-      data = await req.Model.find().skip(skipNum).limit(pagesize).populate('categories')
-    }
-    res.send({
-      total,
-      data
-    })
-  }, async (req, res) => {
+  router.get(
+    '/',
+    async (req, res, next) => {
+      if (!(req.query.pagenum || req.query.pagesize)) return next()
+      const pagenum = Number(req.query.pagenum)
+      const pagesize = Number(req.query.pagesize)
+      const skipNum = (pagenum - 1) * pagesize
+      const total = await req.Model.countDocuments()
 
-    if (req.Model.modelName === 'Category') {
-      const parents = await req.Model.find().where({
-        parent: null
-      }).lean()
-      for (let i = 0; i < parents.length; i++) {
-        parents[i].children = await req.Model.aggregate([
-          { $match: { parent: parents[i]._id } },
-          {
-            $lookup: {
-              from: 'Category',
-              localField: '_id',
-              foreignField: 'parent',
-              as: 'children'
-            }
-          }
-        ])
-        const lenth = parents[i].children.length
-        for (let j = 0; j < lenth; j++) {
-          (parents[i].children)[j].children = await req.Model.aggregate([
-            { $match: { parent: (parents[i].children)[j]._id } },
+      let data
+      if (req.query.query) {
+        data = await req.Model.find({ name: { $regex: `${req.query.query}` } }).skip(skipNum).limit(pagesize).populate('categories')
+      } else {
+        data = await req.Model.find().skip(skipNum).limit(pagesize).populate('categories')
+      }
+
+      // res.send({
+      //   total,
+      //   data,
+
+      // })
+
+      response(res, 200, '成功', {
+        total,
+        data
+      })
+    },
+    async (req, res) => {
+      if (req.Model.modelName === 'Category') {
+        const parents = await req.Model.find()
+          .where({
+            parent: null,
+          })
+          .lean()
+        for (let i = 0; i < parents.length; i++) {
+          parents[i].children = await req.Model.aggregate([
+            { $match: { parent: parents[i]._id } },
             {
               $lookup: {
                 from: 'Category',
                 localField: '_id',
                 foreignField: 'parent',
-                as: 'children'
-              }
-            }
+                as: 'children',
+              },
+            },
           ])
+          const lenth = parents[i].children.length
+          for (let j = 0; j < lenth; j++) {
+            parents[i].children[j].children = await req.Model.aggregate([
+              { $match: { parent: parents[i].children[j]._id } },
+              {
+                $lookup: {
+                  from: 'Category',
+                  localField: '_id',
+                  foreignField: 'parent',
+                  as: 'children',
+                },
+              },
+            ])
+          }
+        }
+        return res.send(parents)
+        // return response(res, 200, '成功', parents)
+      }
+
+      const queryOptions = {}
+      if (req.Model.modelName === 'Article') {
+        queryOptions.populate = 'categories'
+      }
+
+      if (req.Model.modelName === 'Hero') {
+        if (req.query.query) {
+          // const model = await Hero.find({ name: req.query.query })
+          const model = await Hero.find()
+          res.send(model)
+        } else {
+          const model = await req.Model.find().setOptions(queryOptions)
+          return res.send(model)
         }
       }
-      return res.send(parents)
+
+      const model = await req.Model.find().setOptions(queryOptions)
+      res.send(model)
+      // response(res, 200, '成功', model)
     }
-
-    const queryOptions = {}
-    if (req.Model.modelName === 'Article') {
-      queryOptions.populate = 'categories'
-    }
-
-
-    if (req.Model.modelName === 'Hero') {
-      if (req.query.query) {
-        const model = await Hero.find({ name: req.query.query })
-        res.send(model)
-      } else {
-        const model = await req.Model.find().setOptions(queryOptions)
-        return res.send(model)
-      }
-    }
-
-
-    const model = await req.Model.find().setOptions(queryOptions)
-    res.send(model)
-  })
+  )
 
   // 资源详情
   router.get('/:id', async (req, res) => {
     const model = await req.Model.findById(req.params.id)
     res.send(model)
+    // response(res, 200, '成功', model)
   })
-
-
 
   // 登录校验中间件
   const authMiddleware = require('../../middleware/auth')
@@ -166,38 +183,62 @@ module.exports = app => {
     const file = req.file
     file.url = `http://localhost:3000/uploads/${file.filename}`
     res.send(file)
+    // response(res, 200, '已上傳', file)
   })
+
+  app.post(
+    '/admin/api/register',
+    async (req, res) => {
+      const { username, password } = req.body
+      const isRepeat = await AdminUser.findOne({ username })
+      assert(!isRepeat, 409, '用戶名已被註冊')
+      const user = await AdminUser.create({ username, password })
+      response(res, 200, 'success', user)
+    })
 
   app.post('/admin/api/login', async (req, res) => {
     const { username, password } = req.body
     // 1.根据用户名找用户
     const user = await AdminUser.findOne({ username }).select('+password')
-    assert(user, 422, '用户不存在')
+    assert(user, 422, '用户名不存在')
     // 2.校验密码
     const isValid = require('bcrypt').compareSync(password, user.password)
     assert(isValid, 422, '密碼錯誤')
     // 3.返回token
-    const token = jwt.sign({ id: user._id }, app.get('secret'))
-    res.send({ token })
+    const token = jwt.sign(
+      {
+        id: String(user._id),
+      },
+      app.get('secret')
+    )
+    response(res, 200, '已登入', { user, token })
   })
 
-  app.post('/admin/api/logout', async (req, res) => {
-
-    return res.redirect('/login')
-  })
-
-  app.get('/admin/api/echarts', authMiddleware(), async (req, res) => {
-    const ad = await Ad.find().countDocuments()
+  // vue count to 後台數據總數
+  app.get('/admin/api/total', async (req, res) => {
+    const ads = await Ad.find().countDocuments()
     const article = await Article.find().countDocuments()
     const category = await Category.find().countDocuments()
     const hero = await Hero.find().countDocuments()
     const item = await Item.find().countDocuments()
-    res.send([ad, article, category, hero, item])
+    const data = { ads, article, category, hero, item }
+    response(res, 200, '獲取數據成功', data)
   })
 
-  // 错误处理函数
+  // 英雄路線
+  app.get('/admin/api/hero_lane', async (req, res) => {
+    const top = await Hero.find().where({ categories: '618e8b526eb3165add934563' }).countDocuments()
+    const jungle = await Hero.find().where({ categories: '618e8b6a6eb3165add934577' }).countDocuments()
+    const mid = await Hero.find().where({ categories: '618e8b606eb3165add93456e' }).countDocuments()
+    const bot = await Hero.find().where({ categories: '618e8b746eb3165add934580' }).countDocuments()
+    const sup = await Hero.find().where({ categories: '618e8b7d6eb3165add934589' }).countDocuments()
+    const data = [top, jungle, mid, bot, sup]
+    response(res, 200, '獲取數據成功', data)
+  })
+
+  // 錯誤處理函數 處理assert
   app.use(async (err, req, res, next) => {
-    // console.log(err)
+    console.log(err)
     res.status(err.statusCode || 500).send({
       message: err.message,
     })

@@ -9,7 +9,7 @@ import locale from 'element-ui/lib/locale/lang/en' // lang i18n
 import '@/styles/index.scss' // global css
 
 import App from './App'
-import store from './store'
+import store from '../../admin/src/store'
 import router from './router'
 
 import '@/icons' // icon

@@ -2,7 +2,10 @@ const mongoose = require('mongoose')
 
 const schema = new mongoose.Schema({
 
-  username: { type: String, },
+  username: {
+    type: String,
+    // unique: true // 用戶名唯一
+  },
   password: {
     type: String,
     select: false,
