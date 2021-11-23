@@ -6,6 +6,8 @@ Vue.use(Router)
 /* Layout */
 import Layout from '@/layout'
 
+import getPageTitle from '@/utils/get-page-title'
+
 /**
  * Note: sub-menu only appear when route children.length >= 1
  * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -216,6 +218,8 @@ export function resetRouter () {
 }
 
 router.beforeEach((to, from, next) => {
+  // set page title
+  document.title = getPageTitle(to.meta.title)
   if (!to.meta.isPublic && !localStorage.token) {
     return next('/login')
   }
