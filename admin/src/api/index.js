@@ -1,0 +1,7 @@
+export { default as ad } from '@/api/ad'
+export { default as adminUser } from '@/api/adminUser'
+export { default as article } from '@/api/article'
+export { default as category } from '@/api/category'
+export { default as dashBoard } from '@/api/dashBoard'
+export { default as hero } from '@/api/hero'
+export { default as item } from '@/api/item'

@@ -9,17 +9,50 @@ module.exports = app => {
   // 导入新闻数据
   router.get('/news/init', async (req, res) => {
     const parent = await Category.findOne({
-      name: '新闻分类'
+      name: '新聞資訊',
     })
-    const cats = await Category.find().where({
-      parent: parent
-    }).lean()
-    const newsTitles = ["夏日新版本“稷下星之队”即将6月上线", "王者荣耀携手两大博物馆 走进稷下学宫", "王者大陆第一学院【稷下】档案", "跨界合作丨控油神装登场，唤醒无限护肤力量！", "像素游戏时代“老四强”重聚《魂斗罗：归来》，新版本、新英雄燃爆两周年庆", "6月11日全服不停机更新公告", "【已修复】王者大陆的端午宝藏活动页面异常问题说明", "6月7日体验服停机更新公告", "6月4日全服不停机更新公告", "关于2019年KPL春季赛总决赛 RNG.M vs eStarPro 补赛、赛果及世界冠军杯安排公告", "活力夏日活动周 王者峡谷好礼多", "王者大陆的端午宝藏活动公告", "峡谷庆端午 惊喜礼不断", "【场里场外，一起开黑】感恩礼包放送", "KPL总决赛来临之际 场里场外一起开黑/观赛活动开启！", "【6月15日 再战西安 · 2019年KPL春季赛总决赛重启公告】", "王者荣耀世界冠军杯荣耀来袭，KPL赛区选拔赛谁能突围而出？", "【关于2019年KPL春季赛总决赛门票退换及异地用户现场观赛补贴公告】", "KRKPL：还在用庄周打辅助？JY边路庄周带你越塔莽！", "世冠KPL赛区战队出征名单公布 王者，无惧挑战！"]
+    const cats = await Category.find()
+      .where({
+        parent: parent,
+      })
+      .lean()
+    const newsTitles = [
+      '《奧術》11/12~12/01 登入就送免費獎勵 !',
+      '潛谷尋影，每格皆有機會中大獎！',
+      '議會檔案館-入門介紹',
+      '探索《奧術》活動問與答（大廳已於客戶端內上線）',
+      '冬夜驚喜蛋，自選造型&精靈蛋大優惠！',
+      '龍之恩賜，守護大地！',
+      '10/09 系統維護 (已完成)',
+      '09/02 系統維護 (已完成)',
+      '07/01 系統維護 (已完成)',
+      '05/27 系統緊急維護 (已完成)',
+      '04/08 系統維護 (已完成)',
+      '03/11 系統維護',
+      '11/04《英雄聯盟》11.22 版本更新 (已完成)',
+      '10/21《英雄聯盟》11.21 版本更新 (已完成)',
+      '10/07《英雄聯盟》11.20 版本更新 (已完成)',
+      '09/23《英雄聯盟》11.19 版本更新 (已完成)',
+      '09/14《英雄聯盟》11.18 版本更新 (已完成)',
+      '08/26《英雄聯盟》11.17 版本更新 (已更新)',
+      '外媒透露：Nisqy直播中稱可能不參加2022年比賽',
+      'Perkz離開C9戰隊',
+      'G2戰隊老闆：嘗試降價租借Rekkles',
+      '物理致命剎雅登頂下路',
+      'LEC記者：Rekkles沒有加入任何一支LEC隊伍',
+      '外媒爆料：T1下路選手Teddy準備轉會',
+      'DoubleLift講述自己和TSM CEO意見不合 蛇蛇曾多次希望與他組下路',
+      'G2打野Jankos自稱LPL友人，LPL緊急為他頒獎：LPL奪冠有你一份功勞！',
+      '外媒爆料：G2 C9涉嫌干涉Perkz加盟FNC 官方調查后兩隊免于懲罰',
+      'Doublelift直播控訴Reginald：他把很多選手罵到哭',
+      'Perkz與G2老闆互動',
+      'TL下路選手Tactical將轉會TSM擔任首發AD',
+    ]
     const newsList = newsTitles.map(title => {
       const randomCats = cats.slice(0).sort((a, b) => Math.random() - 0.5)
       return {
         categories: randomCats.slice(0, 2),
-        title: title
+        title: title,
       }
     })
     await Article.deleteMany({})
@@ -38,7 +71,7 @@ module.exports = app => {
     //   }
     // }).lean()
     const parent = await Category.findOne({
-      name: '新闻分类'
+      name: '新聞資訊',
     })
     const cats = await Category.aggregate([
       { $match: { parent: parent._id } },
@@ -47,46 +80,443 @@ module.exports = app => {
           from: 'articles',
           localField: '_id',
           foreignField: 'categories',
-          as: 'newsList'
-        }
+          as: 'newsList',
+        },
       },
       {
         $addFields: {
-          newsList: { $slice: ['$newsList', 5] }
-        }
-      }
+          newsList: { $slice: ['$newsList', 5] },
+        },
+      },
     ])
     const subCats = cats.map(v => v._id)
     cats.unshift({
-      name: '热门',
-      newsList: await Article.find().where({
-        categories: { $in: subCats }
-      }).populate('categories').limit(5).lean()
+      name: '熱門',
+      newsList: await Article.find()
+        .where({
+          categories: { $in: subCats },
+        })
+        .populate('categories')
+        .limit(5)
+        .lean(),
     })
 
     cats.map(cat => {
       cat.newsList.map(news => {
-        news.categoryName = (cat.name === '热门')
-          ? news.categories[0].name : cat.name
+        news.categoryName = cat.name === '熱門' ? news.categories[0].name : cat.name
         return news
       })
       return cat
     })
     res.send(cats)
-
   })
 
   // 导入英雄数据
   router.get('/heroes/init', async (req, res) => {
     await Hero.deleteMany({})
-    const rawData = [{ "name": "热门", "heroes": [{ "name": "后羿", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/169/169.jpg" }, { "name": "孙悟空", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/167/167.jpg" }, { "name": "铠", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/193/193.jpg" }, { "name": "鲁班七号", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/112/112.jpg" }, { "name": "亚瑟", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/166/166.jpg" }, { "name": "甄姬", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/127/127.jpg" }, { "name": "孙尚香", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/111/111.jpg" }, { "name": "典韦", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/129/129.jpg" }, { "name": "韩信", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/150/150.jpg" }, { "name": "庄周", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/113/113.jpg" }] }, { "name": "战士", "heroes": [{ "name": "赵云", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/107/107.jpg" }, { "name": "钟无艳", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/117/117.jpg" }, { "name": "吕布", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/123/123.jpg" }, { "name": "曹操", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/128/128.jpg" }, { "name": "典韦", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/129/129.jpg" }, { "name": "宫本武藏", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/130/130.jpg" }, { "name": "达摩", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/134/134.jpg" }, { "name": "老夫子", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/139/139.jpg" }, { "name": "关羽", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/140/140.jpg" }, { "name": "露娜", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/146/146.jpg" }, { "name": "花木兰", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/154/154.jpg" }, { "name": "亚瑟", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/166/166.jpg" }, { "name": "孙悟空", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/167/167.jpg" }, { "name": "刘备", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/170/170.jpg" }, { "name": "杨戬", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/178/178.jpg" }, { "name": "雅典娜", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/183/183.jpg" }, { "name": "哪吒", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/180/180.jpg" }, { "name": "铠", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/193/193.jpg" }, { "name": "狂铁", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/503/503.jpg" }, { "name": "李信", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/507/507.jpg" }, { "name": "盘古", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/529/529.jpg" }] }, { "name": "法师", "heroes": [{ "name": "小乔", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/106/106.jpg" }, { "name": "墨子", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/108/108.jpg" }, { "name": "妲己", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/109/109.jpg" }, { "name": "嬴政", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/110/110.jpg" }, { "name": "高渐离", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/115/115.jpg" }, { "name": "扁鹊", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/119/119.jpg" }, { "name": "芈月", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/121/121.jpg" }, { "name": "周瑜", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/124/124.jpg" }, { "name": "甄姬", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/127/127.jpg" }, { "name": "武则天", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/136/136.jpg" }, { "name": "貂蝉", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/141/141.jpg" }, { "name": "安琪拉", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/142/142.jpg" }, { "name": "姜子牙", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/148/148.jpg" }, { "name": "王昭君", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/152/152.jpg" }, { "name": "张良", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/156/156.jpg" }, { "name": "不知火舞", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/157/157.jpg" }, { "name": "钟馗", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/175/175.jpg" }, { "name": "诸葛亮", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/190/190.jpg" }, { "name": "干将莫邪", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/182/182.jpg" }, { "name": "女娲", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/179/179.jpg" }, { "name": "杨玉环", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/176/176.jpg" }, { "name": "弈星", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/197/197.jpg" }, { "name": "米莱狄", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/504/504.jpg" }, { "name": "沈梦溪", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/312/312.jpg" }, { "name": "上官婉儿", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/513/513.jpg" }, { "name": "嫦娥", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/515/515.jpg" }] }, { "name": "坦克", "heroes": [{ "name": "廉颇", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/105/105.jpg" }, { "name": "刘禅", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/114/114.jpg" }, { "name": "白起", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/120/120.jpg" }, { "name": "夏侯惇", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/126/126.jpg" }, { "name": "项羽", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/135/135.jpg" }, { "name": "程咬金", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/144/144.jpg" }, { "name": "刘邦", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/149/149.jpg" }, { "name": "牛魔", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/168/168.jpg" }, { "name": "张飞", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/171/171.jpg" }, { "name": "东皇太一", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/187/187.jpg" }, { "name": "苏烈", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/194/194.jpg" }, { "name": "梦奇", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/198/198.jpg" }, { "name": "孙策", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/510/510.jpg" }, { "name": "猪八戒", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/511/511.jpg" }] }, { "name": "刺客", "heroes": [{ "name": "阿轲", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/116/116.jpg" }, { "name": "李白", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/131/131.jpg" }, { "name": "韩信", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/150/150.jpg" }, { "name": "兰陵王", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/153/153.jpg" }, { "name": "娜可露露", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/162/162.jpg" }, { "name": "橘右京", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/163/163.jpg" }, { "name": "百里玄策", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/195/195.jpg" }, { "name": "裴擒虎", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/502/502.jpg" }, { "name": "元歌", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/125/125.jpg" }, { "name": "司马懿", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/137/137.jpg" }, { "name": "云中君", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/506/506.jpg" }] }, { "name": "射手", "heroes": [{ "name": "孙尚香", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/111/111.jpg" }, { "name": "鲁班七号", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/112/112.jpg" }, { "name": "马可波罗", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/132/132.jpg" }, { "name": "狄仁杰", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/133/133.jpg" }, { "name": "后羿", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/169/169.jpg" }, { "name": "李元芳", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/173/173.jpg" }, { "name": "虞姬", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/174/174.jpg" }, { "name": "成吉思汗", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/177/177.jpg" }, { "name": "黄忠", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/192/192.jpg" }, { "name": "百里守约", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/196/196.jpg" }, { "name": "公孙离", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/199/199.jpg" }, { "name": "伽罗", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/508/508.jpg" }] }, { "name": "辅助", "heroes": [{ "name": "庄周", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/113/113.jpg" }, { "name": "孙膑", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/118/118.jpg" }, { "name": "蔡文姬", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/184/184.jpg" }, { "name": "太乙真人", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/186/186.jpg" }, { "name": "大乔", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/191/191.jpg" }, { "name": "鬼谷子", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/189/189.jpg" }, { "name": "明世隐", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/501/501.jpg" }, { "name": "盾山", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/509/509.jpg" }, { "name": "瑶", "avatar": "https://game.gtimg.cn/images/yxzj/img201606/heroimg/505/505.jpg" }] }]
+
+    const rawData = [
+      {
+        name: '全部',
+        heroes: [
+          { name: '黑暗之女', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small1000.jpg' },
+          { name: '狂戰士', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small2000.jpg' },
+          { name: '正義巨像', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small3000.jpg' },
+          { name: '卡牌大師', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small4000.jpg' },
+          { name: '德邦總管', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small5000.jpg' },
+          { name: '無畏戰車', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small6000.jpg' },
+          { name: '詭術妖姬', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small7000.jpg' },
+          { name: '猩紅收割者', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small8000.jpg' },
+          { name: '遠古恐懼', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small9000.jpg' },
+          { name: '正義天使', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small10000.jpg' },
+          { name: '無極劍聖', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small11000.jpg' },
+          { name: '牛頭酋長', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small12000.jpg' },
+          { name: '符文法師', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small13000.jpg' },
+          { name: '亡靈戰神', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small14000.jpg' },
+          { name: '戰爭女神', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small15000.jpg' },
+          { name: '眾星之子', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small16000.jpg' },
+          { name: '迅捷斥候', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small17000.jpg' },
+          { name: '麥林炮手', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small18000.jpg' },
+          { name: '祖安怒獸', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small19000.jpg' },
+          { name: '雪原雙子', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small20000.jpg' },
+          { name: '賞金獵人', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small21000.jpg' },
+          { name: '寒冰射手', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small22000.jpg' },
+          { name: '蠻族之王', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small23000.jpg' },
+          { name: '武器大師', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small24000.jpg' },
+          { name: '墮落天使', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small25000.jpg' },
+          { name: '時光守護者', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small26000.jpg' },
+          { name: '煉金術士', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small27000.jpg' },
+          { name: '痛苦之擁', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small28000.jpg' },
+          { name: '瘟疫之源', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small29000.jpg' },
+          { name: '死亡頌唱者', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small30000.jpg' },
+          { name: '虛空恐懼', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small31000.jpg' },
+          { name: '殤之木乃伊', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small32000.jpg' },
+          { name: '披甲龍龜', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small33000.jpg' },
+          { name: '冰晶鳳凰', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small34000.jpg' },
+          { name: '惡魔小醜', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small35000.jpg' },
+          { name: '祖安狂人', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small36000.jpg' },
+          { name: '琴瑟仙女', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small37000.jpg' },
+          { name: '虛空行者', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small38000.jpg' },
+          { name: '刀鋒舞者', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small39000.jpg' },
+          { name: '風暴之怒', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small40000.jpg' },
+          { name: '海洋之災', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small41000.jpg' },
+          { name: '英勇投彈手', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small42000.jpg' },
+          { name: '天啟者', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small43000.jpg' },
+          { name: '瓦洛蘭之盾', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small44000.jpg' },
+          { name: '邪惡小法師', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small45000.jpg' },
+          { name: '巨魔之王', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small48000.jpg' },
+          { name: '諾克薩斯統領', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small50000.jpg' },
+          { name: '皮城女警', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small51000.jpg' },
+          { name: '蒸汽機器人', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small53000.jpg' },
+          { name: '熔巖巨獸', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small54000.jpg' },
+          { name: '不祥之刃', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small55000.jpg' },
+          { name: '永恒夢魘', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small56000.jpg' },
+          { name: '扭曲樹精', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small57000.jpg' },
+          { name: '荒漠屠夫', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small58000.jpg' },
+          { name: '德瑪西亞皇子', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small59000.jpg' },
+          { name: '蜘蛛女皇', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small60000.jpg' },
+          { name: '發條魔靈', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small61000.jpg' },
+          { name: '齊天大聖', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small62000.jpg' },
+          { name: '覆仇焰魂', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small63000.jpg' },
+          { name: '盲僧', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small64000.jpg' },
+          { name: '暗夜獵手', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small67000.jpg' },
+          { name: '機械公敵', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small68000.jpg' },
+          { name: '魔蛇之擁', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small69000.jpg' },
+          { name: '水晶先鋒', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small72000.jpg' },
+          { name: '大發明家', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small74000.jpg' },
+          { name: '沙漠死神', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small75000.jpg' },
+          { name: '狂野女獵手', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small76000.jpg' },
+          { name: '獸靈行者', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small77000.jpg' },
+          { name: '聖錘之毅', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small78000.jpg' },
+          { name: '酒桶', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small79000.jpg' },
+          { name: '不屈之槍', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small80000.jpg' },
+          { name: '探險家', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small81000.jpg' },
+          { name: '鐵鎧冥魂', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small82000.jpg' },
+          { name: '牧魂人', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small83000.jpg' },
+          { name: '離群之刺', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small84000.jpg' },
+          { name: '狂暴之心', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small85000.jpg' },
+          { name: '德瑪西亞之力', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small86000.jpg' },
+          { name: '曙光女神', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small89000.jpg' },
+          { name: '虛空先知', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small90000.jpg' },
+          { name: '刀鋒之影', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small91000.jpg' },
+          { name: '放逐之刃', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small92000.jpg' },
+          { name: '深淵巨口', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small96000.jpg' },
+          { name: '暮光之眼', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small98000.jpg' },
+          { name: '光輝女郎', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small99000.jpg' },
+          { name: '遠古巫靈', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small101000.jpg' },
+          { name: '龍血武姬', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small102000.jpg' },
+          { name: '九尾妖狐', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small103000.jpg' },
+          { name: '法外狂徒', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small104000.jpg' },
+          { name: '潮汐海靈', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small105000.jpg' },
+          { name: '不滅狂雷', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small106000.jpg' },
+          { name: '傲之追獵者', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small107000.jpg' },
+          { name: '懲戒之箭', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small110000.jpg' },
+          { name: '深海泰坦', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small111000.jpg' },
+          { name: '機械先驅', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small112000.jpg' },
+          { name: '北地之怒', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small113000.jpg' },
+          { name: '無雙劍姬', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small114000.jpg' },
+          { name: '爆破鬼才', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small115000.jpg' },
+          { name: '仙靈女巫', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small117000.jpg' },
+          { name: '榮耀行刑官', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small119000.jpg' },
+          { name: '戰爭之影', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small120000.jpg' },
+          { name: '虛空掠奪者', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small121000.jpg' },
+          { name: '諾克薩斯之手', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small122000.jpg' },
+          { name: '未來守護者', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small126000.jpg' },
+          { name: '冰霜女巫', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small127000.jpg' },
+          { name: '皎月女神', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small131000.jpg' },
+          { name: '德瑪西亞之翼', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small133000.jpg' },
+          { name: '暗黑元首', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small134000.jpg' },
+          { name: '鑄星龍王', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small136000.jpg' },
+          { name: '影流之鐮', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small141000.jpg' },
+          { name: '暮光星靈', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small142000.jpg' },
+          { name: '荊棘之興', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small143000.jpg' },
+          { name: '虛空之女', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small145000.jpg' },
+          { name: '星籟歌姬', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small147000.jpg' },
+          { name: '迷失之牙', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small150000.jpg' },
+          { name: '生化魔人', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small154000.jpg' },
+          { name: '疾風劍豪', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small157000.jpg' },
+          { name: '虛空之眼', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small161000.jpg' },
+          { name: '巖雀', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small163000.jpg' },
+          { name: '青鋼影', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small164000.jpg' },
+          { name: '影哨', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small166000.jpg' },
+          { name: '弗雷爾卓德之心', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small201000.jpg' },
+          { name: '戲命師', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small202000.jpg' },
+          { name: '永獵雙子', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small203000.jpg' },
+          { name: '暴走蘿莉', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small222000.jpg' },
+          { name: '河流之王', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small223000.jpg' },
+          { name: '破敗之王', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small234000.jpg' },
+          { name: '滌魂聖槍', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small235000.jpg' },
+          { name: '聖槍遊俠', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small236000.jpg' },
+          { name: '影流之主', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small238000.jpg' },
+          { name: '暴怒騎士', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small240000.jpg' },
+          { name: '時間刺客', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small245000.jpg' },
+          { name: '元素女皇', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small246000.jpg' },
+          { name: '皮城執法官', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small254000.jpg' },
+          { name: '暗裔劍魔', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small266000.jpg' },
+          { name: '喚潮鮫姬', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small267000.jpg' },
+          { name: '沙漠皇帝', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small268000.jpg' },
+          { name: '魔法貓咪', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small350000.jpg' },
+          { name: '沙漠玫瑰', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small360000.jpg' },
+          { name: '魂鎖典獄長', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small412000.jpg' },
+          { name: '海獸祭司', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small420000.jpg' },
+          { name: '虛空遁地獸', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small421000.jpg' },
+          { name: '翠神', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small427000.jpg' },
+          { name: '覆仇之矛', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small429000.jpg' },
+          { name: '星界遊神', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small432000.jpg' },
+          { name: '幻翎', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small497000.jpg' },
+          { name: '逆羽', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small498000.jpg' },
+          { name: '山隱之焰', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small516000.jpg' },
+          { name: '解脫者', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small517000.jpg' },
+          { name: '萬花通靈', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small518000.jpg' },
+          { name: '殘月之肅', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small523000.jpg' },
+          { name: '镕鐵少女', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small526000.jpg' },
+          { name: '血港鬼影', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small555000.jpg' },
+          { name: '愁雲使者', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small711000.jpg' },
+          { name: '封魔劍魂', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small777000.jpg' },
+          { name: '腕豪', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small875000.jpg' },
+          { name: '含羞蓓蕾', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small876000.jpg' },
+          { name: '靈羅娃娃', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small887000.jpg' },
+        ],
+      },
+      {
+        name: '上路',
+        heroes: [
+          { name: '無畏戰車', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small6000.jpg' },
+          { name: '猩紅收割者', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small8000.jpg' },
+          { name: '正義天使', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small10000.jpg' },
+          { name: '亡靈戰神', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small14000.jpg' },
+          { name: '迅捷斥候', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small17000.jpg' },
+          { name: '祖安怒獸', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small19000.jpg' },
+          { name: '蠻族之王', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small23000.jpg' },
+          { name: '武器大師', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small24000.jpg' },
+          { name: '煉金術士', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small27000.jpg' },
+          { name: '虛空恐懼', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small31000.jpg' },
+          { name: '刀鋒舞者', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small39000.jpg' },
+          { name: '海洋之災', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small41000.jpg' },
+          { name: '巨魔之王', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small48000.jpg' },
+          { name: '熔巖巨獸', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small54000.jpg' },
+          { name: '荒漠屠夫', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small58000.jpg' },
+          { name: '齊天大聖', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small62000.jpg' },
+          { name: '暗夜獵手', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small67000.jpg' },
+          { name: '沙漠死神', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small75000.jpg' },
+          { name: '聖錘之毅', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small78000.jpg' },
+          { name: '鐵鎧冥魂', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small82000.jpg' },
+          { name: '牧魂人', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small83000.jpg' },
+          { name: '離群之刺', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small84000.jpg' },
+          { name: '狂暴之心', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small85000.jpg' },
+          { name: '德瑪西亞之力', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small86000.jpg' },
+          { name: '放逐之刃', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small92000.jpg' },
+          { name: '暮光之眼', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small98000.jpg' },
+          { name: '法外狂徒', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small104000.jpg' },
+          { name: '不滅狂雷', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small106000.jpg' },
+          { name: '無雙劍姬', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small114000.jpg' },
+          { name: '諾克薩斯之手', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small122000.jpg' },
+          { name: '未來守護者', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small126000.jpg' },
+          { name: '迷失之牙', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small150000.jpg' },
+          { name: '疾風劍豪', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small157000.jpg' },
+          { name: '青鋼影', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small164000.jpg' },
+          { name: '河流之王', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small223000.jpg' },
+          { name: '聖槍遊俠', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small236000.jpg' },
+          { name: '暴怒騎士', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small240000.jpg' },
+          { name: '暗裔劍魔', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small266000.jpg' },
+          { name: '海獸祭司', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small420000.jpg' },
+          { name: '山隱之焰', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small516000.jpg' },
+          { name: '解脫者', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small517000.jpg' },
+          { name: '封魔劍魂', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small777000.jpg' },
+          { name: '腕豪', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small875000.jpg' },
+          { name: '含羞蓓蕾', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small876000.jpg' },
+          { name: '靈羅娃娃', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small887000.jpg' },
+        ],
+      },
+      {
+        name: '打野',
+        heroes: [
+          { name: '狂戰士', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small2000.jpg' },
+          { name: '德邦總管', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small5000.jpg' },
+          { name: '遠古恐懼', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small9000.jpg' },
+          { name: '無極劍聖', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small11000.jpg' },
+          { name: '祖安怒獸', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small19000.jpg' },
+          { name: '雪原雙子', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small20000.jpg' },
+          { name: '痛苦之擁', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small28000.jpg' },
+          { name: '瘟疫之源', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small29000.jpg' },
+          { name: '死亡頌唱者', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small30000.jpg' },
+          { name: '殤之木乃伊', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small32000.jpg' },
+          { name: '惡魔小醜', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small35000.jpg' },
+          { name: '巨魔之王', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small48000.jpg' },
+          { name: '永恒夢魘', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small56000.jpg' },
+          { name: '德瑪西亞皇子', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small59000.jpg' },
+          { name: '蜘蛛女皇', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small60000.jpg' },
+          { name: '盲僧', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small64000.jpg' },
+          { name: '機械公敵', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small68000.jpg' },
+          { name: '狂野女獵手', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small76000.jpg' },
+          { name: '聖錘之毅', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small78000.jpg' },
+          { name: '酒桶', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small79000.jpg' },
+          { name: '刀鋒之影', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small91000.jpg' },
+          { name: '龍血武姬', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small102000.jpg' },
+          { name: '法外狂徒', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small104000.jpg' },
+          { name: '不滅狂雷', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small106000.jpg' },
+          { name: '傲之追獵者', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small107000.jpg' },
+          { name: '戰爭之影', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small120000.jpg' },
+          { name: '虛空掠奪者', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small121000.jpg' },
+          { name: '皎月女神', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small131000.jpg' },
+          { name: '影流之鐮', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small141000.jpg' },
+          { name: '生化魔人', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small154000.jpg' },
+          { name: '巖雀', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small163000.jpg' },
+          { name: '永獵雙子', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small203000.jpg' },
+          { name: '破敗之王', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small234000.jpg' },
+          { name: '影流之主', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small238000.jpg' },
+          { name: '時間刺客', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small245000.jpg' },
+          { name: '元素女皇', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small246000.jpg' },
+          { name: '皮城執法官', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small254000.jpg' },
+          { name: '虛空遁地獸', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small421000.jpg' },
+          { name: '含羞蓓蕾', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small876000.jpg' },
+          { name: '靈羅娃娃', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small887000.jpg' },
+        ],
+      },
+      {
+        name: '中路',
+        heroes: [
+          { name: '黑暗之女', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small1000.jpg' },
+          { name: '正義巨像', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small3000.jpg' },
+          { name: '卡牌大師', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small4000.jpg' },
+          { name: '詭術妖姬', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small7000.jpg' },
+          { name: '猩紅收割者', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small8000.jpg' },
+          { name: '符文法師', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small13000.jpg' },
+          { name: '亡靈戰神', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small14000.jpg' },
+          { name: '蠻族之王', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small23000.jpg' },
+          { name: '冰晶鳳凰', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small34000.jpg' },
+          { name: '虛空行者', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small38000.jpg' },
+          { name: '刀鋒舞者', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small39000.jpg' },
+          { name: '海洋之災', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small41000.jpg' },
+          { name: '英勇投彈手', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small42000.jpg' },
+          { name: '邪惡小法師', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small45000.jpg' },
+          { name: '熔巖巨獸', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small54000.jpg' },
+          { name: '不祥之刃', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small55000.jpg' },
+          { name: '荒漠屠夫', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small58000.jpg' },
+          { name: '發條魔靈', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small61000.jpg' },
+          { name: '機械公敵', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small68000.jpg' },
+          { name: '魔蛇之擁', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small69000.jpg' },
+          { name: '沙漠死神', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small75000.jpg' },
+          { name: '不屈之槍', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small80000.jpg' },
+          { name: '離群之刺', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small84000.jpg' },
+          { name: '狂暴之心', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small85000.jpg' },
+          { name: '德瑪西亞之力', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small86000.jpg' },
+          { name: '虛空先知', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small90000.jpg' },
+          { name: '刀鋒之影', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small91000.jpg' },
+          { name: '光輝女郎', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small99000.jpg' },
+          { name: '遠古巫靈', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small101000.jpg' },
+          { name: '九尾妖狐', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small103000.jpg' },
+          { name: '法外狂徒', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small104000.jpg' },
+          { name: '潮汐海靈', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small105000.jpg' },
+          { name: '機械先驅', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small112000.jpg' },
+          { name: '爆破鬼才', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small115000.jpg' },
+          { name: '未來守護者', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small126000.jpg' },
+          { name: '冰霜女巫', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small127000.jpg' },
+          { name: '皎月女神', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small131000.jpg' },
+          { name: '暗黑元首', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small134000.jpg' },
+          { name: '鑄星龍王', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small136000.jpg' },
+          { name: '暮光星靈', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small142000.jpg' },
+          { name: '疾風劍豪', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small157000.jpg' },
+          { name: '青鋼影', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small164000.jpg' },
+          { name: '影哨', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small166000.jpg' },
+          { name: '聖槍遊俠', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small236000.jpg' },
+          { name: '影流之主', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small238000.jpg' },
+          { name: '暴怒騎士', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small240000.jpg' },
+          { name: '時間刺客', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small245000.jpg' },
+          { name: '元素女皇', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small246000.jpg' },
+          { name: '暗裔劍魔', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small266000.jpg' },
+          { name: '沙漠皇帝', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small268000.jpg' },
+          { name: '逆羽', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small498000.jpg' },
+          { name: '解脫者', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small517000.jpg' },
+          { name: '萬花通靈', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small518000.jpg' },
+          { name: '愁雲使者', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small711000.jpg' },
+          { name: '封魔劍魂', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small777000.jpg' },
+          { name: '腕豪', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small875000.jpg' },
+        ],
+      },
+      {
+        name: '下路',
+        heroes: [
+          { name: '戰爭女神', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small15000.jpg' },
+          { name: '麥林炮手', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small18000.jpg' },
+          { name: '賞金獵人', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small21000.jpg' },
+          { name: '寒冰射手', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small22000.jpg' },
+          { name: '瘟疫之源', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small29000.jpg' },
+          { name: '皮城女警', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small51000.jpg' },
+          { name: '暗夜獵手', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small67000.jpg' },
+          { name: '探險家', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small81000.jpg' },
+          { name: '深淵巨口', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small96000.jpg' },
+          { name: '懲戒之箭', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small110000.jpg' },
+          { name: '爆破鬼才', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small115000.jpg' },
+          { name: '榮耀行刑官', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small119000.jpg' },
+          { name: '虛空之女', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small145000.jpg' },
+          { name: '疾風劍豪', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small157000.jpg' },
+          { name: '戲命師', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small202000.jpg' },
+          { name: '暴走蘿莉', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small222000.jpg' },
+          { name: '聖槍遊俠', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small236000.jpg' },
+          { name: '沙漠玫瑰', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small360000.jpg' },
+          { name: '覆仇之矛', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small429000.jpg' },
+          { name: '逆羽', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small498000.jpg' },
+          { name: '殘月之肅', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small523000.jpg' },
+        ],
+      },
+      {
+        name: '輔助',
+        heroes: [
+          { name: '正義巨像', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small3000.jpg' },
+          { name: '詭術妖姬', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small7000.jpg' },
+          { name: '遠古恐懼', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small9000.jpg' },
+          { name: '牛頭酋長', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small12000.jpg' },
+          { name: '眾星之子', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small16000.jpg' },
+          { name: '賞金獵人', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small21000.jpg' },
+          { name: '墮落天使', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small25000.jpg' },
+          { name: '時光守護者', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small26000.jpg' },
+          { name: '殤之木乃伊', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small32000.jpg' },
+          { name: '冰晶鳳凰', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small34000.jpg' },
+          { name: '惡魔小醜', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small35000.jpg' },
+          { name: '琴瑟仙女', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small37000.jpg' },
+          { name: '風暴之怒', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small40000.jpg' },
+          { name: '天啟者', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small43000.jpg' },
+          { name: '瓦洛蘭之盾', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small44000.jpg' },
+          { name: '邪惡小法師', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small45000.jpg' },
+          { name: '諾克薩斯統領', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small50000.jpg' },
+          { name: '蒸汽機器人', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small53000.jpg' },
+          { name: '扭曲樹精', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small57000.jpg' },
+          { name: '德瑪西亞皇子', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small59000.jpg' },
+          { name: '覆仇焰魂', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small63000.jpg' },
+          { name: '不屈之槍', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small80000.jpg' },
+          { name: '曙光女神', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small89000.jpg' },
+          { name: '光輝女郎', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small99000.jpg' },
+          { name: '遠古巫靈', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small101000.jpg' },
+          { name: '深海泰坦', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small111000.jpg' },
+          { name: '爆破鬼才', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small115000.jpg' },
+          { name: '仙靈女巫', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small117000.jpg' },
+          { name: '荊棘之興', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small143000.jpg' },
+          { name: '星籟歌姬', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small147000.jpg' },
+          { name: '虛空之眼', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small161000.jpg' },
+          { name: '弗雷爾卓德之心', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small201000.jpg' },
+          { name: '滌魂聖槍', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small235000.jpg' },
+          { name: '喚潮鮫姬', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small267000.jpg' },
+          { name: '魔法貓咪', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small350000.jpg' },
+          { name: '魂鎖典獄長', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small412000.jpg' },
+          { name: '星界遊神', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small432000.jpg' },
+          { name: '幻翎', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small497000.jpg' },
+          { name: '镕鐵少女', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small526000.jpg' },
+          { name: '血港鬼影', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small555000.jpg' },
+          { name: '愁雲使者', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small711000.jpg' },
+          { name: '腕豪', avatar: 'https://game.gtimg.cn/images/lol/act/img/skin/small875000.jpg' },
+        ],
+      },
+    ]
+
+    // 略過繼續執行遍歷
     for (let cat of rawData) {
-      if (cat.name === '热门') {
+      if (cat.name === '全部') {
         continue
       }
       // 找到当前分类在数据库中对应的数据
       const category = await Category.findOne({
-        name: cat.name
+        name: cat.name,
       })
       cat.heroes = cat.heroes.map(hero => {
         hero.categories = [category]
@@ -102,7 +532,7 @@ module.exports = app => {
   // 英雄列表接口
   router.get('/heroes/list', async (req, res) => {
     const parent = await Category.findOne({
-      name: '英雄分类'
+      name: '英雄列表',
     })
     const cats = await Category.aggregate([
       { $match: { parent: parent._id } },
@@ -111,36 +541,37 @@ module.exports = app => {
           from: 'heroes',
           localField: '_id',
           foreignField: 'categories',
-          as: 'heroList'
-        }
-      }
+          as: 'heroList',
+        },
+      },
     ])
     const subCats = cats.map(v => v._id)
     cats.unshift({
-      name: '热门',
-      heroList: await Hero.find().where({
-        categories: { $in: subCats }
-      }).limit(10).lean()
+      name: '全部',
+      heroList: await Hero.find()
+        .where({
+          categories: { $in: subCats },
+        })
+        .limit(100)
+        .lean(),
     })
-
     res.send(cats)
-
-  });
+  })
 
   // 文章详情
   router.get('/articles/:id', async (req, res) => {
     const data = await Article.findById(req.params.id).lean()
-    data.related = await Article.find().where({
-      categories: { $in: data.categories }
-    }).limit(2)
+    data.related = await Article.find()
+      .where({
+        categories: { $in: data.categories },
+      })
+      .limit(2)
     res.send(data)
   })
 
+  // 英雄詳情
   router.get('/heroes/:id', async (req, res) => {
-    const data = await Hero
-      .findById(req.params.id)
-      .populate('categories items1 items2 partners.hero')
-      .lean()
+    const data = await Hero.findById(req.params.id).populate('categories items1 items2 partners.hero').lean()
     res.send(data)
   })
 
