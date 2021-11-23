@@ -7,11 +7,11 @@
         </el-form-item>
 
         <el-form-item label="密碼" prop="password">
-          <el-input type="password" v-model="ruleForm.password" autocomplete="off"></el-input>
+          <el-input type="password" v-model="ruleForm.password" autocomplete="off" status-icon></el-input>
         </el-form-item>
 
         <el-form-item label="確認密碼" prop="checkPassword">
-          <el-input type="password" v-model="ruleForm.checkPassword" autocomplete="off"></el-input>
+          <el-input type="password" v-model="ruleForm.checkPassword" autocomplete="off" status-icon></el-input>
         </el-form-item>
 
         <el-form-item>

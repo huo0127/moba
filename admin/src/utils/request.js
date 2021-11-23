@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { getTokenAUTH } from '@/utils/auth';
 import { Message, Loading } from 'element-ui'
 
 const pendingMap = new Map();
@@ -37,9 +36,9 @@ function myAxios (axiosConfig, customOptions, loadingOptions) {
           LoadingInstance._target = Loading.service(loadingOptions);
         }
       }
-      // 自动携带token
-      if (getTokenAUTH() && typeof window !== "undefined") {
-        config.headers.Authorization = getTokenAUTH();
+
+      if (localStorage.token) {
+        config.headers.Authorization = 'Bearer ' + localStorage.token
       }
 
       return config;

@@ -89,7 +89,7 @@ export default {
     // 獲取分類列表
     async getCateList() {
       const res = await getCateList()
-      const data = res
+      const data = res.data
       // 处理分類数据
       for (const item1 of data) {
         // 第一層

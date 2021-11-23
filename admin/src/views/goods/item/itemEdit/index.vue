@@ -43,7 +43,7 @@ export default {
   },
   methods: {
     afterUpload(res) {
-      this.$set(this.formData, 'iconPath', res.url)
+      this.$set(this.formData, 'iconPath', res.data.url)
       // this.formData.icon = res.url
     },
     async save() {
@@ -61,7 +61,7 @@ export default {
     },
     async getItem() {
       const res = await getItem(this.id)
-      this.formData = res
+      this.formData = res.data
     }
   },
   created() {

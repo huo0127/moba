@@ -14,7 +14,7 @@
               :action="uploadUrl"
               :headers="getAuthHeaders()"
               :show-file-list="false"
-              :on-success="(res) => $set(model, 'avatar', res.url)"
+              :on-success="(res) => $set(model, 'avatar', res.data.url)"
             >
               <img v-if="model.avatar" :src="model.avatar" class="avatar" />
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -26,7 +26,7 @@
               :action="uploadUrl"
               :headers="getAuthHeaders()"
               :show-file-list="false"
-              :on-success="(res) => $set(model, 'banner', res.url)"
+              :on-success="(res) => $set(model, 'banner', res.data.url)"
             >
               <img v-if="model.banner" :src="model.banner" class="banner" />
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -72,7 +72,7 @@
                     :action="uploadUrl"
                     :headers="getAuthHeaders()"
                     :show-file-list="false"
-                    :on-success="(res) => $set(item, 'icon', res.url)"
+                    :on-success="(res) => $set(item, 'icon', res.data.url)"
                   >
                     <img v-if="item.icon" :src="item.icon" class="skill" />
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -96,7 +96,7 @@
                     :action="uploadUrl"
                     :headers="getAuthHeaders()"
                     :show-file-list="false"
-                    :on-success="(res) => $set(item, 'video', res.url)"
+                    :on-success="(res) => $set(item, 'video', res.data.url)"
                   >
                     <video :src="item.video" v-if="item.video" controls class="video" />
                     <i v-else class="el-icon-upload avatar-uploader-icon"></i>
@@ -152,7 +152,7 @@
                     :action="uploadUrl"
                     :headers="getAuthHeaders()"
                     :show-file-list="false"
-                    :on-success="(res) => $set(skin, 'img', res.url)"
+                    :on-success="(res) => $set(skin, 'img', res.data.url)"
                   >
                     <img v-if="skin.img" :src="skin.img" class="banner" />
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -219,11 +219,11 @@ export default {
     },
     async getHero() {
       const res = await getHero(this.id)
-      this.model = Object.assign({}, this.model, res)
+      this.model = Object.assign({}, this.model, res.data)
     },
     async getCateList() {
       const res = await getCateList()
-      for (const cate of res) {
+      for (const cate of res.data) {
         if (cate.name === '英雄分類') {
           this.heroCateList = cate.children
           break

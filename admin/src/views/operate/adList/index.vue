@@ -34,7 +34,7 @@
                   :action="uploadUrl"
                   :headers="getAuthHeaders()"
                   :show-file-list="false"
-                  :on-success="(res) => $set(item, 'image', res.url)"
+                  :on-success="(res) => $set(item, 'image', res.data.url)"
                 >
                   <img v-if="item.image" :src="item.image" style="width: 300px" />
                   <i v-else class="el-icon-plus avatar-uploader-icon"></i>
