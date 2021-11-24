@@ -67,7 +67,7 @@ module.exports = app => {
   router.get(
     '/',
 
-    // 文章升序或降序 
+    // sortChange 文章升序或降序 
     async (req, res, next) => {
       if (!(req.query.order || req.query.prop)) return next()
       const pagenum = Number(req.query.pagenum)
@@ -76,7 +76,8 @@ module.exports = app => {
       const total = await req.Model.countDocuments()
       if (req.query.order == 'ascending') {
         data = await req.Model.find().sort({ 'createdAt': 1 }).skip(skipNum).limit(pagesize).populate('categories')
-      } else {
+      }
+      else {
         data = await req.Model.find().sort({ 'createdAt': -1 }).skip(skipNum).limit(pagesize).populate('categories')
       }
 
@@ -86,7 +87,7 @@ module.exports = app => {
       })
     },
 
-    // 模糊查詢
+    // 列表展示
     async (req, res, next) => {
       if (!(req.query.pagenum || req.query.pagesize)) return next()
       const pagenum = Number(req.query.pagenum)
@@ -98,6 +99,8 @@ module.exports = app => {
       // 有搜尋條件
       if (req.query.query) {
         data = await req.Model.find({ name: { $regex: `${req.query.query}` } }).skip(skipNum).limit(pagesize).populate('categories')
+      } else if (req.Model.modelName === 'Article') {
+        data = await req.Model.find().sort({ 'createdAt': -1 }).skip(skipNum).limit(pagesize).populate('categories')
       } else {
         // 單純展示列表
         data = await req.Model.find().skip(skipNum).limit(pagesize).populate('categories')
