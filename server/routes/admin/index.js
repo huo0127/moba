@@ -141,7 +141,7 @@ module.exports = app => {
             ])
           }
         }
-        // return res.send(parents)
+
         return response(res, 200, '獲取分類成功', parents)
       }
 

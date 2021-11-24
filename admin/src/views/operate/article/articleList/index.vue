@@ -13,7 +13,7 @@
         </el-col>
       </el-row>
       <el-table :data="articleList" @sort-change="sortChange">
-        <el-table-column type="index" lacel="序號"></el-table-column>
+        <el-table-column type="index" label="序號" :index="indexMethod"> </el-table-column>
         <el-table-column prop="name" label="分類">
           <template slot-scope="scope">
             <span>
@@ -67,7 +67,7 @@ export default {
       articleList: [],
 
       pageParams: {
-        pageNum: 1,
+        pagenum: 1,
         pagesize: 5,
         prop: '',
         order: ''
@@ -84,6 +84,10 @@ export default {
   },
 
   methods: {
+    indexMethod(index) {
+      return index + 1 + (this.pageParams.pagenum - 1) * this.pageParams.pagesize
+    },
+
     // 觸發升序或降序
     sortChange(column, prop, order) {
       if (column.prop == null || column.order == null) {
