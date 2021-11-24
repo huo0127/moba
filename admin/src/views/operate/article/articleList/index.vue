@@ -55,6 +55,7 @@
 <script>
 import dayjs from 'dayjs'
 import { getArticleList, deleteArticle } from '@/api/article'
+import indexMethod from '@/mixins/indexMethod'
 export default {
   name: 'ArticleList',
   filters: {
@@ -62,6 +63,7 @@ export default {
       return dayjs(val).format('YYYY-MM-DD')
     }
   },
+  mixins: [indexMethod],
   data() {
     return {
       articleList: [],
@@ -84,10 +86,6 @@ export default {
   },
 
   methods: {
-    indexMethod(index) {
-      return index + 1 + (this.pageParams.pagenum - 1) * this.pageParams.pagesize
-    },
-
     // 觸發升序或降序
     sortChange(column, prop, order) {
       if (column.prop == null || column.order == null) {

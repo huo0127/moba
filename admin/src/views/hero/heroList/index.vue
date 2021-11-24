@@ -11,7 +11,7 @@
         </el-col>
       </el-row>
       <el-table :data="heroList" border stripe>
-        <el-table-column type="index" width="240"></el-table-column>
+        <el-table-column type="index" :index="indexMethod" label="序號"></el-table-column>
         <el-table-column prop="name" label="名稱"></el-table-column>
         <el-table-column prop="name" label="位置">
           <template slot-scope="scope">
@@ -54,6 +54,7 @@
 
 <script>
 import { getHeroList, deleteHero } from '@/api/hero'
+import indexMethod from '@/mixins/indexMethod'
 export default {
   name: 'HeroList',
   data() {
@@ -67,6 +68,7 @@ export default {
       heroQuery: ''
     }
   },
+  mixins: [indexMethod],
   created() {
     this.getHeroList()
   },

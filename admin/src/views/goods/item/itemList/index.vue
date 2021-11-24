@@ -12,10 +12,10 @@
       </el-row>
 
       <el-table :data="itemList" border stripe>
-        <el-table-column type="index" label="序號" width="60" align="center"></el-table-column>
+        <el-table-column type="index" label="序號" :index="indexMethod"></el-table-column>
         <el-table-column prop="name" label="裝備名稱" align="center"></el-table-column>
         <el-table-column prop="plaintext" label="簡述"> </el-table-column>
-        <el-table-column prop="icon" label="圖標" align="center">
+        <el-table-column prop="icon" label="圖標">
           <template slot-scope="scope">
             <img :src="scope.row.iconPath" style="height: 3rem" />
           </template>
@@ -49,6 +49,7 @@
 
 <script>
 import { getItemList, deleteItem } from '@/api/item'
+import indexMethod from '@/mixins/indexMethod'
 export default {
   data() {
     return {
@@ -61,6 +62,7 @@ export default {
       itemQuery: ''
     }
   },
+  mixins: [indexMethod],
   methods: {
     async getItemList() {
       const res = await getItemList(this.pageParams)
