@@ -26,20 +26,20 @@ module.exports = app => {
   // 创建资源
   router.post('/', async (req, res) => {
     const model = await req.Model.create(req.body)
-    // res.send(model)
+
     response(res, 200, '成功', model)
   })
 
   // 更新资源
   router.put('/:id', async (req, res) => {
-    const model = await req.Model.findByIdAndUpdate(req.params.id, req.body)
-    // res.send(model)
+    await req.Model.findByIdAndUpdate(req.params.id, req.body)
+
     response(res, 200, '編輯完成')
   })
 
   // 删除资源
   router.delete('/:id', async (req, res) => {
-    // 禁止删除有子分类的父级分类
+    // 禁止删除有子分類的父级分類
     if (req.Model.modelName === 'Category') {
       const parent = await req.Model.findById(req.params.id)
 
@@ -54,12 +54,11 @@ module.exports = app => {
           },
         },
       ])
-
       assert(children.length < 1, 403, '無法刪除')
     }
 
     await req.Model.findByIdAndDelete(req.params.id)
-    // res.send({ message: '删除成功' })
+
 
     response(res, 200, '刪除成功')
   })
@@ -67,6 +66,27 @@ module.exports = app => {
   //获取列表
   router.get(
     '/',
+
+    // 文章升序或降序 
+    async (req, res, next) => {
+      if (!(req.query.order || req.query.prop)) return next()
+      const pagenum = Number(req.query.pagenum)
+      const pagesize = Number(req.query.pagesize)
+      const skipNum = (pagenum - 1) * pagesize
+      const total = await req.Model.countDocuments()
+      if (req.query.order == 'ascending') {
+        data = await req.Model.find().sort({ 'createdAt': 1 }).skip(skipNum).limit(pagesize).populate('categories')
+      } else {
+        data = await req.Model.find().sort({ 'createdAt': -1 }).skip(skipNum).limit(pagesize).populate('categories')
+      }
+
+      response(res, 200, '成功', {
+        total,
+        data
+      })
+    },
+
+    // 模糊查詢
     async (req, res, next) => {
       if (!(req.query.pagenum || req.query.pagesize)) return next()
       const pagenum = Number(req.query.pagenum)
@@ -75,9 +95,11 @@ module.exports = app => {
       const total = await req.Model.countDocuments()
 
       let data
+      // 有搜尋條件
       if (req.query.query) {
         data = await req.Model.find({ name: { $regex: `${req.query.query}` } }).skip(skipNum).limit(pagesize).populate('categories')
       } else {
+        // 單純展示列表
         data = await req.Model.find().skip(skipNum).limit(pagesize).populate('categories')
       }
       response(res, 200, '成功', {
@@ -124,13 +146,13 @@ module.exports = app => {
       }
 
       const queryOptions = {}
+
       if (req.Model.modelName === 'Article') {
         queryOptions.populate = 'categories'
       }
 
       if (req.Model.modelName === 'Hero') {
         if (req.query.query) {
-          // const model = await Hero.find({ name: req.query.query })
           const model = await Hero.find()
           res.send(model)
         } else {
@@ -242,3 +264,4 @@ module.exports = app => {
     })
   })
 }
+

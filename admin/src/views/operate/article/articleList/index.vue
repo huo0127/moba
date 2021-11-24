@@ -12,7 +12,7 @@
           >
         </el-col>
       </el-row>
-      <el-table :data="articleList">
+      <el-table :data="articleList" @sort-change="sortChange">
         <el-table-column type="index" lacel="序號"></el-table-column>
         <el-table-column prop="name" label="分類">
           <template slot-scope="scope">
@@ -33,7 +33,7 @@
             <HintButton title="删除" type="danger" icon="el-icon-delete" @click="remove(scope.row)"></HintButton>
           </template>
         </el-table-column>
-        <el-table-column label="日期">
+        <el-table-column label="日期" prop="createdAt" sortable="custom">
           <template slot-scope="{ row, $index }">
             <span>{{ row.createdAt | date }}</span>
           </template>
@@ -56,6 +56,7 @@
 import dayjs from 'dayjs'
 import { getArticleList, deleteArticle } from '@/api/article'
 export default {
+  name: 'ArticleList',
   filters: {
     date(val) {
       return dayjs(val).format('YYYY-MM-DD')
@@ -64,29 +65,49 @@ export default {
   data() {
     return {
       articleList: [],
+
       pageParams: {
         pageNum: 1,
-        pagesize: 5
+        pagesize: 5,
+        prop: '',
+        order: ''
       },
+
       total: 0,
       articleQuery: '',
       createAt: ''
     }
   },
 
+  created() {
+    this.getArticleList()
+  },
+
   methods: {
+    // 觸發升序或降序
+    sortChange(column, prop, order) {
+      if (column.prop == null || column.order == null) {
+        this.pageParams.prop = ''
+        this.pageParams.order = ''
+      } else {
+        this.pageParams.prop = column.prop
+        this.pageParams.order = column.order
+      }
+      this.getArticleList()
+    },
+
     async getArticleList() {
       const res = await getArticleList(this.pageParams)
-      this.articleList = res.data.data
       this.total = res.data.total
+      this.articleList = res.data.data
     },
+
     remove(row) {
       this.$confirm(`是否確定要删除文章 "${row.name}"`, '提示', {
         confirmButtonText: '確定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async() => {
-        // const res = await this.$http.delete(`rest/articles/${row._id}`)
         const res = await deleteArticle(row._id)
         if (!res) return
         this.$message({
@@ -96,22 +117,22 @@ export default {
         this.getArticleList((this.pageParams.pagenum = 1))
       })
     },
+
     handleSizeChange(pagesize) {
       this.pageParams.pagesize = pagesize
       this.getArticleList()
     },
+
     handleCurrentChange(pagenum) {
       this.pageParams.pagenum = pagenum
       this.getArticleList()
     },
+
     async searchArticle() {
       this.pageParams.query = this.articleQuery
       this.pageParams.pagenum = 1
       this.getArticleList(this.pageParams)
     }
-  },
-  created() {
-    this.getArticleList()
   }
 }
 </script>

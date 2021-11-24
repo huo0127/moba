@@ -152,23 +152,18 @@ export default {
     },
 
     // 删除分類
-    async remove(row) {
-      try {
-        await this.$confirm(`是否確定要删除分類 ${row.name}`, '提示', {
-          confirmButtonText: '確定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        })
-
+    remove(row) {
+      this.$confirm(`是否確定要删除分類 ${row.name}`, '提示', {
+        confirmButtonText: '確定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async() => {
         if (row.children && row.children.length > 0) return this.$message.error('無法删除包含子分類的父级分類')
-
         const res = await deleteCate(row._id)
         if (!res) return
         this.$message.success('删除分類成功')
         this.getCateList()
-      } catch (error) {
-        this.$message.info('已取消删除')
-      }
+      })
     }
   },
   created() {
@@ -177,5 +172,4 @@ export default {
 }
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

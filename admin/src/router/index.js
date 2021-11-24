@@ -33,6 +33,8 @@ import getPageTitle from '@/utils/get-page-title'
  * all roles can be accessed
  */
 export const constantRoutes = [
+
+
   // 登入
   {
     path: '/login',
@@ -40,6 +42,7 @@ export const constantRoutes = [
     hidden: true,
     meta: { isPublic: true }
   },
+
 
   // 註冊
   {
@@ -68,6 +71,7 @@ export const constantRoutes = [
     }]
   },
 
+
   {
     path: '/heroes',
     component: Layout,
@@ -95,6 +99,7 @@ export const constantRoutes = [
         meta: { title: '編輯英雄' },
         hidden: true
       },
+
     ]
   },
 
