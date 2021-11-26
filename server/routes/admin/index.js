@@ -63,17 +63,17 @@ module.exports = app => {
     response(res, 200, '刪除成功')
   })
 
-  //获取列表
+  // 列表展示
   router.get(
     '/',
-
-    // sortChange 文章升序或降序 
     async (req, res, next) => {
       if (!(req.query.order || req.query.prop)) return next()
       const pagenum = Number(req.query.pagenum)
       const pagesize = Number(req.query.pagesize)
       const skipNum = (pagenum - 1) * pagesize
       const total = await req.Model.countDocuments()
+
+      // sortChange 文章升序或降序 
       if (req.query.order == 'ascending') {
         data = await req.Model.find().sort({ 'createdAt': 1 }).skip(skipNum).limit(pagesize).populate('categories')
       }
@@ -101,11 +101,13 @@ module.exports = app => {
         data = await req.Model.find({ name: { $regex: `${req.query.query}` } }).skip(skipNum).limit(pagesize).populate('categories')
       } else if (req.Model.modelName === 'Article') {
         data = await req.Model.find().sort({ 'createdAt': -1 }).skip(skipNum).limit(pagesize).populate('categories')
+
       } else {
         // 單純展示列表
         data = await req.Model.find().skip(skipNum).limit(pagesize).populate('categories')
       }
       response(res, 200, '成功', {
+
         total,
         data
       })

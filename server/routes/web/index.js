@@ -532,7 +532,7 @@ module.exports = app => {
   // 英雄列表接口
   router.get('/heroes/list', async (req, res) => {
     const parent = await Category.findOne({
-      name: '英雄列表',
+      name: '英雄分類',
     })
     const cats = await Category.aggregate([
       { $match: { parent: parent._id } },

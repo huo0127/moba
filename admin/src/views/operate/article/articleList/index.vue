@@ -67,7 +67,9 @@ export default {
   data() {
     return {
       articleList: [],
+      queryTotal: 0,
 
+      // 分頁、升序或降序
       pageParams: {
         pagenum: 1,
         pagesize: 5,
