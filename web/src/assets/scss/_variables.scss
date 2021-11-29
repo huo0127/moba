@@ -1,9 +1,9 @@
-
 // colors
 $colors: (
   'primary': #db9e3f,
   'info': #4b67af,
   'danger': #791a15,
+  'blue-2': rgb(6, 28, 37),
   'blue-1': #1f3695,
   'blue': #4394e4,
   'white': #fff,
@@ -13,10 +13,10 @@ $colors: (
   'light-1': #d4d9de,
   'grey': #999,
   'grey-1': #666,
+  'grey-2': #7e7e7e,
   'dark-1': #343440,
-  'dark': #222,
+  'dark': #111,
   'black': #000,
-  
 );
 $border-color: map-get($colors, 'light-1');
 // font size
@@ -24,15 +24,15 @@ $base-font-size: 1rem;
 $font-sizes: (
   xxs: 0.6154,
   xs: 0.7692,
-  //10px
+  // 10px
     sm: 0.9231,
-  //12px
+  // 12px
     md: 1,
   //13px
     lg: 1.0769,
   //14px
     xl: 1.2308,
-  //16px,,,,
+  //16px,,,,,,,,,
 );
 $flex-jc: (
   start: flex-start,
@@ -67,5 +67,6 @@ $spacing-sizes: (
   2: 0.5,
   3: 1,
   4: 1.5,
-  5: 3,
+  5: 2,
+  6: 3,
 );

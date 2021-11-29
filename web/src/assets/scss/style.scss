@@ -2,14 +2,14 @@
 
 // reset
 * {
-  box-sizing: border-box;
-  outline: none;
+  box-sizing: border-box; // 將內容擠壓
+  outline: none; // 取消高亮
 }
 html {
   font-size: 13px;
 }
 body {
-  margin: 0;
+  margin: 0; // 默認body都會有margin，所以重置
   font-family: Arial, Helvetica, sans-serif;
   line-height: 1.2em;
   background: #f1f1f1;
@@ -30,6 +30,7 @@ p {
     background-color: $color;
   }
 }
+
 // text align
 @each $var in (left, center, right) {
   .text-#{$var} {
@@ -42,6 +43,7 @@ p {
     font-size: $size * $base-font-size;
   }
 }
+
 // text overflow
 .text-ellipsis {
   display: inline-block;
@@ -114,9 +116,10 @@ p {
     }
   }
 }
+
 // button
 .btn {
-  border:none;
+  border: none;
   border-radius: 0.1538rem;
   font-size: map-get($font-sizes, 'sm') * $base-font-size;
   padding: 0.2rem 0.6rem;
@@ -136,6 +139,7 @@ p {
     font-size: 1rem;
   }
 }
+
 // nav
 .nav {
   display: flex;
@@ -155,7 +159,6 @@ p {
       }
     }
   }
-  
 }
 
 // sprite
@@ -168,12 +171,13 @@ p {
     height: 1.5385rem;
     background-position: 63.546% 15.517%;
   }
-  &.sprite-arrow{
+  &.sprite-arrow {
     width: 0.7692rem;
     height: 0.7692rem;
     background-position: 38.577% 52.076%;
   }
 }
+
 // borders
 @each $dir in (top, right, bottom, left) {
   .border-#{$dir} {
