@@ -5,6 +5,9 @@ module.exports = app => {
   const Category = mongoose.model('Category')
   const Article = mongoose.model('Article')
   const Hero = mongoose.model('Hero')
+  const Ad = mongoose.model('Ad')
+
+
 
   // 导入新闻数据
   router.get('/news/init', async (req, res) => {
@@ -535,9 +538,12 @@ module.exports = app => {
       name: '英雄分類',
     })
     const cats = await Category.aggregate([
+      // 條件查詢，像是where，但速度較快
       { $match: { parent: parent._id } },
       {
+        // 關聯查詢
         $lookup: {
+          // 要去model去指定heroes
           from: 'heroes',
           localField: '_id',
           foreignField: 'categories',
@@ -545,16 +551,7 @@ module.exports = app => {
         },
       },
     ])
-    const subCats = cats.map(v => v._id)
-    cats.unshift({
-      name: '全部',
-      heroList: await Hero.find()
-        .where({
-          categories: { $in: subCats },
-        })
-        .limit(100)
-        .lean(),
-    })
+
     res.send(cats)
   })
 
@@ -574,6 +571,13 @@ module.exports = app => {
     const data = await Hero.findById(req.params.id).populate('categories items1 items2 partners.hero').lean()
     res.send(data)
   })
+
+  // 輪播圖
+  router.get('/ads', async (req, res) => {
+    const model = await Ad.find()
+    res.send(model)
+  })
+
 
   app.use('/web/api', router)
 }
