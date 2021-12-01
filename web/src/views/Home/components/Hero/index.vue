@@ -21,12 +21,14 @@
 </template>
 
 <script>
-import { getHeroList } from '@/api/home/hero'
+import { getHeroList } from '@/api/home'
 export default {
   name: 'Hero',
   data() {
     return {
-      heroCats: []
+      heroCats: [],
+
+      queryHero: '' // 搜索關鍵字
     }
   },
   mounted() {
@@ -41,6 +43,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-</style>

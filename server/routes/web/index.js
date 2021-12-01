@@ -65,18 +65,11 @@ module.exports = app => {
 
   // 新闻列表接口
   router.get('/news/list', async (req, res) => {
-    // const parent = await Category.findOne({
-    //   name: '新闻分类'
-    // }).populate({
-    //   path: 'children',
-    //   populate: {
-    //     path: 'newsList'
-    //   }
-    // }).lean()
     const parent = await Category.findOne({
       name: '新聞資訊',
     })
     const cats = await Category.aggregate([
+      { $sort: { createdAt: -1 } },
       { $match: { parent: parent._id } },
       {
         $lookup: {
@@ -88,7 +81,7 @@ module.exports = app => {
       },
       {
         $addFields: {
-          newsList: { $slice: ['$newsList', 5] },
+          newsList: { $slice: ['$newsList', 5], },
         },
       },
     ])

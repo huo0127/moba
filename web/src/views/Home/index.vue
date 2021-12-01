@@ -25,13 +25,15 @@
       </swiper>
     </div>
     <!-- end of swiper -->
+    <News></News>
     <hero></hero>
   </div>
 </template>
 
 <script>
-import { getAds } from '@/api/home/ad'
+import { getAds } from '@/api/home'
 import Hero from './components/Hero'
+import News from './components/News'
 export default {
   data() {
     return {
@@ -53,15 +55,17 @@ export default {
       adList: []
     }
   },
-  components: { Hero },
+  components: { Hero, News },
 
   methods: {
     async fetchAdList() {
       const res = await getAds()
       const data = res.data
+
       for (const item of data) {
         const data = item.items
         this.adList = data
+        break
       }
     }
   },
@@ -104,18 +108,6 @@ export default {
           background: map-get($colors, 'info');
         }
       }
-    }
-  }
-}
-
-.nav-icons {
-  border-top: 1px solid $border-color;
-  border-bottom: 1px solid $border-color;
-  .nav-item {
-    width: 25%;
-    border-right: 1px solid $border-color;
-    &:nth-child(4n) {
-      border-right: none;
     }
   }
 }
