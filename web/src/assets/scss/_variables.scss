@@ -14,6 +14,7 @@ $colors: (
   'grey': #999,
   'grey-1': #666,
   'grey-2': #7e7e7e,
+  'dark-2': rgb(0, 9, 19),
   'dark-1': #343440,
   'dark': #111,
   'black': #000,
@@ -32,7 +33,7 @@ $font-sizes: (
     lg: 1.0769,
   //14px
     xl: 1.2308,
-  //16px,,,,,,,,,
+  //16px,,,,,,,,,,,,,,
 );
 $flex-jc: (
   start: flex-start,

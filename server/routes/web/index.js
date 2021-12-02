@@ -561,7 +561,7 @@ module.exports = app => {
 
   // 英雄詳情
   router.get('/heroes/:id', async (req, res) => {
-    const data = await Hero.findById(req.params.id).populate('categories items1 items2 partners.hero').lean()
+    const data = await Hero.findById(req.params.id).populate('categories startItems items shoes counters.hero').lean()
     res.send(data)
   })
 

@@ -26,9 +26,7 @@ export default {
   name: 'Hero',
   data() {
     return {
-      heroCats: [],
-
-      queryHero: '' // 搜索關鍵字
+      heroCats: []
     }
   },
   mounted() {

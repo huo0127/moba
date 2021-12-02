@@ -34,6 +34,7 @@ export default {
       newsCats: []
     }
   },
+
   created() {
     this.fetchNewsCats()
   },
