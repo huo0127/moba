@@ -24,6 +24,37 @@ function request (config) {
 
 }
 
+function twitchRequest (config) {
+
+  const instance = axios.create({
+    baseURL: 'https://api.twitch.tv/helix',
+    timeout: 5000
+  })
+
+  instance.interceptors.request.use(config => {
+
+    config.headers = {
+      Authorization: 'Bearer szgy8jciya6xfyvs6849r8ijvmrh1i',
+      'Client-ID': 'wamznbyf5jcxfjx42vknj6slk5i1bp'
+    }
+
+    return config
+  }, err => {
+
+  })
+
+  instance.interceptors.response.use(res => {
+    return res.data
+  }, err => {
+
+  })
+
+  return instance(config)
+
+}
+
+
 export {
-  request
+  request,
+  twitchRequest
 }

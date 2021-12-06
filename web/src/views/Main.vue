@@ -4,9 +4,12 @@
       <i class="riot_logo mr-5"></i>
       <i class="lol_logo"></i>
       <Slide right>
-        <a id="home" href="#">
-          <span>Home</span>
-        </a>
+        <router-link to="/">
+          <span>首頁</span>
+        </router-link>
+        <router-link to="/stream">
+          <span>遊戲直播</span>
+        </router-link>
       </Slide>
     </div>
 
