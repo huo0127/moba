@@ -37,21 +37,39 @@
               <el-option v-for="item of heroCateList" :key="item._id" :label="item.name" :value="item._id"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="起手">
-            <el-select v-model="model.startItems" multiple filterable>
-              <el-option v-for="item of itemList" :key="item._id" :label="item.name" :value="item._id"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="推薦">
-            <el-select v-model="model.items" multiple filterable>
-              <el-option v-for="item of itemList" :key="item._id" :label="item.name" :value="item._id"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="鞋子">
-            <el-select v-model="model.shoes" multiple filterable>
-              <el-option v-for="item of itemList" :key="item._id" :label="item.name" :value="item._id"></el-option>
-            </el-select>
-          </el-form-item>
+        </el-tab-pane>
+        <!-- 英雄造型 -->
+        <el-tab-pane label="英雄造型" name="skins">
+          <HintButton title="創建造型" type="primary" icon="el-icon-plus" @click="model.skins.push({})"></HintButton>
+          <el-row :gutter="20" type="flex" style="flex-wrap: wrap">
+            <el-col :span="12" v-for="(skin, i) in model.skins" :key="i">
+              <el-card>
+                <el-form-item label="名稱">
+                  <el-input v-model="skin.name"></el-input>
+                </el-form-item>
+                <el-form-item label="造型圖片">
+                  <el-upload
+                    class="avatar-uploader"
+                    :action="uploadUrl"
+                    :headers="getAuthHeaders()"
+                    :show-file-list="false"
+                    :on-success="(res) => $set(skin, 'img', res.data.url)"
+                  >
+                    <img v-if="skin.img" :src="skin.img" class="banner" />
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                  </el-upload>
+                </el-form-item>
+                <el-form-item>
+                  <HintButton
+                    title="刪除造型"
+                    icon="el-icon-delete"
+                    type="danger"
+                    @click="model.skins.splice(i, 1)"
+                  ></HintButton>
+                </el-form-item>
+              </el-card>
+            </el-col>
+          </el-row>
         </el-tab-pane>
         <!-- 技能管理 -->
         <el-tab-pane label="技能管理" name="skills">
@@ -137,38 +155,29 @@
             </el-col>
           </el-row>
         </el-tab-pane>
-        <!-- 英雄造型 -->
-        <el-tab-pane label="英雄造型" name="skins">
-          <HintButton title="創建造型" type="primary" icon="el-icon-plus" @click="model.skins.push({})"></HintButton>
-          <el-row :gutter="20" type="flex" style="flex-wrap: wrap">
-            <el-col :span="12" v-for="(skin, i) in model.skins" :key="i">
-              <el-card>
-                <el-form-item label="名稱">
-                  <el-input v-model="skin.name"></el-input>
-                </el-form-item>
-                <el-form-item label="造型圖片">
-                  <el-upload
-                    class="avatar-uploader"
-                    :action="uploadUrl"
-                    :headers="getAuthHeaders()"
-                    :show-file-list="false"
-                    :on-success="(res) => $set(skin, 'img', res.data.url)"
-                  >
-                    <img v-if="skin.img" :src="skin.img" class="banner" />
-                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                  </el-upload>
-                </el-form-item>
-                <el-form-item>
-                  <HintButton
-                    title="刪除造型"
-                    icon="el-icon-delete"
-                    type="danger"
-                    @click="model.skins.splice(i, 1)"
-                  ></HintButton>
-                </el-form-item>
-              </el-card>
-            </el-col>
-          </el-row>
+        <!-- 進階攻略 -->
+        <el-tab-pane label="進階攻略">
+          <el-form-item label="起手">
+            <el-select v-model="model.startItems" multiple filterable>
+              <el-option v-for="item of itemList" :key="item._id" :label="item.name" :value="item._id"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="推薦">
+            <el-select v-model="model.items" multiple filterable>
+              <el-option v-for="item of itemList" :key="item._id" :label="item.name" :value="item._id"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="鞋子">
+            <el-select v-model="model.shoes" multiple filterable>
+              <el-option v-for="item of itemList" :key="item._id" :label="item.name" :value="item._id"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="召喚師技能">
+            <el-select v-model="model.spells" multiple filterable>
+              <el-option v-for="item of spellList" :key="item._id" :label="item.name" :value="item._id"></el-option>
+            </el-select>
+          </el-form-item>
+          <RuneList></RuneList>
         </el-tab-pane>
       </el-tabs>
       <el-form-item style="margin-top: 1rem">
@@ -182,24 +191,31 @@
 import { updateHero, createHero, getHero, getHeroList } from '@/api/hero'
 import { getItemList } from '@/api/item'
 import { getCateList } from '@/api/category'
+import { getSpellList } from '@/api/spell'
+import RuneList from './components/RuneList'
 import upload from '@/mixins/upload'
 
 export default {
+  name: 'HeroEdit',
   props: {
     id: {}
   },
+
   mixins: [upload],
+  components: { RuneList },
   data() {
     return {
       heroCateList: null,
       itemList: [],
       heroes: [],
+      spellList: [],
       // 英雄訊息
       model: {
         name: '',
         avatar: '',
         skills: [],
-        counters: []
+        counters: [],
+        spells: []
       }
     }
   },
@@ -221,6 +237,7 @@ export default {
       const res = await getHero(this.id)
       this.model = Object.assign({}, this.model, res.data)
     },
+
     async getCateList() {
       const res = await getCateList()
       for (const cate of res.data) {
@@ -237,12 +254,17 @@ export default {
     async getHeroList() {
       const res = await getHeroList()
       this.heroes = res
+    },
+    async getSpellList() {
+      const res = await getSpellList()
+      this.spellList = res
     }
   },
   created() {
     this.getItemList()
     this.getCateList()
     this.getHeroList()
+    this.getSpellList()
     this.id && this.getHero()
   }
 }

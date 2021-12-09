@@ -6,34 +6,15 @@
       <div class="text-grey fs-xs">{{ model.updatedAt | date }}</div>
     </div>
     <div v-html="model.body" class="px-3 body fs-lg"></div>
-    <div class="px-3 border-top py-3">
-      <div class="d-flex ai-center">
-        <i class="iconfont icon-menu1"></i>
-        <strong class="text-blue fs-lg ml-1">相關資訊</strong>
-      </div>
-      <div class="pt-2">
-        <router-link
-          class="py-1"
-          tag="div"
-          :to="`/articles/${item._id}`"
-          v-for="item in model.related"
-          :key="item._id"
-          >{{ item.name }}</router-link
-        >
-      </div>
-    </div>
   </div>
 </template>
 
 <script>
-import dayjs from 'dayjs'
-import { getArticle } from '@/api/home'
+import date from '@/mixins/date'
+import { getArticle } from '@/api/news'
 export default {
-  filters: {
-    date(val) {
-      return dayjs(val).format('YYYY-MM-DD')
-    }
-  },
+  name: 'NewsInformation',
+  mixins: [date],
   props: {
     id: { required: true }
   },
@@ -44,13 +25,9 @@ export default {
   },
   watch: {
     id: 'fetch'
-    // id(){
-    //   this.fetch()
-    // }
   },
   methods: {
     async fetch() {
-      // const res = await this.$http.get(`articles/${this.id}`)
       const res = await getArticle(this.id)
       this.model = res.data
     },

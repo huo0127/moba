@@ -39,7 +39,6 @@ export default {
   data() {
     return {
       userList: [],
-      total: 0,
       dialogFormVisible: false,
       formData: {
         username: '',

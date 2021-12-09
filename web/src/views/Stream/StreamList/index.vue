@@ -31,7 +31,7 @@ import { getStreamList, getGameInformation } from '@/api/stream'
 import StreamTopbar from '@/components/StreamTopbar'
 
 export default {
-  name: 'Stream',
+  name: 'StreamList',
   data() {
     return {
       streamList: [],

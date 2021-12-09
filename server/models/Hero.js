@@ -27,7 +27,9 @@ const schema = new mongoose.Schema({
   skins: [{
     name: { type: String },
     img: { type: String, }
-  }]
+  }],
+
+  spells: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'Spell' }],
 })
 
 module.exports = mongoose.model('Hero', schema, 'heroes')

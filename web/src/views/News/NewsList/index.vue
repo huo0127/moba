@@ -4,7 +4,7 @@
       <template #items="{ category }">
         <router-link
           tag="div"
-          :to="`/articles/${news._id}`"
+          :to="`/news/${news._id}`"
           class="py-2 fs-lg d-flex"
           v-for="(news, i) in category.newsList"
           :key="i"
@@ -20,15 +20,11 @@
 </template>
 
 <script>
-import dayjs from 'dayjs'
-import { getNewsList } from '@/api/home'
+import date from '@/mixins/date'
+import { getNewsList } from '@/api/news'
 export default {
-  name: 'News',
-  filters: {
-    date(val) {
-      return dayjs(val).format('MM/DD')
-    }
-  },
+  name: 'NewsList',
+  mixins: [date],
   data() {
     return {
       newsCats: []
@@ -41,6 +37,14 @@ export default {
   methods: {
     async fetchNewsCats() {
       const res = await getNewsList()
+
+      // 讓日期降序 sort -1
+      for (const key in res.data) {
+        const item = res.data[key].newsList
+        item.sort(function(a, b) {
+          return a.createdAt < b.createdAt ? 1 : -1
+        })
+      }
       this.newsCats = res.data
     }
   }

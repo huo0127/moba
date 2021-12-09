@@ -1,32 +1,39 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Main from '@/views/Main'
-import Home from '@/views/Home/'
-import Article from '@/views/Article'
-import Hero from '@/views/Hero'
-import Stream from '@/views/Stream'
-import Streamer from '@/views/Streamer'
-
 Vue.use(Router)
 
 export default new Router({
   routes: [
     {
       path: '/',
-      component: Main,
+      component: () => import('@/views/Layout'),
       children: [
-        { path: '/', name: 'home', component: Home },
-        { path: '/articles/:id', name: 'article', component: Article, props: true },
-        { path: '/heroes/:id', name: 'hero', component: Hero, props: true },
+        { path: '/', component: () => import('@/views/Home') },
+      ],
+    },
+    {
+      path: '/heroes',
+      component: () => import('@/views/Layout'),
+      children: [
+        { path: '/heroes', name: 'HeroList', component: () => import('@/views/Hero/HeroList') },
+        { path: '/heroes/:id', name: 'HeroInfo', component: () => import('@/views/Hero/HeroInfo'), props: true },
+      ],
+    },
+    {
+      path: '/news',
+      component: () => import('@/views/Layout'),
+      children: [
+        { path: '/news', name: 'NewsList', component: () => import('@/views/News/NewsList') },
+        { path: '/news/:id', name: 'NewsInfo', component: () => import('@/views/News/NewsInfo'), props: true },
       ],
     },
     {
       path: '/stream',
-      component: Stream,
+      component: () => import('@/views/Stream/StreamList'),
     },
     {
       path: '/streamer/:streamer_user_name/:id',
-      component: Streamer,
+      component: () => import('@/views/Stream/Streamer'),
       props: true
     }
   ],

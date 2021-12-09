@@ -1,10 +1,10 @@
-import { twitchRequest } from './request'
+import { twitchRequest } from '../utils/request'
 
 export const getStreamList = () => {
   return twitchRequest({
     url: '/streams/',
     params: {
-      first: 20,
+      first: 5,
       game_id: 21779,
     }
   })
@@ -27,7 +27,7 @@ export const getStreamerAvatar = (id) => {
   })
 }
 
-export const getGameInformation = (id) => {
+export const getGameInformation = () => {
   return twitchRequest({
     url: '/games/',
     params: {

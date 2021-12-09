@@ -3,15 +3,29 @@
     <h1>{{ id ? '編輯' : '創建' }}文章</h1>
     <el-form label-width="120px" @submit.native.prevent="save">
       <el-form-item label="所属分類">
-        <el-select v-model="articleList.categories" multiple>
+        <el-select v-model="formData.categories" multiple>
           <el-option v-for="item in categories" :key="item._id" :label="item.name" :value="item._id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="標題">
-        <el-input v-model="articleList.name"></el-input>
+        <el-input v-model="formData.name"></el-input>
       </el-form-item>
+
+      <el-form-item label="圖片">
+        <el-upload
+          class="avatar-uploader"
+          :action="uploadUrl"
+          :headers="getAuthHeaders()"
+          :show-file-list="false"
+          :on-success="afterUpload"
+        >
+          <img v-if="formData.iconPath" :src="formData.iconPath" class="avatar" />
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload>
+      </el-form-item>
+
       <el-form-item label="詳情">
-        <vue-editor v-model="articleList.body" useCustomImageHandler @imageAdded="handleImageAdded"></vue-editor>
+        <vue-editor v-model="formData.body" useCustomImageHandler @imageAdded="handleImageAdded"></vue-editor>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" native-type="submit">保存</el-button>
@@ -35,7 +49,7 @@ export default {
   mixins: [upload],
   data() {
     return {
-      articleList: {},
+      formData: {},
       categories: []
     }
   },
@@ -50,9 +64,9 @@ export default {
     async save() {
       let res
       if (this.id) {
-        res = await updateArticle(this.id, this.articleList)
+        res = await updateArticle(this.id, this.formData)
       } else {
-        res = await createArticle(this.articleList)
+        res = await createArticle(this.formData)
       }
       this.$router.push('/operate/article/list')
       this.$message({
@@ -62,12 +76,16 @@ export default {
     },
     async getArticle() {
       const res = await getArticle(this.id)
-      this.articleList = res.data
+      this.formData = res.data
     },
     async getCateList() {
       const res = await getCateList()
       const data = res.data.find(item => item.name === '新聞資訊')
       this.categories = data.children
+    },
+    afterUpload(res) {
+      this.$set(this.formData, 'iconPath', res.data.url)
+      // this.formData.icon = res.url
     }
   },
   created() {

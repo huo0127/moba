@@ -2,7 +2,7 @@
   <div>
     <m-list-card icon="card-hero" title="英雄列表" :categories="heroCats">
       <template #items="{ category }">
-        <div class="d-flex flex-wrap" style="margin: 0 -0.5rem">
+        <div class="d-flex flex-wrap" style="margin: 0 -0.5rem; z-index: 10">
           <router-link
             tag="div"
             :to="`/heroes/${hero._id}`"
@@ -11,7 +11,7 @@
             v-for="(hero, i) in category.heroList"
             :key="i"
           >
-            <img :src="hero.avatar" class="w-100" style="border: 1px solid #000" />
+            <img :src="hero.avatar" class="w-100" style="border: 2px solid #000" />
             <div>{{ hero.name }}</div>
           </router-link>
         </div>
@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { getHeroList } from '@/api/home'
+import { getHeroList } from '@/api/hero'
 export default {
   name: 'Hero',
   data() {

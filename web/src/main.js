@@ -11,11 +11,13 @@ import VueAwesomeSwiper from 'vue-awesome-swiper'
 import 'swiper/css/swiper.css'
 Vue.use(VueAwesomeSwiper /* { default global options } */)
 
-import Card from './components/Card.vue'
+import Card from './components/Card'
 Vue.component('m-card', Card)
 
-import ListCard from './components/ListCard.vue'
+import ListCard from './components/ListCard'
 Vue.component('m-list-card', ListCard)
+
+
 
 new Vue({
   router,
