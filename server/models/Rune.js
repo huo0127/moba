@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const schema = new mongoose.Schema({
-  id: { type: Number, required: true },
+  id: { type: Number },
   name: { type: String, required: true },
   icon: { type: String, default: '' },
   key: { type: String, default: '' },

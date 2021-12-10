@@ -11,12 +11,12 @@
           </template>
         </el-table-column>
         <el-table-column label="操作" width="width">
-          <template slot-scope="{ scope, row }">
+          <template slot-scope="scope">
             <HintButton
               title="編輯"
               type="warning"
               icon="el-icon-edit"
-              @click="$router.push(`/goods/rune/edit/${row._id}`)"
+              @click="$router.push(`/goods/rune/edit/${scope.row._id}`)"
             ></HintButton>
             <HintButton title="刪除" type="danger" icon="el-icon-delete" @click="remove(scope.row)"></HintButton>
           </template>
@@ -28,7 +28,7 @@
 
 <script>
 import upload from '@/mixins/upload'
-import { getRuneList } from '@/api/rune'
+import { getRuneList, deleteRune } from '@/api/rune'
 export default {
   name: 'RuneList',
   data() {
@@ -56,10 +56,10 @@ export default {
       })
         .then(async() => {
           try {
-            await deleteSpell(row._id)
+            await deleteRune(row._id)
             // 1、刪除成功後提示
             this.$message.success('刪除成功!')
-            this.getSpellList()
+            this.fetchRuneList()
           } catch (error) {
             this.$message.error('刪除失敗')
           }

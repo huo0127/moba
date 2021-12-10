@@ -130,13 +130,6 @@ export const constantRoutes = [
         meta: { title: '編輯裝備' },
         hidden: true
       },
-
-      {
-        path: 'rune/create',
-        name: 'runeCreate',
-        component: () => import('@/views/goods/rune/runeEdit/index.vue'),
-        meta: { title: '創建天賦符文', }
-      },
       {
         path: 'rune/list',
         name: 'runeList',

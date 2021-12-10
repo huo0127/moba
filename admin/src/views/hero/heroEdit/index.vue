@@ -215,7 +215,8 @@ export default {
         avatar: '',
         skills: [],
         counters: [],
-        spells: []
+        spells: [],
+        skins: []
       }
     }
   },
