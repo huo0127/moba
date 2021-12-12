@@ -22,10 +22,10 @@
 
     <el-dialog :title="formData._id ? '編輯召喚師技能' : '創建召喚師技能'" :visible.sync="dialogFormVisible">
       <el-form ref="formData" :model="formData">
-        <el-form-item label="召喚師技能" prop="username">
+        <el-form-item label="召喚師技能">
           <el-input v-model="formData.name" autocomplete="off" />
         </el-form-item>
-        <el-form-item label="描述" prop="username">
+        <el-form-item label="描述">
           <el-input v-model="formData.description" autocomplete="off" type="textarea" />
         </el-form-item>
         <el-form-item label="圖標">

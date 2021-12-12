@@ -177,9 +177,140 @@
               <el-option v-for="item of spellList" :key="item._id" :label="item.name" :value="item._id"></el-option>
             </el-select>
           </el-form-item>
-          <RuneList></RuneList>
+        </el-tab-pane>
+
+        <el-tab-pane label="天賦符文" name="runes">
+          <el-row :gutter="20">
+            <el-col :span="8">
+              <el-card>
+                <span>主符文</span>
+                <el-form-item label="主符文">
+                  <el-select v-model="model.primary_rune.rune" @change="handle_get_runes">
+                    <el-option
+                      v-for="rune of primaryRuneList"
+                      :key="rune._id"
+                      :label="rune.name"
+                      :value="rune._id"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="第一層符文">
+                  <el-select v-model="model.primary_rune.rune_first">
+                    <el-option
+                      v-for="rune of relatedRuneList"
+                      :key="rune._id"
+                      :label="rune.name"
+                      :value="rune._id"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="第二層符文">
+                  <el-select v-model="model.primary_rune.rune_second">
+                    <el-option
+                      v-for="rune of relatedRuneList"
+                      :key="rune._id"
+                      :label="rune.name"
+                      :value="rune._id"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="第三層符文">
+                  <el-select v-model="model.primary_rune.rune_third">
+                    <el-option
+                      v-for="rune of relatedRuneList"
+                      :key="rune._id"
+                      :label="rune.name"
+                      :value="rune._id"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="第四層符文">
+                  <el-select v-model="model.primary_rune.rune_fourth">
+                    <el-option
+                      v-for="rune of relatedRuneList"
+                      :key="rune._id"
+                      :label="rune.name"
+                      :value="rune._id"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-card>
+            </el-col>
+            <el-col :span="8">
+              <el-card>
+                <span>副符文</span>
+                <el-form-item label="副符文">
+                  <el-select v-model="model.secondary_rune.rune" @change="handle_get_runes">
+                    <el-option
+                      v-for="rune of primaryRuneList"
+                      :key="rune._id"
+                      :label="rune.name"
+                      :value="rune._id"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="第一層符文">
+                  <el-select v-model="model.secondary_rune.rune_first">
+                    <el-option
+                      v-for="rune of relatedRuneList"
+                      :key="rune._id"
+                      :label="rune.name"
+                      :value="rune._id"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="第二層符文">
+                  <el-select v-model="model.secondary_rune.rune_second">
+                    <el-option
+                      v-for="rune of relatedRuneList"
+                      :key="rune._id"
+                      :label="rune.name"
+                      :value="rune._id"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-card>
+            </el-col>
+            <el-col :span="8">
+              <el-card>
+                <span>小符文</span>
+
+                <el-form-item label="第一層符文">
+                  <el-select v-model="model.little_rune.rune_first">
+                    <el-option
+                      v-for="rune of primaryRuneList"
+                      :key="rune._id"
+                      :label="rune.name"
+                      :value="rune._id"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="第二層符文">
+                  <el-select v-model="model.little_rune.rune_second">
+                    <el-option
+                      v-for="rune of primaryRuneList"
+                      :key="rune._id"
+                      :label="rune.name"
+                      :value="rune._id"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="第三層符文">
+                  <el-select v-model="model.little_rune.rune_third">
+                    <el-option
+                      v-for="rune of primaryRuneList"
+                      :key="rune._id"
+                      :label="rune.name"
+                      :value="rune._id"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-card>
+            </el-col>
+          </el-row>
         </el-tab-pane>
       </el-tabs>
+
       <el-form-item style="margin-top: 1rem">
         <el-button type="primary" native-type="submit">保存</el-button>
       </el-form-item>
@@ -192,7 +323,7 @@ import { updateHero, createHero, getHero, getHeroList } from '@/api/hero'
 import { getItemList } from '@/api/item'
 import { getCateList } from '@/api/category'
 import { getSpellList } from '@/api/spell'
-import RuneList from './components/RuneList'
+import { get_primary_rune, get_related_rune } from '@/api/rune'
 import upload from '@/mixins/upload'
 
 export default {
@@ -202,13 +333,15 @@ export default {
   },
 
   mixins: [upload],
-  components: { RuneList },
+
   data() {
     return {
       heroCateList: null,
       itemList: [],
       heroes: [],
       spellList: [],
+      primaryRuneList: [],
+      relatedRuneList: [],
       // 英雄訊息
       model: {
         name: '',
@@ -216,13 +349,34 @@ export default {
         skills: [],
         counters: [],
         spells: [],
-        skins: []
+        skins: [],
+
+        primary_rune: {
+          rune: '',
+          rune_first: '',
+          rune_second: '',
+          rune_third: '',
+          rune_fourth: ''
+        },
+
+        secondary_rune: {
+          rune: '',
+          rune_first: '',
+          rune_second: ''
+        },
+
+        little_rune: {
+          rune_first: '',
+          rune_second: '',
+          rune_third: ''
+        }
       }
     }
   },
   methods: {
     async save() {
       let res
+
       if (this.id) {
         res = await updateHero(this.id, this.model)
       } else {
@@ -259,13 +413,25 @@ export default {
     async getSpellList() {
       const res = await getSpellList()
       this.spellList = res
+    },
+    async fetch_primary_rune() {
+      const res = await get_primary_rune()
+      this.primaryRuneList = res
+    },
+    async handle_get_runes(runeId) {
+      if (runeId) {
+        const res = await get_related_rune(runeId)
+        this.relatedRuneList = res
+      }
     }
   },
+
   created() {
     this.getItemList()
     this.getCateList()
     this.getHeroList()
     this.getSpellList()
+    this.fetch_primary_rune()
     this.id && this.getHero()
   }
 }

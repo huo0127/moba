@@ -30,6 +30,27 @@ const schema = new mongoose.Schema({
   }],
 
   spells: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'Spell' }],
+
+  primary_rune: {
+    rune: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
+    rune_first: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
+    rune_second: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
+    rune_third: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
+    rune_fourth: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' }
+  },
+
+  secondary_rune: {
+    rune: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
+    rune_first: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
+    rune_second: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
+  },
+
+  little_rune: {
+    rune_first: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
+    rune_second: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
+    rune_third: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
+  }
+
 })
 
 module.exports = mongoose.model('Hero', schema, 'heroes')

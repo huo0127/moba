@@ -122,28 +122,14 @@ export const constantRoutes = [
         component: () => import('@/views/goods/item/itemList/index.vue'),
         meta: { title: '裝備列表' },
       },
-      {
-        path: 'item/edit/:id',
-        name: 'ItemEdit',
-        component: () => import('@/views/goods/item/itemEdit/index.vue'),
-        props: true,
-        meta: { title: '編輯裝備' },
-        hidden: true
-      },
+
       {
         path: 'rune/list',
         name: 'runeList',
         component: () => import('@/views/goods/rune/runeList/index.vue'),
         meta: { title: '天賦符文列表', }
       },
-      {
-        path: 'rune/edit/:id',
-        name: 'runeEdit',
-        component: () => import('@/views/goods/rune/runeEdit/index.vue'),
-        meta: { title: '編輯天賦符文', },
-        props: true,
-        hidden: true
-      },
+
       {
         path: 'spell/list',
         name: 'AdList',

@@ -77,7 +77,7 @@ module.exports = app => {
 
   // 英雄詳情
   router.get('/heroes/:id', async (req, res) => {
-    const data = await Hero.findById(req.params.id).populate('categories startItems items shoes counters.hero spells').lean()
+    const data = await Hero.findById(req.params.id).populate('categories startItems items shoes counters.hero spells primary_rune.rune primary_rune.rune_first primary_rune.rune_fourth primary_rune.rune_second primary_rune.rune_third secondary_rune.rune secondary_rune.rune_first secondary_rune.rune_second little_rune.rune_first little_rune.rune_second little_rune.rune_third').lean()
     res.send(data)
   })
 

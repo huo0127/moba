@@ -8,6 +8,7 @@ module.exports = app => {
   const Category = require('../../models/Category')
   const Hero = require('../../models/Hero')
   const Item = require('../../models/Item')
+  const Rune = require('../../models/Rune')
 
   const response = require('../../utils/response')
 
@@ -259,6 +260,21 @@ module.exports = app => {
     const sup = await Hero.find().where({ categories: '618e8b7d6eb3165add934589' }).countDocuments()
     const data = [top, jungle, mid, bot, sup]
     response(res, 200, '獲取英雄路線成功', data)
+  })
+
+  // 英雄獲取主符文列表
+  app.get('/admin/api/primary_runes', authMiddleware(), async (req, res) => {
+    const data = await Rune.find().where({ styleName: '' })
+    res.send(data)
+  })
+
+  // 英雄獲取相關符文列表
+  app.get('/admin/api/related_runes/:id', authMiddleware(), async (req, res) => {
+    const item = await Rune.findById(req.params.id)
+    const runeName = item.name
+    const data = await Rune.find({ styleName: runeName })
+    res.send(data)
+
   })
 
   // 錯誤處理函數 處理assert

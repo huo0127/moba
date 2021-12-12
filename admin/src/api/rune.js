@@ -41,3 +41,20 @@ export function getRuneList (params) {
     params
   })
 }
+
+
+// 英雄獲取主符文列表
+export function get_primary_rune (params) {
+  return request({
+    url: 'primary_runes',
+    params
+  })
+}
+
+// 英雄獲取相關符文符文列表
+export function get_related_rune (runeId, data) {
+  return request({
+    url: `related_runes/${runeId}`,
+    data
+  })
+}

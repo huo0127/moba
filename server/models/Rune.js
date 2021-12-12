@@ -1,51 +1,16 @@
 const mongoose = require('mongoose')
 
 const schema = new mongoose.Schema({
-  id: { type: Number },
+  ID: { type: String, default: '' },
   name: { type: String, required: true },
   icon: { type: String, default: '' },
   key: { type: String, default: '' },
-  first_rune: [
-    {
-      id: { type: Number, required: true },
-      name: { type: String, required: true },
-      icon: { type: String, default: '' },
-      key: { type: String, default: '' },
-      longDesc: { type: String, default: '' },
-      shortDesc: { type: String, default: '' },
-    }
-  ],
-  second_rune: [
-    {
-      id: { type: Number, required: true },
-      name: { type: String, required: true },
-      icon: { type: String, default: '' },
-      key: { type: String, default: '' },
-      longDesc: { type: String, default: '' },
-      shortDesc: { type: String, default: '' },
-    }
-  ],
-  third_rune: [
-    {
-      id: { type: Number, required: true },
-      name: { type: String, required: true },
-      icon: { type: String, default: '' },
-      key: { type: String, default: '' },
-      longDesc: { type: String, default: '' },
-      shortDesc: { type: String, default: '' },
-    }
-  ],
-  fourth_rune: [
-    {
-      id: { type: Number, required: true },
-      name: { type: String, required: true },
-      icon: { type: String, default: '' },
-      key: { type: String, default: '' },
-      longDesc: { type: String, default: '' },
-      shortDesc: { type: String, default: '' },
-    }
-  ]
-
+  tooltip: { type: String, default: '' },
+  shortdesc: { type: String, default: '' },
+  longdesc: { type: String, default: '' },
+  slotLabel: { type: String, default: '' },
+  styleName: { type: String, default: '' },
+  categories: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'Category' }],
 })
 
 module.exports = mongoose.model('Rune', schema)

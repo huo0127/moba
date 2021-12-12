@@ -1,6 +1,10 @@
 <template>
   <div>
-    <el-cascader-panel :options="options"></el-cascader-panel>
+    <el-form-item label="天賦符文">
+      <el-select v-model="runeList" multiple filterable>
+        <el-option v-for="rune in runeList" :key="rune._id" :label="rune.name" :value="rune._id"></el-option>
+      </el-select>
+    </el-form-item>
   </div>
 </template>
 
@@ -16,12 +20,7 @@ export default {
   mounted() {
     this.fetchRuneList()
   },
-  methods: {
-    async fetchRuneList() {
-      const res = await getRuneList()
-      this.runeList = res.data
-    }
-  }
+  methods: {}
 }
 </script>
 
