@@ -109,80 +109,18 @@
             </div>
           </div>
         </div>
-        <div class="rune_container">
-          <m-card plain title="推薦符文設置" class="text-center">
-            <div class="talent_container d-flex jc-around ai-end">
-              <div>
-                <div>
-                  <img src="https://game.gtimg.cn/images/lol/act/img/spell/Summoner_flash.png" alt="" />
-                </div>
-                <div>
-                  <img src="https://game.gtimg.cn/images/lol/act/img/spell/Summoner_flash.png" alt="" />
-                  <img src="https://game.gtimg.cn/images/lol/act/img/spell/Summoner_flash.png" alt="" />
-                  <img src="https://game.gtimg.cn/images/lol/act/img/spell/Summoner_flash.png" alt="" />
-                </div>
-                <div>
-                  <img src="https://game.gtimg.cn/images/lol/act/img/spell/Summoner_flash.png" alt="" />
-                  <img src="https://game.gtimg.cn/images/lol/act/img/spell/Summoner_flash.png" alt="" />
-                  <img src="https://game.gtimg.cn/images/lol/act/img/spell/Summoner_flash.png" alt="" />
-                </div>
-                <div>
-                  <img src="https://game.gtimg.cn/images/lol/act/img/spell/Summoner_flash.png" alt="" />
-                  <img src="https://game.gtimg.cn/images/lol/act/img/spell/Summoner_flash.png" alt="" />
-                  <img src="https://game.gtimg.cn/images/lol/act/img/spell/Summoner_flash.png" alt="" />
-                </div>
-                <div>
-                  <img src="https://game.gtimg.cn/images/lol/act/img/spell/Summoner_flash.png" alt="" />
-                  <img src="https://game.gtimg.cn/images/lol/act/img/spell/Summoner_flash.png" alt="" />
-                  <img src="https://game.gtimg.cn/images/lol/act/img/spell/Summoner_flash.png" alt="" />
-                </div>
-              </div>
-              <div>
-                <div>
-                  <img src="https://game.gtimg.cn/images/lol/act/img/spell/Summoner_flash.png" alt="" />
-                </div>
-                <div>
-                  <img src="https://game.gtimg.cn/images/lol/act/img/spell/Summoner_flash.png" alt="" />
-                  <img src="https://game.gtimg.cn/images/lol/act/img/spell/Summoner_flash.png" alt="" />
-                  <img src="https://game.gtimg.cn/images/lol/act/img/spell/Summoner_flash.png" alt="" />
-                </div>
-                <div>
-                  <img src="https://game.gtimg.cn/images/lol/act/img/spell/Summoner_flash.png" alt="" />
-                  <img src="https://game.gtimg.cn/images/lol/act/img/spell/Summoner_flash.png" alt="" />
-                  <img src="https://game.gtimg.cn/images/lol/act/img/spell/Summoner_flash.png" alt="" />
-                </div>
-                <div>
-                  <img
-                    src="https://opgg-static.akamaized.net/images/lol/perk/8401.png?image=q_auto:best&v=1637122822"
-                    alt=""
-                  />
-                  <img
-                    src="https://opgg-static.akamaized.net/images/lol/perk/8401.png?image=q_auto:best&v=1637122822"
-                    alt=""
-                  />
-                  <img
-                    src="https://opgg-static.akamaized.net/images/lol/perk/8401.png?image=q_auto:best&v=1637122822"
-                    alt=""
-                  />
-                </div>
-              </div>
-              <div class="small_rune flex-column d-flex ai-center pb-2">
-                <img src="https://game.gtimg.cn/images/lol/act/img/spell/Summoner_flash.png" alt="" />
-                <img src="https://game.gtimg.cn/images/lol/act/img/spell/Summoner_flash.png" alt="" />
-                <img src="https://game.gtimg.cn/images/lol/act/img/spell/Summoner_flash.png" alt="" />
-              </div>
-            </div>
-          </m-card>
-        </div>
+        <Runes :model="model"></Runes>
       </swiper-slide>
     </swiper>
   </div>
 </template>
 
 <script>
+import Runes from '../Runes'
 export default {
   name: 'HeroInfoSwiper',
   props: ['model'],
+  components: { Runes },
   data() {
     return {
       currentSkillIndex: 0,
@@ -233,28 +171,6 @@ export default {
 .counter_hero_container {
   img {
     border-radius: 50%;
-  }
-}
-
-.rune_container {
-  .talent_container {
-    border-top: 1px solid map-get($colors, 'light-1');
-    padding-top: 1rem;
-    img {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      margin-right: 1.2rem;
-      margin-bottom: 0.4rem;
-    }
-  }
-  .small_rune {
-    img {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      margin-bottom: 0.5rem;
-    }
   }
 }
 </style>

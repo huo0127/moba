@@ -6,6 +6,9 @@ module.exports = app => {
   const Article = mongoose.model('Article')
   const Hero = mongoose.model('Hero')
   const Ad = mongoose.model('Ad')
+  const Rune = mongoose.model('Rune')
+
+  const response = require('../../utils/response')
 
   // 新聞列表
   router.get('/news/list', async (req, res) => {
@@ -77,9 +80,39 @@ module.exports = app => {
 
   // 英雄詳情
   router.get('/heroes/:id', async (req, res) => {
+
     const data = await Hero.findById(req.params.id).populate('categories startItems items shoes counters.hero spells primary_rune.rune primary_rune.rune_first primary_rune.rune_fourth primary_rune.rune_second primary_rune.rune_third secondary_rune.rune secondary_rune.rune_first secondary_rune.rune_second little_rune.rune_first little_rune.rune_second little_rune.rune_third').lean()
-    res.send(data)
+    response(res, 200, '獲取英雄數據成功', {
+      data
+    })
   })
+
+  // 根據英雄ID獲取相對應符文
+  router.get('/runes', async (req, res) => {
+    const { mainRune, runeFirstId, runeSecondId, runeThirdId, runeFourthId } = req.query
+    const mainRuneName = await Rune.findById(mainRune)
+    const firstRuneName = await Rune.findById(runeFirstId)
+    const secondRuneName = await Rune.findById(runeSecondId)
+    const thirdRuneName = await Rune.findById(runeThirdId)
+    const fourthRuneName = await Rune.findById(runeFourthId)
+
+    const item = await Rune.find().where({ slotLabel: firstRuneName.slotLabel })
+    const firstRune = item.filter(rune => rune.styleName === mainRuneName.name)
+
+    const secondRune = await Rune.find().where({ slotLabel: secondRuneName.slotLabel })
+    const thirdRune = await Rune.find().where({ slotLabel: thirdRuneName.slotLabel })
+    const fourthRune = await Rune.find().where({ slotLabel: fourthRuneName.slotLabel })
+
+    response(res, 200, '獲取對應符文成功', {
+      firstRune,
+      secondRune,
+      thirdRune,
+      fourthRune
+    })
+
+
+  })
+
 
   // 輪播圖
   router.get('/ads', async (req, res) => {
@@ -92,6 +125,8 @@ module.exports = app => {
     const data = await Article.find().sort({ 'createdAt': -1 }).where({ categories: '5e96ad076ca45218e8000fc0' }).limit(5)
     res.send(data)
   })
+
+
 
 
   app.use('/web/api', router)

@@ -310,7 +310,6 @@
           </el-row>
         </el-tab-pane>
       </el-tabs>
-
       <el-form-item style="margin-top: 1rem">
         <el-button type="primary" native-type="submit">保存</el-button>
       </el-form-item>
@@ -344,6 +343,7 @@ export default {
       relatedRuneList: [],
       // 英雄訊息
       model: {
+        testVal: '',
         name: '',
         avatar: '',
         skills: [],

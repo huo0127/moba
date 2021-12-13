@@ -35,7 +35,7 @@ export default {
     async fetch() {
       // const res = await this.$http.get(`heroes/${this.id}`)
       const res = await getHero(this.id)
-      this.model = res.data
+      this.model = res.data.data.data
     }
   }
 }
