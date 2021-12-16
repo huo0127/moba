@@ -89,28 +89,45 @@ module.exports = app => {
 
   // 根據英雄ID獲取相對應符文
   router.get('/runes', async (req, res) => {
-    const { mainRune, runeFirstId, runeSecondId, runeThirdId, runeFourthId } = req.query
-    const mainRuneName = await Rune.findById(mainRune)
+    const { mainRuneId, runeFirstId, runeSecondId, runeThirdId, runeFourthId, SecondRuneId } = req.query
+
+    const mainRuneName = await Rune.findById(mainRuneId)
     const firstRuneName = await Rune.findById(runeFirstId)
     const secondRuneName = await Rune.findById(runeSecondId)
     const thirdRuneName = await Rune.findById(runeThirdId)
     const fourthRuneName = await Rune.findById(runeFourthId)
 
     const item = await Rune.find().where({ slotLabel: firstRuneName.slotLabel })
+    // 找出基石中與主符文相符合的名稱
     const firstRune = item.filter(rune => rune.styleName === mainRuneName.name)
 
     const secondRune = await Rune.find().where({ slotLabel: secondRuneName.slotLabel })
     const thirdRune = await Rune.find().where({ slotLabel: thirdRuneName.slotLabel })
     const fourthRune = await Rune.find().where({ slotLabel: fourthRuneName.slotLabel })
 
+    // 副系   主宰 巫術 啟迪 精密
+    // 第一層 預謀 寶物 巧具 英武
+    // 第二層 追蹤 卓越 未來 傳說
+    // 第三層 狩獵 威能 超越 戰鬥
+
+    // 根據ID找出符雯文
+    const secondaryRuneName = await Rune.findById(SecondRuneId)
+
+    // 找出所有副系有關符文
+    const data = await Rune.find({ styleName: secondaryRuneName.name })
+    let secondary_firstRune = data.filter(rune => rune.slotLabel === '預謀' || rune.slotLabel === '寶物' || rune.slotLabel === '巧具' || rune.slotLabel === '英武')
+    let secondary_secondRune = data.filter(rune => rune.slotLabel === '追蹤' || rune.slotLabel === '卓越' || rune.slotLabel === '未來' || rune.slotLabel === '傳說')
+    let secondary_thirdRune = data.filter(rune => rune.slotLabel === '狩獵' || rune.slotLabel === '威能' || rune.slotLabel === '超越' || rune.slotLabel === '戰鬥')
+
     response(res, 200, '獲取對應符文成功', {
       firstRune,
       secondRune,
       thirdRune,
-      fourthRune
+      fourthRune,
+      secondary_firstRune,
+      secondary_secondRune,
+      secondary_thirdRune
     })
-
-
   })
 
 

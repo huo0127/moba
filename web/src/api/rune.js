@@ -1,21 +1,16 @@
 import { request } from '@/utils/request'
 
-export const getRunes = (mainRune, runeFirstId, runeSecondId, runeThirdId, runeFourthId) => {
+export const getRunes = (mainRuneId, runeFirstId, runeSecondId, runeThirdId, runeFourthId, SecondRuneId) => {
   return request({
     url: '/runes',
     params: {
-      mainRune,
+      mainRuneId,
       runeFirstId,
       runeSecondId,
       runeThirdId,
-      runeFourthId
+      runeFourthId,
+      SecondRuneId,
     }
   })
 }
 
-// export const getRunes = (runeId) => {
-//   return request({
-//     url: '/runes/',
-//     params: { runeId }
-//   })
-// }
