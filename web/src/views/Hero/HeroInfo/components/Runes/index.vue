@@ -1,6 +1,6 @@
 <template>
   <div class="rune_container">
-    <m-card plain title="推薦符文設置" class="text-center">
+    <m-card plain title="推薦符文設置" class="text-center pb-1">
       <div class="talent_container d-flex jc-between ai-end">
         <div class="primaryRuneContainer">
           <div>
@@ -15,22 +15,42 @@
                 :key="rune.ID"
                 style="display: inline-block"
               >
-                <img :src="rune.icon" alt="" :class="{ active: primary_rune.rune_first.ID !== rune.ID }" />
+                <img
+                  :src="rune.icon"
+                  alt=""
+                  :class="{ active: primary_rune.rune_first.ID !== rune.ID }"
+                  :title="rune.shortdesc"
+                />
               </div>
             </div>
             <div class="py-1">
               <div class="px-2" v-for="rune in secondRune" :key="rune.ID" style="display: inline-block">
-                <img :src="rune.icon" alt="" :class="{ active: primary_rune.rune_second.ID !== rune.ID }" />
+                <img
+                  :src="rune.icon"
+                  alt=""
+                  :class="{ active: primary_rune.rune_second.ID !== rune.ID }"
+                  :title="rune.shortdesc"
+                />
               </div>
             </div>
             <div class="py-1">
               <div class="px-2" v-for="rune in thirdRune" :key="rune.ID" style="display: inline-block">
-                <img :src="rune.icon" alt="" :class="{ active: primary_rune.rune_third.ID !== rune.ID }" />
+                <img
+                  :src="rune.icon"
+                  alt=""
+                  :class="{ active: primary_rune.rune_third.ID !== rune.ID }"
+                  :title="rune.shortdesc"
+                />
               </div>
             </div>
             <div class="py-1">
               <div class="px-2" v-for="rune in fourthRune" :key="rune.ID" style="display: inline-block">
-                <img :src="rune.icon" alt="" :class="{ active: primary_rune.rune_fourth.ID !== rune.ID }" />
+                <img
+                  :src="rune.icon"
+                  alt=""
+                  :class="{ active: primary_rune.rune_fourth.ID !== rune.ID }"
+                  :title="rune.shortdesc"
+                />
               </div>
             </div>
           </div>
@@ -54,6 +74,7 @@
                   :class="{
                     active: secondary_rune.rune_first.ID !== rune.ID && secondary_rune.rune_second.ID !== rune.ID
                   }"
+                  :title="rune.shortdesc"
                 />
               </div>
             </div>
@@ -70,6 +91,7 @@
                   :class="{
                     active: secondary_rune.rune_first.ID !== rune.ID && secondary_rune.rune_second.ID !== rune.ID
                   }"
+                  :title="rune.shortdesc"
                 />
               </div>
             </div>
@@ -87,6 +109,7 @@
                   :class="{
                     active: secondary_rune.rune_first.ID !== rune.ID && secondary_rune.rune_second.ID !== rune.ID
                   }"
+                  :title="rune.shortdesc"
                 />
               </div>
             </div>

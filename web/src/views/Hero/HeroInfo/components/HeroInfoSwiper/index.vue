@@ -13,7 +13,11 @@
         </div>
       </div>
     </div>
-    <swiper ref="heroInfoSwiper" @slide-change="() => (active = $refs.heroInfoSwiper.$swiper.realIndex)">
+    <swiper
+      :options="options"
+      ref="heroInfoSwiper"
+      @slide-change="() => (active = $refs.heroInfoSwiper.$swiper.realIndex)"
+    >
       <swiper-slide>
         <div>
           <div class="pt-2 px-3 bg-white">
@@ -55,7 +59,12 @@
                 <!-- swiper2 Thumbs -->
                 <swiper class="swiper gallery-thumbs" :options="swiperOptionThumbs" ref="swiperThumbs">
                   <swiper-slide v-for="(skin, i) in model.skins" :key="i">
-                    <img class="w-100" style="" :src="skin.img" alt="" />
+                    <div class="skinItem">
+                      <img class="w-100" :src="skin.img" alt="" />
+                      <div class="skinNameContainer">
+                        <span class="skinName">{{ skin.name }}</span>
+                      </div>
+                    </div>
                   </swiper-slide>
                 </swiper>
               </div>
@@ -64,34 +73,34 @@
         </div>
       </swiper-slide>
       <swiper-slide>
-        <div class="strategy_conatiner d-flex jc-around">
+        <div class="strategy_conatiner d-flex jc-around ai-center">
           <div class="item_container">
             <m-card plain title="出裝" class="hero-items">
               <div class="fs-xl">起手</div>
-              <div class="d-flex jc-start mt-2">
-                <div class="mr-1 mb-1" v-for="item in model.startItems" :key="item.name">
+              <div class="d-flex jc-start">
+                <div class="px-1 py-1" v-for="item in model.startItems" :key="item.name">
                   <img :src="item.iconPath" class="icon" />
                 </div>
               </div>
               <div class="fs-xl">推薦</div>
-              <div class="d-flex jc-start mt-2">
-                <div class="mr-1 mb-1" v-for="item in model.items" :key="item.name">
+              <div class="d-flex jc-start">
+                <div class="px-1 py-1" v-for="item in model.items" :key="item.name">
                   <img :src="item.iconPath" class="icon" />
                 </div>
               </div>
               <div class="fs-xl">鞋子</div>
-              <div class="d-flex jc-start mt-2">
-                <div class="mr-1 mb-1" v-for="item in model.shoes" :key="item.name">
+              <div class="d-flex jc-start">
+                <div class="px-1 py-1" v-for="item in model.shoes" :key="item.name">
                   <img :src="item.iconPath" class="icon" />
                 </div>
               </div>
             </m-card>
           </div>
-          <div class="pt-4">
+          <div>
             <div class="counter_hero_container">
               <m-card plain title="難以對抗英雄">
                 <div class="d-flex jc-around">
-                  <div v-for="item in model.counters" :key="item.name">
+                  <div v-for="item in model.counters" :key="item.name" class="px-2">
                     <img :src="item.hero.avatar" alt="" />
                   </div>
                   <div class="clear"></div>
@@ -101,8 +110,18 @@
             <div class="spell_container">
               <m-card plain title="召喚師技能">
                 <div class="d-flex jc-center">
-                  <div v-for="item in model.spells" :key="item.name">
-                    <img class="mr-3" :src="item.icon" alt="" />
+                  <div v-for="item in model.spells" :key="item.name" class="px-2">
+                    <img :src="item.icon" alt="" />
+                  </div>
+                </div>
+              </m-card>
+            </div>
+            <div class="skill_order_container">
+              <m-card plain title="技能加點順序">
+                <div class="d-flex jc-between">
+                  <div v-for="item in skillsOrder" :key="item.name" class="skill_order_img_container">
+                    <img :src="item.icon" alt="" />
+                    <span class="key text-white fs-lg">{{ item.keyName }}</span>
                   </div>
                 </div>
               </m-card>
@@ -123,17 +142,19 @@ export default {
   components: { Runes },
   data() {
     return {
-      currentSkillIndex: 0,
       active: 0,
+      currentSkillIndex: 0,
       swiperBar: [{ title: '認識英雄' }, { title: '進階攻略' }],
 
+      options: {
+        autoHeight: true
+      },
+
       swiperOptionTop: {
-        loop: true,
         loopedSlides: 5, // looped slides should be the same
         spaceBetween: 10
       },
       swiperOptionThumbs: {
-        loop: true, // 是否可回圈
         loopedSlides: 5, // looped slides should be the same
         spaceBetween: 10, // 縮略圖之間的間隙大小
         centeredSlides: true, // 大圖對應的縮略圖位置顯示在中間
@@ -155,6 +176,11 @@ export default {
   computed: {
     currentSkill() {
       return this.model.skills[this.currentSkillIndex]
+    },
+
+    // 技能加點順序
+    skillsOrder() {
+      return this.model.skills.filter(item => item.skillOrder).sort((a, b) => a.skillOrder - b.skillOrder)
     }
   }
 }
@@ -171,6 +197,25 @@ export default {
 .counter_hero_container {
   img {
     border-radius: 50%;
+  }
+}
+.skill_order_container {
+  .skill_order_img_container {
+    position: relative;
+
+    .key {
+      position: absolute;
+      right: 0;
+      bottom: 0.3rem;
+      background-color: #000;
+      color: #fff;
+      text-align: center;
+      width: 13px;
+      height: 13px;
+      line-height: 13px;
+      font-weight: 300;
+      font-size: 12px;
+    }
   }
 }
 </style>

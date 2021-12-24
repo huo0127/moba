@@ -73,16 +73,19 @@
         </el-tab-pane>
         <!-- 技能管理 -->
         <el-tab-pane label="技能管理" name="skills">
-          <!-- <el-button size="small" type="primary" @click="model.skills.push({})">
-            <i class="el-icon-plus"></i> 創建技能
-          </el-button> -->
           <HintButton title="創建技能" type="primary" icon="el-icon-plus" @click="model.skills.push({})"></HintButton>
 
           <el-row :gutter="20" type="flex" style="flex-wrap: wrap">
             <el-col :span="12" v-for="(item, i) in model.skills" :key="i">
               <el-card>
+                <el-form-item label="按鍵名稱">
+                  <el-input v-model="item.keyName"></el-input>
+                </el-form-item>
                 <el-form-item label="名稱">
                   <el-input v-model="item.name"></el-input>
+                </el-form-item>
+                <el-form-item label="加點順序">
+                  <el-input v-model="item.skillOrder"></el-input>
                 </el-form-item>
                 <el-form-item label="圖標">
                   <el-upload
@@ -343,7 +346,6 @@ export default {
       relatedRuneList: [],
       // 英雄訊息
       model: {
-        testVal: '',
         name: '',
         avatar: '',
         skills: [],

@@ -9,6 +9,8 @@ const schema = new mongoose.Schema({
   skills: [{
     icon: { type: String },
     name: { type: String },
+    keyName: { type: String },
+    skillOrder: { type: Number },
     delay: { type: String },
     cost: { type: String },
     range: { type: String },
@@ -49,7 +51,9 @@ const schema = new mongoose.Schema({
     rune_first: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
     rune_second: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
     rune_third: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
-  }
+  },
+
+
 
 })
 

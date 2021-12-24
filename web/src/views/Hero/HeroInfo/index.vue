@@ -4,9 +4,6 @@
       <div class="info text-white p-3 h-100 d-flex flex-column jc-end">
         <h2 class="my-2">{{ model.name }}</h2>
         <div class="fs-sm">{{ model.categories.map((v) => v.name).join(' / ') }}</div>
-        <div class="d-flex jc-between pt-2">
-          <router-link to="/" tag="span" class="text-grey fs-sm">造型: {{ model.skins.length }} &gt;</router-link>
-        </div>
       </div>
     </div>
     <HeroInfoSwiper :model="model"></HeroInfoSwiper>
@@ -93,6 +90,16 @@ export default {
       text-align: center;
       font-size: 20px;
       font-style: italic;
+    }
+    .skinNameContainer {
+      text-align: center;
+      margin-top: 0.2rem;
+      margin-bottom: 0.5rem;
+      .skinName {
+        width: 0.5rem;
+        font-size: 14px;
+        font-weight: 600;
+      }
     }
   }
 }
