@@ -353,25 +353,11 @@ export default {
         spells: [],
         skins: [],
 
-        primary_rune: {
-          rune: '',
-          rune_first: '',
-          rune_second: '',
-          rune_third: '',
-          rune_fourth: ''
-        },
+        primary_rune: {},
 
-        secondary_rune: {
-          rune: '',
-          rune_first: '',
-          rune_second: ''
-        },
+        secondary_rune: {},
 
-        little_rune: {
-          rune_first: '',
-          rune_second: '',
-          rune_third: ''
-        }
+        little_rune: {}
       }
     }
   },
@@ -392,7 +378,7 @@ export default {
     },
     async getHero() {
       const res = await getHero(this.id)
-      this.model = Object.assign({}, this.model, res.data)
+      this.model = Object.assign({}, this.model, res.data.data)
     },
 
     async getCateList() {

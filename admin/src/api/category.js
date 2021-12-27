@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 新建
 export function createCate (data) {
   return request({
-    url: '/rest/categories',
+    url: '/categories',
     method: 'post',
     data
   })
@@ -12,14 +12,14 @@ export function createCate (data) {
 // 查詢
 export function getCate (cateId) {
   return request({
-    url: `/rest/categories/${cateId}`
+    url: `/categories/${cateId}`
   })
 }
 
 // 編輯
 export function updateCate (cateId, data) {
   return request({
-    url: `/rest/categories/${cateId}`,
+    url: `/categories/${cateId}`,
     method: 'put',
     data
   })
@@ -28,7 +28,7 @@ export function updateCate (cateId, data) {
 // 刪除
 export function deleteCate (cateId) {
   return request({
-    url: `/rest/categories/${cateId}`,
+    url: `/categories/${cateId}`,
     method: 'delete'
   })
 }
@@ -37,7 +37,7 @@ export function deleteCate (cateId) {
 // 獲取列表
 export function getCateList (params) {
   return request({
-    url: `/rest/categories`,
+    url: `/categories`,
     params
   })
 }

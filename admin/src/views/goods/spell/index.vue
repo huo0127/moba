@@ -68,7 +68,7 @@ export default {
   methods: {
     async getSpellList() {
       const res = await getSpellList()
-      this.spellList = res
+      this.spellList = res.data.data
     },
 
     showAddDialog() {

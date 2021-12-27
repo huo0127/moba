@@ -117,6 +117,15 @@ export const constantRoutes = [
         meta: { title: '創建裝備' }
       },
       {
+        path: 'item/edit/:id',
+        name: 'ItemEdit',
+        component: () => import('@/views/goods/item/itemEdit/index.vue'),
+        meta: { title: '編輯裝備' },
+        props: true,
+        hidden: true
+
+      },
+      {
         path: 'item/list',
         name: 'ItemList',
         component: () => import('@/views/goods/item/itemList/index.vue'),

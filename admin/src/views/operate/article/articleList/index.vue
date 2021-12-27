@@ -79,7 +79,7 @@ export default {
 
       total: 0,
       articleQuery: '',
-      createAt: ''
+      createdAt: ''
     }
   },
 

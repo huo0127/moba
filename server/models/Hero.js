@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const schema = new mongoose.Schema({
-  name: { type: String },
+  name: { type: String, require: true },
   avatar: { type: String },
   banner: { type: String },
   categories: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'Category' }],
@@ -52,9 +52,6 @@ const schema = new mongoose.Schema({
     rune_second: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
     rune_third: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
   },
-
-
-
 })
 
 module.exports = mongoose.model('Hero', schema, 'heroes')

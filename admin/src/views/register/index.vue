@@ -32,7 +32,7 @@ export default {
   data() {
     const validatePass = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('请输入密码'))
+        callback(new Error('請輸入密碼'))
       } else {
         if (this.ruleForm.password !== '') {
           this.$refs.ruleForm.validateField('checkPassword')
@@ -60,7 +60,10 @@ export default {
           { required: true, message: '請輸入用戶名', trigger: 'blur' },
           { min: 5, max: 10, message: '長度必須在 5 到 10 個字符' }
         ],
-        password: [{ validator: validatePass, trigger: 'blur' }],
+        password: [
+          { min: 6, max: 20, message: '長度必須在 6 到 20 個英文字母與數字' },
+          { validator: validatePass, trigger: 'blur' }
+        ],
         checkPassword: [{ validator: validatePass2, trigger: 'blur' }]
       }
     }
@@ -68,9 +71,11 @@ export default {
   methods: {
     submitForm() {
       this.$refs.ruleForm.validate(async valid => {
-        await register(this.ruleForm)
-        this.$message.success('註冊成功，前往登入頁面')
-        this.$router.push('/login')
+        try {
+          await register(this.ruleForm)
+          this.$message.success('註冊成功，前往登入頁面')
+          this.$router.push('/login')
+        } catch (err) {}
       })
     },
     resetForm() {

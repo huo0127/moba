@@ -61,7 +61,7 @@ export default {
     },
     async getItem() {
       const res = await getItem(this.id)
-      this.formData = res.data
+      this.formData = res.data.data
     }
   },
   created() {

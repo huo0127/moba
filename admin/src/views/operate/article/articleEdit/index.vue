@@ -76,7 +76,7 @@ export default {
     },
     async getArticle() {
       const res = await getArticle(this.id)
-      this.formData = res.data
+      this.formData = res.data.data
     },
     async getCateList() {
       const res = await getCateList()
