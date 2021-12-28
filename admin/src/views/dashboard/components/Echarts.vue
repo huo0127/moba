@@ -28,7 +28,7 @@ export default {
   methods: {
     async fetchEcharts() {
       const res = await hero_lane()
-      this.echartsData = res
+      this.echartsData = res.data
     },
     drawEcharts() {
       // 準備好的dom，初始化echarts

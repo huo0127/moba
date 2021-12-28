@@ -7,7 +7,7 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">廣告</div>
-          <count-to :start-val="0" :end-val="total.ads" :duration="3000" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="total.ad" :duration="3000" class="card-panel-num" />
         </div>
       </div>
     </el-col>
@@ -55,6 +55,28 @@
         </div>
       </div>
     </el-col>
+    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+      <div class="card-panel" @click="handleSetLineChartData('shoppings')">
+        <div class="card-panel-icon-wrapper icon-goods">
+          <svg-icon icon-class="goods" class-name="card-panel-icon" />
+        </div>
+        <div class="card-panel-description">
+          <div class="card-panel-text">天賦符文</div>
+          <count-to :start-val="0" :end-val="total.rune" :duration="3600" class="card-panel-num" />
+        </div>
+      </div>
+    </el-col>
+    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+      <div class="card-panel" @click="handleSetLineChartData('shoppings')">
+        <div class="card-panel-icon-wrapper icon-goods">
+          <svg-icon icon-class="goods" class-name="card-panel-icon" />
+        </div>
+        <div class="card-panel-description">
+          <div class="card-panel-text">招喚師技能</div>
+          <count-to :start-val="0" :end-val="total.spell" :duration="3600" class="card-panel-num" />
+        </div>
+      </div>
+    </el-col>
   </el-row>
 </template>
 
@@ -82,7 +104,7 @@ export default {
   methods: {
     async totalCount() {
       const res = await totalCount()
-      const item = res
+      const item = res.data
       // :end-val必須是Number，後端傳過來的是json格式，所以必須轉換一下
       for (const key in item) {
         this.total = item[key]
