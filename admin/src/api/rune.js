@@ -58,3 +58,35 @@ export function get_related_rune (runeId, data) {
     data
   })
 }
+
+// 英雄獲取相關符文符文列表
+export function get_secondary_rune (runeId, data) {
+  return request({
+    url: `secondary_runes/${runeId}`,
+    data
+  })
+}
+
+// 英雄獲取副符文相關符文列表
+export function get_related_second_rune (runeId, data) {
+  return request({
+    url: `related_secondary_runes/${runeId}`,
+    data
+  })
+}
+
+// 英雄獲取小符文相關符文列表
+export function get_little_rune (data) {
+  return request({
+    url: 'little_runes',
+    data
+  })
+}
+
+// 英雄獲取小符文相關符文列表
+export function get_related_little_rune (data) {
+  return request({
+    url: 'related_little_runes',
+    data
+  })
+}

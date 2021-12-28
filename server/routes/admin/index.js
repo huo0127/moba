@@ -18,6 +18,8 @@ module.exports = app => {
 
   app.use('/admin/api', authMiddleware(), require('./total'))
 
+  app.use('/admin/api', authMiddleware(), require('./rune'))
+
 
   // 上傳阿里雲
   // const multer = require('multer')
@@ -47,22 +49,5 @@ module.exports = app => {
     file.url = `http://localhost:3000/uploads/${file.filename}`
     response(res, 200, '上傳成功', file)
   })
-
-
-
-  // 英雄獲取主符文列表
-  app.get('/admin/api/primary_runes', authMiddleware(), async (req, res) => {
-    const data = await Rune.find().where({ styleName: '' })
-    res.send(data)
-  })
-
-  // 英雄獲取相關符文列表
-  app.get('/admin/api/related_runes/:id', authMiddleware(), async (req, res) => {
-    const item = await Rune.findById(req.params.id)
-    const runeName = item.name
-    const data = await Rune.find({ styleName: runeName })
-    res.send(data)
-  })
-
 }
 

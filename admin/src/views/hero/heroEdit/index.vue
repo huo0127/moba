@@ -181,14 +181,14 @@
             </el-select>
           </el-form-item>
         </el-tab-pane>
-
         <el-tab-pane label="天賦符文" name="runes">
           <el-row :gutter="20">
             <el-col :span="8">
+              <!-- 主符文 -->
               <el-card>
                 <span>主符文</span>
                 <el-form-item label="主符文">
-                  <el-select v-model="model.primary_rune.rune" @change="handle_get_runes">
+                  <el-select v-model="model.primary_rune.rune" @change="handle_get_first_runes">
                     <el-option
                       v-for="rune of primaryRuneList"
                       :key="rune._id"
@@ -200,7 +200,7 @@
                 <el-form-item label="第一層符文">
                   <el-select v-model="model.primary_rune.rune_first">
                     <el-option
-                      v-for="rune of relatedRuneList"
+                      v-for="rune of rune_first"
                       :key="rune._id"
                       :label="rune.name"
                       :value="rune._id"
@@ -210,7 +210,7 @@
                 <el-form-item label="第二層符文">
                   <el-select v-model="model.primary_rune.rune_second">
                     <el-option
-                      v-for="rune of relatedRuneList"
+                      v-for="rune of rune_second"
                       :key="rune._id"
                       :label="rune.name"
                       :value="rune._id"
@@ -220,7 +220,7 @@
                 <el-form-item label="第三層符文">
                   <el-select v-model="model.primary_rune.rune_third">
                     <el-option
-                      v-for="rune of relatedRuneList"
+                      v-for="rune of rune_third"
                       :key="rune._id"
                       :label="rune.name"
                       :value="rune._id"
@@ -230,7 +230,7 @@
                 <el-form-item label="第四層符文">
                   <el-select v-model="model.primary_rune.rune_fourth">
                     <el-option
-                      v-for="rune of relatedRuneList"
+                      v-for="rune of rune_fourth"
                       :key="rune._id"
                       :label="rune.name"
                       :value="rune._id"
@@ -240,12 +240,13 @@
               </el-card>
             </el-col>
             <el-col :span="8">
+              <!-- 副符文 -->
               <el-card>
                 <span>副符文</span>
                 <el-form-item label="副符文">
-                  <el-select v-model="model.secondary_rune.rune" @change="handle_get_runes">
+                  <el-select v-model="model.secondary_rune.rune" @change="handle_get_secondary_runes">
                     <el-option
-                      v-for="rune of primaryRuneList"
+                      v-for="rune of secondaryRuneList"
                       :key="rune._id"
                       :label="rune.name"
                       :value="rune._id"
@@ -253,9 +254,9 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item label="第一層符文">
-                  <el-select v-model="model.secondary_rune.rune_first">
+                  <el-select v-model="model.secondary_rune.rune_first" @change="handle_get_secondary_secondRunes">
                     <el-option
-                      v-for="rune of relatedRuneList"
+                      v-for="rune of relatedSecondaryRuneList"
                       :key="rune._id"
                       :label="rune.name"
                       :value="rune._id"
@@ -265,7 +266,7 @@
                 <el-form-item label="第二層符文">
                   <el-select v-model="model.secondary_rune.rune_second">
                     <el-option
-                      v-for="rune of relatedRuneList"
+                      v-for="rune of relatedSecondarySecondRuneList"
                       :key="rune._id"
                       :label="rune.name"
                       :value="rune._id"
@@ -275,13 +276,13 @@
               </el-card>
             </el-col>
             <el-col :span="8">
+              <!-- 小符文 -->
               <el-card>
                 <span>小符文</span>
-
                 <el-form-item label="第一層符文">
                   <el-select v-model="model.little_rune.rune_first">
                     <el-option
-                      v-for="rune of primaryRuneList"
+                      v-for="rune of littleRuneList"
                       :key="rune._id"
                       :label="rune.name"
                       :value="rune._id"
@@ -291,7 +292,7 @@
                 <el-form-item label="第二層符文">
                   <el-select v-model="model.little_rune.rune_second">
                     <el-option
-                      v-for="rune of primaryRuneList"
+                      v-for="rune of relatedLittleRuneList"
                       :key="rune._id"
                       :label="rune.name"
                       :value="rune._id"
@@ -301,7 +302,7 @@
                 <el-form-item label="第三層符文">
                   <el-select v-model="model.little_rune.rune_third">
                     <el-option
-                      v-for="rune of primaryRuneList"
+                      v-for="rune of relatedLittleRuneList"
                       :key="rune._id"
                       :label="rune.name"
                       :value="rune._id"
@@ -325,7 +326,15 @@ import { updateHero, createHero, getHero, getHeroList } from '@/api/hero'
 import { getItemList } from '@/api/item'
 import { getCateList } from '@/api/category'
 import { getSpellList } from '@/api/spell'
-import { get_primary_rune, get_related_rune } from '@/api/rune'
+import {
+  get_primary_rune,
+  get_related_rune,
+  get_secondary_rune,
+  get_related_second_rune,
+  get_little_rune,
+  get_related_little_rune
+} from '@/api/rune'
+
 import upload from '@/mixins/upload'
 
 export default {
@@ -344,6 +353,12 @@ export default {
       spellList: [],
       primaryRuneList: [],
       relatedRuneList: [],
+      secondaryRuneList: [],
+      relatedSecondaryRuneList: [],
+      relatedSecondarySecondRuneList: [],
+      littleRuneList: [],
+      relatedLittleRuneList: [],
+
       // 英雄訊息
       model: {
         name: '',
@@ -361,6 +376,18 @@ export default {
       }
     }
   },
+
+  mounted() {
+    this.fetch_primary_rune()
+    this.fetch_little_rune()
+    this.fetch_related_little_rune()
+    this.getItemList()
+    this.getCateList()
+    this.getHeroList()
+    this.getSpellList()
+    this.id && this.getHero()
+  },
+
   methods: {
     async save() {
       let res
@@ -392,35 +419,87 @@ export default {
     },
     async getItemList() {
       const res = await getItemList()
-      this.itemList = res
+      this.itemList = res.data.data
     },
     async getHeroList() {
       const res = await getHeroList()
-      this.heroes = res
+      this.heroes = res.data.data
     },
     async getSpellList() {
       const res = await getSpellList()
-      this.spellList = res
+      this.spellList = res.data.data
     },
+
+    // 一上來就拿到主符文
     async fetch_primary_rune() {
       const res = await get_primary_rune()
-      this.primaryRuneList = res
+      this.primaryRuneList = res.data.data
     },
-    async handle_get_runes(runeId) {
+
+    // 選取主符文後加載
+    async handle_get_first_runes(runeId) {
       if (runeId) {
+        // 以下符文
         const res = await get_related_rune(runeId)
-        this.relatedRuneList = res
+        this.relatedRuneList = res.data.data
+
+        //  副符文
+        const secondaryRes = await get_secondary_rune(runeId)
+        this.secondaryRuneList = secondaryRes.data.data
       }
+    },
+    async handle_get_secondary_runes(runeId) {
+      if (runeId) {
+        const res = await get_related_second_rune(runeId)
+        this.relatedSecondaryRuneList = res.data.data
+      }
+    },
+    async handle_get_secondary_secondRunes(runeId) {
+      const data = this.relatedSecondaryRuneList.filter(rune => rune._id === runeId)
+      const slotLabel = data[0].slotLabel
+      const result = this.relatedSecondaryRuneList.filter(rune => rune.slotLabel !== slotLabel)
+      this.relatedSecondarySecondRuneList = result
+    },
+    async fetch_little_rune() {
+      const res = await get_little_rune()
+      this.littleRuneList = res.data.data
+    },
+    async fetch_related_little_rune() {
+      const res = await get_related_little_rune()
+      this.relatedLittleRuneList = res.data.data
     }
   },
-
-  created() {
-    this.getItemList()
-    this.getCateList()
-    this.getHeroList()
-    this.getSpellList()
-    this.fetch_primary_rune()
-    this.id && this.getHero()
+  computed: {
+    rune_first() {
+      return this.relatedRuneList.filter(rune => rune.slotLabel === '基石')
+    },
+    rune_second() {
+      return this.relatedRuneList.filter(
+        rune =>
+          rune.slotLabel === '預謀' ||
+          rune.slotLabel === '寶物' ||
+          rune.slotLabel === '巧具' ||
+          rune.slotLabel === '英武'
+      )
+    },
+    rune_third() {
+      return this.relatedRuneList.filter(
+        rune =>
+          rune.slotLabel === '追蹤' ||
+          rune.slotLabel === '卓越' ||
+          rune.slotLabel === '未來' ||
+          rune.slotLabel === '傳說'
+      )
+    },
+    rune_fourth() {
+      return this.relatedRuneList.filter(
+        rune =>
+          rune.slotLabel === '狩獵' ||
+          rune.slotLabel === '威能' ||
+          rune.slotLabel === '超越' ||
+          rune.slotLabel === '戰鬥'
+      )
+    }
   }
 }
 </script>
