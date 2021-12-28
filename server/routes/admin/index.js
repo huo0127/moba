@@ -14,7 +14,7 @@ module.exports = app => {
 
   app.use('/admin/api/categories', authMiddleware(), require('./category'))
 
-  app.use('/admin/api', authMiddleware(), require('./user'))
+  app.use('/admin/api', require('./user'))
 
   app.use('/admin/api', authMiddleware(), require('./total'))
 

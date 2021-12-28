@@ -352,11 +352,14 @@ export default {
       itemList: [],
       heroes: [],
       spellList: [],
+      // 主符文
       primaryRuneList: [],
       relatedRuneList: [],
+      // 副符文
       secondaryRuneList: [],
       relatedSecondaryRuneList: [],
       relatedSecondarySecondRuneList: [],
+      // 小符文
       littleFirstRuneList: [],
       littleSecondRuneList: [],
       littleThirdRuneList: [],
@@ -370,9 +373,19 @@ export default {
         spells: [],
         skins: [],
 
-        primary_rune: {},
+        primary_rune: {
+          rune: '',
+          rune_first: '',
+          rune_second: '',
+          rune_third: '',
+          rune_fourth: ''
+        },
 
-        secondary_rune: {},
+        secondary_rune: {
+          rune: '',
+          rune_first: '',
+          rune_second: ''
+        },
 
         little_rune: {}
       }
@@ -441,17 +454,28 @@ export default {
     // 選取主符文後加載
     async handle_get_first_runes(runeId) {
       if (runeId) {
-        // 以下符文
+        // 每個重新選就清空已選的符文
+        this.$set(this.model.primary_rune, 'rune_first', '')
+        this.$set(this.model.primary_rune, 'rune_second', '')
+        this.$set(this.model.primary_rune, 'rune_third', '')
+        this.$set(this.model.primary_rune, 'rune_fourth', '')
+        this.$set(this.model.secondary_rune, 'rune', '')
+        this.$set(this.model.secondary_rune, 'rune_first', '')
+        this.$set(this.model.secondary_rune, 'rune_second', '')
+
+        // 獲取相關符文
         const res = await get_related_rune(runeId)
         this.relatedRuneList = res.data.data
 
-        //  副符文
+        //  獲取副符文
         const secondaryRes = await get_secondary_rune(runeId)
         this.secondaryRuneList = secondaryRes.data.data
       }
     },
     async handle_get_secondary_runes(runeId) {
       if (runeId) {
+        this.$set(this.model.secondary_rune, 'rune_first', '')
+        this.$set(this.model.secondary_rune, 'rune_second', '')
         const res = await get_related_second_rune(runeId)
         this.relatedSecondaryRuneList = res.data.data
       }
