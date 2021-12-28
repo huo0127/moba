@@ -282,7 +282,7 @@
                 <el-form-item label="第一層符文">
                   <el-select v-model="model.little_rune.rune_first">
                     <el-option
-                      v-for="rune of littleRuneList"
+                      v-for="rune of littleFirstRuneList"
                       :key="rune._id"
                       :label="rune.name"
                       :value="rune._id"
@@ -292,7 +292,7 @@
                 <el-form-item label="第二層符文">
                   <el-select v-model="model.little_rune.rune_second">
                     <el-option
-                      v-for="rune of relatedLittleRuneList"
+                      v-for="rune of littleSecondRuneList"
                       :key="rune._id"
                       :label="rune.name"
                       :value="rune._id"
@@ -302,7 +302,7 @@
                 <el-form-item label="第三層符文">
                   <el-select v-model="model.little_rune.rune_third">
                     <el-option
-                      v-for="rune of relatedLittleRuneList"
+                      v-for="rune of littleThirdRuneList"
                       :key="rune._id"
                       :label="rune.name"
                       :value="rune._id"
@@ -331,8 +331,9 @@ import {
   get_related_rune,
   get_secondary_rune,
   get_related_second_rune,
-  get_little_rune,
-  get_related_little_rune
+  get_little_first_rune,
+  get_little_second_rune,
+  get_little_third_rune
 } from '@/api/rune'
 
 import upload from '@/mixins/upload'
@@ -356,8 +357,9 @@ export default {
       secondaryRuneList: [],
       relatedSecondaryRuneList: [],
       relatedSecondarySecondRuneList: [],
-      littleRuneList: [],
-      relatedLittleRuneList: [],
+      littleFirstRuneList: [],
+      littleSecondRuneList: [],
+      littleThirdRuneList: [],
 
       // 英雄訊息
       model: {
@@ -379,8 +381,9 @@ export default {
 
   mounted() {
     this.fetch_primary_rune()
-    this.fetch_little_rune()
-    this.fetch_related_little_rune()
+    this.fetch_little_first_rune()
+    this.fetch_little_second_rune()
+    this.fetch_little_third_rune()
     this.getItemList()
     this.getCateList()
     this.getHeroList()
@@ -407,10 +410,9 @@ export default {
       const res = await getHero(this.id)
       this.model = Object.assign({}, this.model, res.data.data)
     },
-
     async getCateList() {
       const res = await getCateList()
-      for (const cate of res.data) {
+      for (const cate of res.data.data) {
         if (cate.name === '英雄分類') {
           this.heroCateList = cate.children
           break
@@ -460,13 +462,17 @@ export default {
       const result = this.relatedSecondaryRuneList.filter(rune => rune.slotLabel !== slotLabel)
       this.relatedSecondarySecondRuneList = result
     },
-    async fetch_little_rune() {
-      const res = await get_little_rune()
-      this.littleRuneList = res.data.data
+    async fetch_little_first_rune() {
+      const res = await get_little_first_rune()
+      this.littleFirstRuneList = res.data.data
     },
-    async fetch_related_little_rune() {
-      const res = await get_related_little_rune()
-      this.relatedLittleRuneList = res.data.data
+    async fetch_little_second_rune() {
+      const res = await get_little_second_rune()
+      this.littleSecondRuneList = res.data.data
+    },
+    async fetch_little_third_rune() {
+      const res = await get_little_third_rune()
+      this.littleThirdRuneList = res.data.data
     }
   },
   computed: {

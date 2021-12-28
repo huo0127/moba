@@ -3,6 +3,7 @@ const baseModel = require('./base-model')
 
 const schema = new mongoose.Schema({
   ...baseModel,
+  categories: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'Category' }],
   name: { type: String },
   items: [{
     image: { type: String },

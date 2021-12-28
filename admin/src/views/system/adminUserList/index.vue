@@ -52,7 +52,7 @@ export default {
   methods: {
     async getUserList() {
       const res = await getUserList()
-      this.userList = res
+      this.userList = res.data.data
     },
 
     showAddDialog() {

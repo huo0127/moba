@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const baseModel = require('./base-model')
 
 const schema = new mongoose.Schema({
+  categories: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'Category' }],
   ...baseModel,
   username: {
     type: String,

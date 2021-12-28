@@ -49,7 +49,7 @@ exports.getRelatedSecondaryRunes = async (req, res, next) => {
   }
 }
 
-exports.getLittleRunes = async (req, res, next) => {
+exports.getLittelFirstRunes = async (req, res, next) => {
   try {
     const runes = await (await Rune.find({ styleName: '' })).filter(rune => Number(rune.ID) === 5007 || Number(rune.ID) === 5005 || Number(rune.ID) === 5008)
 
@@ -59,9 +59,19 @@ exports.getLittleRunes = async (req, res, next) => {
   }
 }
 
-exports.getRelatedLittleRunes = async (req, res, next) => {
+exports.getLittleSecondRunes = async (req, res, next) => {
   try {
-    const runes = await (await Rune.find({ styleName: '' })).filter(rune => Number(rune.ID) === 5008 || Number(rune.ID) === 5002 || Number(rune.ID) === 5003 || Number(rune.ID) === 5001)
+    const runes = await (await Rune.find({ styleName: '' })).filter(rune => Number(rune.ID) === 5008 || Number(rune.ID) === 5002 || Number(rune.ID) === 5003)
+
+    res.status(200).json({ success: true, data: { data: runes } })
+  } catch (err) {
+    next(err)
+  }
+}
+
+exports.getLittleThirdRunes = async (req, res, next) => {
+  try {
+    const runes = await (await Rune.find({ styleName: '' })).filter(rune => Number(rune.ID) === 5001 || Number(rune.ID) === 5002 || Number(rune.ID) === 5003)
 
     res.status(200).json({ success: true, data: { data: runes } })
   } catch (err) {

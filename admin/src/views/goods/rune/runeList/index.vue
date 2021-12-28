@@ -15,7 +15,6 @@
       <el-table :data="runeList" border stripe>
         <el-table-column prop="ID" label="ID" />
         <el-table-column prop="name" label="天賦名稱" width="width" />
-        <el-table-column prop="styleName" label="主系" width="width" />
 
         <el-table-column prop="icon" label="圖標">
           <template slot-scope="scope">
