@@ -38,6 +38,7 @@
             :headers="getAuthHeaders()"
             :show-file-list="false"
             :on-success="(res) => $set(formData, 'icon', res.data.url)"
+            :before-upload="beforeAvatarUpload"
           >
             <img v-if="formData.icon" :src="formData.icon" class="avatar" />
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>

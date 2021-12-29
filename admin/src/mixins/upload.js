@@ -47,6 +47,7 @@ export default {
         this.$message.error("上傳的影片不大於 20MB");
         return false;
       }
+
     },
   }
 }

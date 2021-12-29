@@ -123,7 +123,6 @@
                     :show-file-list="false"
                     :on-success="(res) => $set(item, 'video', res.data.url)"
                     :before-upload="beforeVideoUpload"
-                    :on-progress="uploadVideoProcess"
                   >
                     <video :src="item.video" v-if="item.video" controls class="video" />
                     <i v-else class="el-icon-upload avatar-uploader-icon"></i>
