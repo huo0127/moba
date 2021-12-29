@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>裝備列表</h1>
+    <h1 class="title">裝備列表</h1>
     <el-card>
       <el-row>
         <el-col :span="6">
@@ -11,27 +11,29 @@
         </el-col>
       </el-row>
 
-      <el-table :data="itemList" border stripe>
-        <el-table-column type="index" label="序號" :index="indexMethod"></el-table-column>
-        <el-table-column prop="name" label="裝備名稱" align="center"></el-table-column>
-        <el-table-column prop="plaintext" label="簡述"> </el-table-column>
-        <el-table-column prop="icon" label="圖標">
-          <template slot-scope="scope">
-            <img :src="scope.row.iconPath" style="height: 3rem" />
-          </template>
-        </el-table-column>
-        <el-table-column fixed="right" label="操作" width="200" align="center">
-          <template slot-scope="scope">
-            <HintButton
-              title="編輯"
-              type="warning"
-              icon="el-icon-edit"
-              @click="$router.push(`/goods/item/edit/${scope.row._id}`)"
-            ></HintButton>
-            <HintButton title="删除" type="danger" icon="el-icon-delete" @click="remove(scope.row)"></HintButton>
-          </template>
-        </el-table-column>
-      </el-table>
+      <div class="tableItem">
+        <el-table :data="itemList" border stripe>
+          <el-table-column type="index" label="序號" :index="indexMethod"></el-table-column>
+          <el-table-column prop="name" label="裝備名稱" align="center"></el-table-column>
+          <el-table-column prop="plaintext" label="簡述"> </el-table-column>
+          <el-table-column prop="icon" label="圖標">
+            <template slot-scope="scope">
+              <img :src="scope.row.iconPath" style="height: 3rem" />
+            </template>
+          </el-table-column>
+          <el-table-column fixed="right" label="操作" width="200" align="center">
+            <template slot-scope="scope">
+              <HintButton
+                title="編輯"
+                type="warning"
+                icon="el-icon-edit"
+                @click="$router.push(`/goods/item/edit/${scope.row._id}`)"
+              ></HintButton>
+              <HintButton title="删除" type="danger" icon="el-icon-delete" @click="remove(scope.row)"></HintButton>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
 
       <!-- 分頁器 -->
       <el-pagination

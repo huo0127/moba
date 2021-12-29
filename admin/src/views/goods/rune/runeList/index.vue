@@ -1,76 +1,84 @@
 <template>
-  <div>
-    <h1>天賦符文列表</h1>
-    <el-card>
+  <div class="runeListContainer">
+    <h1 class="title">天賦符文列表</h1>
+    <el-card shadow="never">
       <el-button type="primary" icon="el-icon-plus" @click="showAddDialog">新建天賦符文</el-button>
-      <el-row>
-        <el-col :span="6">
-          <el-input maxlength="8" clearable placeholder="請輸入符文" v-model="runeQuery"></el-input>
-        </el-col>
-        <el-col :span="3">
-          <el-button style="margin-left: 20px" type="primary" icon="el-icon-search" @click="searchRune">搜索</el-button>
-        </el-col>
-      </el-row>
-
-      <el-table :data="runeList" border stripe>
-        <el-table-column prop="ID" label="ID" />
-        <el-table-column prop="name" label="天賦名稱" width="width" />
-
-        <el-table-column prop="icon" label="圖標">
-          <template slot-scope="scope">
-            <img :src="scope.row.icon" style="height: 3rem" />
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" width="width">
-          <template slot-scope="{ row, $index }">
-            <HintButton title="編輯" type="warning" icon="el-icon-edit" @click="showUpdateDialog(row)"></HintButton>
-            <HintButton title="刪除" type="danger" icon="el-icon-delete" @click="deleteRune(row)"></HintButton>
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-card>
-    <el-dialog :title="formData._id ? '編輯天賦符文' : '創建天賦符文'" :visible.sync="dialogFormVisible">
-      <el-form ref="formData" :model="formData">
-        <el-form-item label="圖標">
-          <el-upload
-            class="avatar-uploader"
-            :action="uploadUrl"
-            :headers="getAuthHeaders()"
-            :show-file-list="false"
-            :on-success="(res) => $set(formData, 'icon', res.data.data.url)"
-            :before-upload="beforeAvatarUpload"
-          >
-            <img v-if="formData.icon" :src="formData.icon" class="avatar" />
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-          </el-upload>
-        </el-form-item>
-        <el-form-item label="ID">
-          <el-input v-model="formData.ID" />
-        </el-form-item>
-        <el-form-item label="名稱">
-          <el-input v-model="formData.name" />
-        </el-form-item>
-        <el-form-item v-if="formData.slotLabel" label="slotLabel">
-          <el-input v-model="formData.slotLabel" />
-        </el-form-item>
-        <el-form-item v-if="formData.styleName" label="主符文">
-          <el-input v-model="formData.styleName" />
-        </el-form-item>
-        <el-form-item v-if="formData.longdesc" label="長述">
-          <el-input v-model="formData.longdesc" type="textarea" />
-        </el-form-item>
-        <el-form-item v-if="formData.shortdesc" label="短述">
-          <el-input v-model="formData.shortdesc" type="textarea" />
-        </el-form-item>
-        <el-form-item label="tip">
-          <el-input v-model="formData.tooltip" type="textarea" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="save">確定</el-button>
+      <div style="margin-top: 1.3rem">
+        <el-row>
+          <el-col :span="6">
+            <el-input maxlength="8" clearable placeholder="請輸入符文" v-model="runeQuery"></el-input>
+          </el-col>
+          <el-col :span="3">
+            <el-button style="margin-left: 20px" type="primary" icon="el-icon-search" @click="searchRune"
+              >搜索</el-button
+            >
+          </el-col>
+        </el-row>
       </div>
-    </el-dialog>
+
+      <div class="tableItem">
+        <el-table :data="runeList" border stripe>
+          <el-table-column prop="ID" label="ID" />
+          <el-table-column prop="name" label="天賦名稱" width="width" />
+
+          <el-table-column prop="icon" label="圖標">
+            <template slot-scope="scope">
+              <img :src="scope.row.icon" style="height: 3rem" />
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" width="width">
+            <template slot-scope="{ row, $index }">
+              <HintButton title="編輯" type="warning" icon="el-icon-edit" @click="showUpdateDialog(row)"></HintButton>
+              <HintButton title="刪除" type="danger" icon="el-icon-delete" @click="deleteRune(row)"></HintButton>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </el-card>
+    <div class="runeDialogContainer">
+      <el-dialog :title="formData._id ? '編輯天賦符文' : '創建天賦符文'" :visible.sync="dialogFormVisible">
+        <el-form ref="formData" :model="formData" :label-position="labelPosition">
+          <el-form-item label="圖標" label-width="100px">
+            <el-upload
+              class="avatar-uploader"
+              :action="uploadUrl"
+              :headers="getAuthHeaders()"
+              :show-file-list="false"
+              :on-success="(res) => $set(formData, 'icon', res.data.data.url)"
+              :before-upload="beforeAvatarUpload"
+            >
+              <img v-if="formData.icon" :src="formData.icon" class="avatar" />
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </el-form-item>
+          <el-form-item label="ID" label-width="100px">
+            <el-input v-model="formData.ID" />
+          </el-form-item>
+          <el-form-item label="名稱" label-width="100px">
+            <el-input v-model="formData.name" />
+          </el-form-item>
+          <el-form-item label="slotLabel" label-width="100px">
+            <el-input v-model="formData.slotLabel" />
+          </el-form-item>
+          <el-form-item label="主符文" label-width="100px">
+            <el-input v-model="formData.styleName" />
+          </el-form-item>
+          <el-form-item label="長述" label-width="100px">
+            <el-input v-model="formData.longdesc" type="textarea" />
+          </el-form-item>
+          <el-form-item label="短述" label-width="100px">
+            <el-input v-model="formData.shortdesc" type="textarea" />
+          </el-form-item>
+          <el-form-item label="tip" label-width="100px">
+            <el-input v-model="formData.tooltip" type="textarea" />
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogFormVisible = false">取消</el-button>
+          <el-button type="primary" @click="save">確定</el-button>
+        </div>
+      </el-dialog>
+    </div>
     <!-- 分頁器 -->
     <el-pagination
       @size-change="handleSizeChange"
@@ -92,6 +100,7 @@ export default {
   name: 'RuneList',
   data() {
     return {
+      labelPosition: 'right',
       runeList: [],
       dialogFormVisible: false,
       formData: {},
@@ -185,5 +194,27 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style  lang="scss">
+.runeListContainer {
+  .runeDialogContainer {
+    .avatar-uploader .el-upload {
+      border: 1px dashed #d9d9d9;
+      border-radius: 6px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .avatar-uploader .el-upload:hover {
+      border-color: #409eff;
+    }
+    .avatar-uploader-icon {
+      font-size: 28px;
+      color: #8c939d;
+      width: 178px;
+      height: 178px;
+      line-height: 178px;
+      text-align: center;
+    }
+  }
+}
 </style>

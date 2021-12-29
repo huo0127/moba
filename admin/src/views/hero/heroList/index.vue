@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h1>英雄列表</h1>
-    <el-card>
+    <h1 class="title">英雄列表</h1>
+    <el-card shadow="never">
       <el-row>
         <el-col :span="6">
           <el-input maxlength="8" clearable placeholder="請輸入英雄名稱" v-model="heroQuery"></el-input>
@@ -10,35 +10,37 @@
           <el-button style="margin-left: 20px" type="primary" icon="el-icon-search" @click="searchHero">搜索</el-button>
         </el-col>
       </el-row>
-      <el-table :data="heroList" border stripe>
-        <el-table-column type="index" :index="indexMethod" label="序號"></el-table-column>
-        <el-table-column prop="name" label="名稱"></el-table-column>
-        <el-table-column prop="name" label="位置">
-          <template slot-scope="scope">
-            <span>
-              {{ scope.row.categories.map((item) => item.name).join(' / ') }}
-            </span>
-          </template>
-        </el-table-column>
+      <div class="tableItem">
+        <el-table :data="heroList" border stripe>
+          <el-table-column type="index" :index="indexMethod" label="序號"></el-table-column>
+          <el-table-column prop="name" label="名稱"></el-table-column>
+          <el-table-column prop="name" label="位置">
+            <template slot-scope="scope">
+              <span>
+                {{ scope.row.categories.map((item) => item.name).join(' / ') }}
+              </span>
+            </template>
+          </el-table-column>
 
-        <el-table-column prop="avatar" label="头像">
-          <template slot-scope="scope">
-            <img :src="scope.row.avatar" class="hero-image" />
-          </template>
-        </el-table-column>
+          <el-table-column prop="avatar" label="頭像">
+            <template slot-scope="scope">
+              <img :src="scope.row.avatar" class="hero-image" />
+            </template>
+          </el-table-column>
 
-        <el-table-column fixed="right" label="操作" width="180">
-          <template slot-scope="scope">
-            <HintButton
-              title="編輯"
-              type="warning"
-              icon="el-icon-edit"
-              @click="$router.push(`/heroes/edit/${scope.row._id}`)"
-            ></HintButton>
-            <HintButton title="删除" type="danger" icon="el-icon-delete" @click="remove(scope.row)"></HintButton>
-          </template>
-        </el-table-column>
-      </el-table>
+          <el-table-column fixed="right" label="操作" width="180">
+            <template slot-scope="scope">
+              <HintButton
+                title="編輯"
+                type="warning"
+                icon="el-icon-edit"
+                @click="$router.push(`/heroes/edit/${scope.row._id}`)"
+              ></HintButton>
+              <HintButton title="删除" type="danger" icon="el-icon-delete" @click="remove(scope.row)"></HintButton>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"

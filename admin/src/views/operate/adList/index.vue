@@ -1,9 +1,10 @@
 <template>
-  <div>
-    <h1>廣告位列表</h1>
+  <div class="createAdContainer">
+    <h1 class="title">廣告位列表</h1>
     <el-card>
       <el-button type="primary" icon="el-icon-plus" @click="showAddDialog">創建廣告</el-button>
-      <el-table :data="adList">
+
+      <el-table :data="adList" border stripe>
         <el-table-column type="index" label="序號"></el-table-column>
         <el-table-column prop="name" label="名稱"></el-table-column>
         <el-table-column fixed="right" label="操作">
@@ -21,7 +22,9 @@
           <el-input v-model="model.name"></el-input>
         </el-form-item>
 
-        <HintButton type="primary" icon="el-icon-plus" title="創建廣告位" @click="addAdInfo"></HintButton>
+        <div style="margin-bottom: 0.8rem">
+          <HintButton type="primary" icon="el-icon-plus" title="創建廣告位" @click="addAdInfo"></HintButton>
+        </div>
         <el-row :gutter="20" type="flex" style="flex-wrap: wrap">
           <el-col :span="12" v-for="(item, i) in model.items" :key="i">
             <el-card>
@@ -138,3 +141,10 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+.createAdContainer {
+  .el-input__inner {
+    width: 250px;
+  }
+}
+</style>

@@ -1,10 +1,12 @@
 <template>
-  <div>
-    <h1>分類列表</h1>
+  <div class="categoryContainer">
+    <h1 class="title">分類列表</h1>
     <el-card>
-      <el-button style="margin-bottom: 1rem" type="primary" icon="el-icon-plus" @click="showAddDialog"
-        >創建分類</el-button
-      >
+      <div style="padding-bottom: 0.8rem">
+        <el-button style="margin-bottom: 1rem" type="primary" icon="el-icon-plus" @click="showAddDialog"
+          >創建分類</el-button
+        >
+      </div>
       <tree-table
         :data="cateList"
         show-index
@@ -21,13 +23,15 @@
       </tree-table>
     </el-card>
 
-    <el-dialog :title="model._id ? '修改分類' : '創建品牌'" :visible.sync="dialogFormVisible">
-      <el-form ref="model" :model="model">
-        <el-form-item label="分類名稱" prop="name">
-          <el-input v-model="model.name" autocomplete="off" />
-        </el-form-item>
+    <el-dialog width="30%" :title="model._id ? '修改分類' : '創建分類'" :visible.sync="dialogFormVisible">
+      <el-form ref="model" :model="model" :label-position="labelPosition">
+        <div class="createCatsName">
+          <el-form-item label="分類名稱" prop="name" label-width="150px">
+            <el-input v-model="model.name" autocomplete="off" />
+          </el-form-item>
+        </div>
 
-        <el-form-item label="選擇" v-if="model.parent || !model._id">
+        <el-form-item label="選擇分類" v-if="model.parent || !model._id" label-width="150px">
           <el-cascader
             :props="cateProps"
             :options="cateList"
@@ -37,7 +41,8 @@
           ></el-cascader>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+
+      <div class="categoryBtn">
         <el-button @click="dialogFormVisible = false">取消</el-button>
         <el-button type="primary" @click="save">確定</el-button>
       </div>
@@ -83,7 +88,8 @@ export default {
         }
       ],
       id: '',
-      dialogFormVisible: false
+      dialogFormVisible: false,
+      labelPosition: 'right'
     }
   },
   methods: {
@@ -173,4 +179,18 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style lang="scss">
+.categoryContainer {
+  .createCatsName {
+    margin-top: 1rem;
+    .el-input__inner {
+      width: 250px;
+    }
+  }
+  .categoryBtn {
+    display: flex;
+    justify-content: end;
+    padding-top: 2rem;
+  }
+}
+</style>

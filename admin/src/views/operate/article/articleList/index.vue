@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>文章列表</h1>
+    <h1 class="title">文章列表</h1>
     <el-card>
       <el-row>
         <el-col :span="6">
@@ -12,33 +12,35 @@
           >
         </el-col>
       </el-row>
-      <el-table :data="articleList" @sort-change="sortChange">
-        <el-table-column type="index" label="序號" :index="indexMethod"> </el-table-column>
-        <el-table-column prop="name" label="分類">
-          <template slot-scope="scope">
-            <span>
-              {{ scope.row.categories.map((item) => item.name).join(' / ') }}
-            </span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="name" label="標題"></el-table-column>
-        <el-table-column fixed="right" label="操作" width="180">
-          <template slot-scope="scope">
-            <HintButton
-              title="編輯"
-              type="warning"
-              icon="el-icon-edit"
-              @click="$router.push(`/operate/article/edit/${scope.row._id}`)"
-            ></HintButton>
-            <HintButton title="删除" type="danger" icon="el-icon-delete" @click="remove(scope.row)"></HintButton>
-          </template>
-        </el-table-column>
-        <el-table-column label="日期" prop="createdAt" sortable="custom">
-          <template slot-scope="{ row, $index }">
-            <span>{{ row.createdAt | date }}</span>
-          </template>
-        </el-table-column>
-      </el-table>
+      <div class="tableItem">
+        <el-table :data="articleList" @sort-change="sortChange" border stripe>
+          <el-table-column type="index" label="序號" :index="indexMethod"> </el-table-column>
+          <el-table-column prop="name" label="分類">
+            <template slot-scope="scope">
+              <span>
+                {{ scope.row.categories.map((item) => item.name).join(' / ') }}
+              </span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="name" label="標題"></el-table-column>
+          <el-table-column fixed="right" label="操作" width="180">
+            <template slot-scope="scope">
+              <HintButton
+                title="編輯"
+                type="warning"
+                icon="el-icon-edit"
+                @click="$router.push(`/operate/article/edit/${scope.row._id}`)"
+              ></HintButton>
+              <HintButton title="删除" type="danger" icon="el-icon-delete" @click="remove(scope.row)"></HintButton>
+            </template>
+          </el-table-column>
+          <el-table-column label="日期" prop="createdAt" sortable="custom">
+            <template slot-scope="{ row, $index }">
+              <span>{{ row.createdAt | date }}</span>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"

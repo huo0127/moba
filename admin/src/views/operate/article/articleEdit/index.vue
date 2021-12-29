@@ -1,15 +1,17 @@
 <template>
-  <div class="about">
-    <h1>{{ id ? '編輯' : '創建' }}文章</h1>
+  <div class="createArticleContainer">
+    <h1 class="title">{{ id ? '編輯' : '創建' }}文章</h1>
     <el-form label-width="120px" @submit.native.prevent="save">
       <el-form-item label="所属分類">
         <el-select v-model="formData.categories" multiple>
           <el-option v-for="item in categories" :key="item._id" :label="item.name" :value="item._id"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="標題">
-        <el-input v-model="formData.name"></el-input>
-      </el-form-item>
+      <div class="createArtilceTitle">
+        <el-form-item label="標題">
+          <el-input v-model="formData.name"></el-input>
+        </el-form-item>
+      </div>
 
       <el-form-item label="圖片">
         <el-upload
@@ -94,3 +96,30 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+.createArticleContainer {
+  .createArtilceTitle {
+    .el-input__inner {
+      width: 500px;
+    }
+  }
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409eff;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+}
+</style>

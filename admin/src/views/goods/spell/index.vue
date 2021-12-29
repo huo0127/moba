@@ -1,27 +1,29 @@
 <template>
   <div>
-    <h1>召喚師技能列表</h1>
-    <el-card>
+    <h1 class="title">召喚師技能列表</h1>
+    <el-card shadow="never">
       <el-button type="primary" icon="el-icon-plus" @click="showAddDialog">創建召喚師技能</el-button>
-      <el-table :data="spellList">
-        <el-table-column type="index" label="序號" />
-        <el-table-column prop="name" label="召喚師技能名" width="width" />
-        <el-table-column prop="icon" label="圖標">
-          <template slot-scope="scope">
-            <img :src="scope.row.icon" style="height: 3rem" />
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" width="width">
-          <template slot-scope="{ row, $index }">
-            <HintButton title="編輯" type="warning" icon="el-icon-edit" @click="showUpdateDialog(row)"></HintButton>
-            <HintButton title="刪除" type="danger" icon="el-icon-delete" @click="deleteUser(row)"></HintButton>
-          </template>
-        </el-table-column>
-      </el-table>
+      <div class="tableItem">
+        <el-table :data="spellList" border stripe>
+          <el-table-column type="index" label="序號" />
+          <el-table-column prop="name" label="召喚師技能名" width="width" />
+          <el-table-column prop="icon" label="圖標">
+            <template slot-scope="scope">
+              <img :src="scope.row.icon" style="height: 3rem" />
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" width="width">
+            <template slot-scope="{ row, $index }">
+              <HintButton title="編輯" type="warning" icon="el-icon-edit" @click="showUpdateDialog(row)"></HintButton>
+              <HintButton title="刪除" type="danger" icon="el-icon-delete" @click="deleteUser(row)"></HintButton>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
     </el-card>
 
     <el-dialog :title="formData._id ? '編輯召喚師技能' : '創建召喚師技能'" :visible.sync="dialogFormVisible">
-      <el-form ref="formData" :model="formData">
+      <el-form ref="formData" :model="formData" :label-position="labelPosition">
         <el-form-item label="召喚師技能">
           <el-input v-model="formData.name" autocomplete="off" />
         </el-form-item>
@@ -57,6 +59,7 @@ export default {
   name: 'SpellList',
   data() {
     return {
+      labelPosition: 'top',
       spellList: [],
       dialogFormVisible: false,
       formData: {}
@@ -127,3 +130,23 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+</style>

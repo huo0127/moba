@@ -1,28 +1,32 @@
 <template>
-  <div>
-    <h1>管理員列表</h1>
+  <div class="userConatiner">
+    <h1 class="title">管理員列表</h1>
     <el-card>
       <el-button type="primary" icon="el-icon-plus" @click="showAddDialog">新增用戶</el-button>
-      <el-table :data="userList">
-        <el-table-column type="index" label="序號" />
-        <el-table-column prop="username" label="用戶名" width="width" />
-        <el-table-column label="操作" width="width">
-          <template slot-scope="{ row, $index }">
-            <HintButton title="編輯" type="warning" icon="el-icon-edit" @click="showUpdateDialog(row)"></HintButton>
-            <HintButton title="刪除" type="danger" icon="el-icon-delete" @click="deleteUser(row)"></HintButton>
-          </template>
-        </el-table-column>
-      </el-table>
+      <div class="tableItem">
+        <el-table :data="userList" border stripe>
+          <el-table-column type="index" label="序號" />
+          <el-table-column prop="username" label="用戶名" width="width" />
+          <el-table-column label="操作" width="width">
+            <template slot-scope="{ row, $index }">
+              <HintButton title="編輯" type="warning" icon="el-icon-edit" @click="showUpdateDialog(row)"></HintButton>
+              <HintButton title="刪除" type="danger" icon="el-icon-delete" @click="deleteUser(row)"></HintButton>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
     </el-card>
 
-    <el-dialog :title="formData._id ? '編輯用戶' : '新增用戶'" :visible.sync="dialogFormVisible">
+    <el-dialog width="30%" :title="formData._id ? '編輯用戶' : '新增用戶'" :visible.sync="dialogFormVisible">
       <el-form ref="formData" :model="formData">
-        <el-form-item label="用戶名" prop="username">
-          <el-input v-model="formData.username" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="密碼" prop="password">
-          <el-input v-model="formData.password" autocomplete="off" type="password" />
-        </el-form-item>
+        <div style="margin-top: 1rem">
+          <el-form-item label="用戶名" prop="username" label-width="150px">
+            <el-input v-model="formData.username" autocomplete="off" />
+          </el-form-item>
+          <el-form-item label="密碼" prop="password" label-width="150px">
+            <el-input v-model="formData.password" autocomplete="off" type="password" />
+          </el-form-item>
+        </div>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消</el-button>
@@ -114,3 +118,10 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+.userConatiner {
+  .el-input__inner {
+    width: 250px;
+  }
+}
+</style>
