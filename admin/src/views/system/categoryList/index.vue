@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h1>分類列表</h1>
     <el-card>
       <el-button style="margin-bottom: 1rem" type="primary" icon="el-icon-plus" @click="showAddDialog"
         >創建分類</el-button

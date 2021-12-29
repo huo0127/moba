@@ -17,14 +17,15 @@ export default {
       // file代表的是上傳的那個圖片
       const isJPG = file.type === 'image/jpeg' // 判斷上傳的圖片是否為jpg
       const isPNG = file.type === 'image/png'; // 判斷上傳的圖片是否為png
-      const isLt100KB = file.size / 1024 < 100;
+      const isLt200KB = file.size / 1024 / 1024 < 1;
       if (!isJPG && !isPNG) {
         this.$message.error('上傳圖片只能是 JPG 或者是 PNG 格式!')
+        return false
       }
-      if (!isLt100KB) {
-        this.$message.error('上傳圖片大小不能超過 80KB!')
+      if (!isLt200KB) {
+        this.$message.error('上傳圖片大小不能超過 1MB!')
+        return false
       }
-      return isJPG && isLt2M
     },
 
     beforeVideoUpload (file) {
@@ -47,7 +48,6 @@ export default {
         this.$message.error("上傳的影片不大於 20MB");
         return false;
       }
-
     },
   }
 }

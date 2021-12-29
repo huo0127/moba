@@ -1,9 +1,4 @@
 module.exports = app => {
-  const express = require('express')
-  const router = express.Router()
-
-  const response = require('../../utils/response')
-
   // 驗證中間件
   const authMiddleware = require('../../middleware/auth')
   // 資源中間件
@@ -20,34 +15,7 @@ module.exports = app => {
 
   app.use('/admin/api', authMiddleware(), require('./rune'))
 
+  app.use('/admin/api', authMiddleware(), require('./upload'))
 
-  // 上傳阿里雲
-  // const multer = require('multer')
-  // const MAO = require('multer-aliyun-oss')
-  // const upload = multer({
-  // dest: __dirname + '/../../uploads',
-  //   storage: MAO({
-  //     config: {
-  //       region: 'oss-cn-hongkong',
-  //       accessKeyId: 'LTAI5tLuZAsekz93dpNX7PTD',
-  //       accessKeySecret: 'Oc6VbuGz9IbHnTTTehcO2ehXGJJQFq',
-  //       bucket: 'vue-lol',
-  //     },
-  //   }),
-  // })
-  // app.post('/admin/api/upload', authMiddleware(), upload.single('file'), async (req, res) => {
-  //   const file = req.file
-  //   // file.url = `http://test.huo0127.com/uploads/${file.filename}`
-  //   res.send(file)
-  // })
-
-  // 上傳本地
-  const multer = require('multer')
-  const upload = multer({ dest: __dirname + '/../../uploads' })
-  app.post('/admin/api/upload', authMiddleware(), upload.single('file'), async (req, res) => {
-    const file = req.file
-    file.url = `http://localhost:3000/uploads/${file.filename}`
-    response(res, 200, '上傳成功', file)
-  })
 }
 

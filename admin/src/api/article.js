@@ -37,7 +37,16 @@ export function deleteArticle (itemId) {
 // 獲取物品分類列表
 export function getArticleList (params) {
   return request({
-    url: `/rest/articles`,
+    url: '/rest/articles',
     params
+  })
+}
+
+// 獲取物品分類列表
+export function articleImageUpload (data) {
+  return request({
+    url: '/upload',
+    method: 'post',
+    data
   })
 }

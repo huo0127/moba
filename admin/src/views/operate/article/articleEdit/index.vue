@@ -37,7 +37,7 @@
 
 <script>
 import { VueEditor } from 'vue2-editor'
-import { updateArticle, createArticle, getArticle } from '@/api/article'
+import { updateArticle, createArticle, getArticle, articleImageUpload } from '@/api/article'
 import { getCateList } from '@/api/category'
 import upload from '@/mixins/upload'
 export default {
@@ -58,8 +58,8 @@ export default {
     async handleImageAdded(file, Editor, cursorLocation, resetUploader) {
       const formData = new FormData()
       formData.append('file', file)
-      const res = await this.$http.post('upload', formData)
-      Editor.insertEmbed(cursorLocation, 'image', res.data.url)
+      const res = await articleImageUpload(formData)
+      Editor.insertEmbed(cursorLocation, 'image', res.data.data.url)
       resetUploader()
     },
     async save() {
@@ -81,12 +81,11 @@ export default {
     },
     async getCateList() {
       const res = await getCateList()
-      const data = res.data.find(item => item.name === '新聞資訊')
+      const data = res.data.data.find(item => item.name === '新聞資訊')
       this.categories = data.children
     },
     afterUpload(res) {
-      this.$set(this.formData, 'iconPath', res.data.url)
-      // this.formData.icon = res.url
+      this.$set(this.formData, 'iconPath', res.data.data.url)
     }
   },
   created() {

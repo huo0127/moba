@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     afterUpload(res) {
-      this.$set(this.formData, 'iconPath', res.data.url)
+      this.$set(this.formData, 'iconPath', res.data.data.url)
       // this.formData.icon = res.url
     },
     async save() {

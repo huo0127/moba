@@ -14,7 +14,7 @@
               :action="uploadUrl"
               :headers="getAuthHeaders()"
               :show-file-list="false"
-              :on-success="(res) => $set(model, 'avatar', res.data.url)"
+              :on-success="(res) => $set(model, 'avatar', res.data.data.url)"
               :before-upload="beforeAvatarUpload"
             >
               <img v-if="model.avatar" :src="model.avatar" class="avatar" />
@@ -27,7 +27,7 @@
               :action="uploadUrl"
               :headers="getAuthHeaders()"
               :show-file-list="false"
-              :on-success="(res) => $set(model, 'banner', res.data.url)"
+              :on-success="(res) => $set(model, 'banner', res.data.data.url)"
               :before-upload="beforeAvatarUpload"
             >
               <img v-if="model.banner" :src="model.banner" class="banner" />
@@ -55,7 +55,7 @@
                     :action="uploadUrl"
                     :headers="getAuthHeaders()"
                     :show-file-list="false"
-                    :on-success="(res) => $set(skin, 'img', res.data.url)"
+                    :on-success="(res) => $set(skin, 'img', res.data.data.url)"
                     :before-upload="beforeAvatarUpload"
                   >
                     <img v-if="skin.img" :src="skin.img" class="banner" />
@@ -96,7 +96,7 @@
                     :action="uploadUrl"
                     :headers="getAuthHeaders()"
                     :show-file-list="false"
-                    :on-success="(res) => $set(item, 'icon', res.data.url)"
+                    :on-success="(res) => $set(item, 'icon', res.data.data.url)"
                     :before-upload="beforeAvatarUpload"
                   >
                     <img v-if="item.icon" :src="item.icon" class="skill" />
@@ -121,7 +121,7 @@
                     :action="uploadUrl"
                     :headers="getAuthHeaders()"
                     :show-file-list="false"
-                    :on-success="(res) => $set(item, 'video', res.data.url)"
+                    :on-success="(res) => $set(item, 'video', res.data.data.url)"
                     :before-upload="beforeVideoUpload"
                   >
                     <video :src="item.video" v-if="item.video" controls class="video" />

@@ -34,7 +34,7 @@
                   :action="uploadUrl"
                   :headers="getAuthHeaders()"
                   :show-file-list="false"
-                  :on-success="(res) => $set(item, 'image', res.data.url)"
+                  :on-success="(res) => $set(item, 'image', res.data.data.url)"
                   :before-upload="beforeAvatarUpload"
                 >
                   <img v-if="item.image" :src="item.image" style="width: 300px" />
