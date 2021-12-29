@@ -91,7 +91,9 @@ export default {
         item: 0,
         hero: 0,
         category: 0,
-        article: 0
+        article: 0,
+        rune: 0,
+        spell: 0
       }
     }
   },

@@ -15,6 +15,7 @@
               :headers="getAuthHeaders()"
               :show-file-list="false"
               :on-success="(res) => $set(model, 'avatar', res.data.url)"
+              :before-upload="beforeAvatarUpload"
             >
               <img v-if="model.avatar" :src="model.avatar" class="avatar" />
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -27,6 +28,7 @@
               :headers="getAuthHeaders()"
               :show-file-list="false"
               :on-success="(res) => $set(model, 'banner', res.data.url)"
+              :before-upload="beforeAvatarUpload"
             >
               <img v-if="model.banner" :src="model.banner" class="banner" />
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -54,6 +56,7 @@
                     :headers="getAuthHeaders()"
                     :show-file-list="false"
                     :on-success="(res) => $set(skin, 'img', res.data.url)"
+                    :before-upload="beforeAvatarUpload"
                   >
                     <img v-if="skin.img" :src="skin.img" class="banner" />
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -94,6 +97,7 @@
                     :headers="getAuthHeaders()"
                     :show-file-list="false"
                     :on-success="(res) => $set(item, 'icon', res.data.url)"
+                    :before-upload="beforeAvatarUpload"
                   >
                     <img v-if="item.icon" :src="item.icon" class="skill" />
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -118,6 +122,8 @@
                     :headers="getAuthHeaders()"
                     :show-file-list="false"
                     :on-success="(res) => $set(item, 'video', res.data.url)"
+                    :before-upload="beforeVideoUpload"
+                    :on-progress="uploadVideoProcess"
                   >
                     <video :src="item.video" v-if="item.video" controls class="video" />
                     <i v-else class="el-icon-upload avatar-uploader-icon"></i>
@@ -337,6 +343,7 @@ import {
 } from '@/api/rune'
 
 import upload from '@/mixins/upload'
+import rune from '@/mixins/rune'
 
 export default {
   name: 'HeroEdit',
@@ -344,7 +351,7 @@ export default {
     id: {}
   },
 
-  mixins: [upload],
+  mixins: [upload, rune],
 
   data() {
     return {
@@ -374,20 +381,24 @@ export default {
         skins: [],
 
         primary_rune: {
-          rune: '',
-          rune_first: '',
-          rune_second: '',
-          rune_third: '',
-          rune_fourth: ''
+          rune: null,
+          rune_first: null,
+          rune_second: null,
+          rune_third: null,
+          rune_fourth: null
         },
 
         secondary_rune: {
-          rune: '',
-          rune_first: '',
-          rune_second: ''
+          rune: null,
+          rune_first: null,
+          rune_second: null
         },
 
-        little_rune: {}
+        little_rune: {
+          rune_first: null,
+          rune_second: null,
+          rune_third: null
+        }
       }
     }
   },
@@ -498,43 +509,11 @@ export default {
       const res = await get_little_third_rune()
       this.littleThirdRuneList = res.data.data
     }
-  },
-  computed: {
-    rune_first() {
-      return this.relatedRuneList.filter(rune => rune.slotLabel === '基石')
-    },
-    rune_second() {
-      return this.relatedRuneList.filter(
-        rune =>
-          rune.slotLabel === '預謀' ||
-          rune.slotLabel === '寶物' ||
-          rune.slotLabel === '巧具' ||
-          rune.slotLabel === '英武'
-      )
-    },
-    rune_third() {
-      return this.relatedRuneList.filter(
-        rune =>
-          rune.slotLabel === '追蹤' ||
-          rune.slotLabel === '卓越' ||
-          rune.slotLabel === '未來' ||
-          rune.slotLabel === '傳說'
-      )
-    },
-    rune_fourth() {
-      return this.relatedRuneList.filter(
-        rune =>
-          rune.slotLabel === '狩獵' ||
-          rune.slotLabel === '威能' ||
-          rune.slotLabel === '超越' ||
-          rune.slotLabel === '戰鬥'
-      )
-    }
   }
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
@@ -553,12 +532,11 @@ export default {
   line-height: 178px;
   text-align: center;
 }
+
 .avatar {
-  width: 178px;
-  height: 178px;
-  display: block;
-  margin-top: 10px;
+  max-width: 100%;
 }
+
 .banner {
   width: 300px;
   margin-top: 10px;
