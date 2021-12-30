@@ -1,7 +1,7 @@
 <template>
   <div class="createAdContainer">
     <h1 class="title">廣告位列表</h1>
-    <el-card>
+    <el-card shadow="never">
       <el-button type="primary" icon="el-icon-plus" @click="showAddDialog">創建廣告</el-button>
 
       <el-table :data="adList" border stripe>

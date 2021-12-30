@@ -1,17 +1,6 @@
 <template>
   <el-row :gutter="40" class="panel-group">
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel">
-        <div class="card-panel-icon-wrapper icon-ad">
-          <svg-icon icon-class="ad" class-name="card-panel-icon" />
-        </div>
-        <div class="card-panel-description">
-          <div class="card-panel-text">廣告</div>
-          <count-to :start-val="0" :end-val="total.ad" :duration="3000" class="card-panel-num" />
-        </div>
-      </div>
-    </el-col>
-    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="card-panel" @click="handleSetLineChartData('messages')">
         <div class="card-panel-icon-wrapper icon-edit">
           <svg-icon icon-class="edit" class-name="card-panel-icon" />
@@ -57,8 +46,8 @@
     </el-col>
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="card-panel" @click="handleSetLineChartData('shoppings')">
-        <div class="card-panel-icon-wrapper icon-goods">
-          <svg-icon icon-class="goods" class-name="card-panel-icon" />
+        <div class="card-panel-icon-wrapper icon-rune">
+          <svg-icon icon-class="rune" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">天賦符文</div>
@@ -68,8 +57,8 @@
     </el-col>
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="card-panel" @click="handleSetLineChartData('shoppings')">
-        <div class="card-panel-icon-wrapper icon-goods">
-          <svg-icon icon-class="goods" class-name="card-panel-icon" />
+        <div class="card-panel-icon-wrapper icon-spell">
+          <svg-icon icon-class="spell" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">招喚師技能</div>
@@ -136,9 +125,7 @@ export default {
       .card-panel-icon-wrapper {
         color: #fff;
       }
-      .icon-ad {
-        background: #40c9c6;
-      }
+
       .icon-edit {
         background: #36a3f7;
       }
@@ -149,12 +136,16 @@ export default {
         background: #34bfa3;
       }
       .icon-list {
-        background: #34bfa3;
+        background: #ffe293;
+      }
+      .icon-rune {
+        background: #fe8e6b;
+      }
+      .icon-spell {
+        background: #dd85e6;
       }
     }
-    .icon-ad {
-      color: #40c9c6;
-    }
+
     .icon-edit {
       color: #36a3f7;
     }
@@ -165,7 +156,13 @@ export default {
       color: #34bfa3;
     }
     .icon-list {
-      color: #34bfa3;
+      color: #ffe293;
+    }
+    .icon-rune {
+      color: #fe8e6b;
+    }
+    .icon-spell {
+      color: #dd85e6;
     }
 
     .card-panel-icon-wrapper {

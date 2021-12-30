@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1 class="title">裝備列表</h1>
-    <el-card>
+    <el-card shadow="never">
       <el-row>
         <el-col :span="6">
           <el-input maxlength="8" clearable placeholder="請輸入裝備名稱" v-model="itemQuery"></el-input>
@@ -34,23 +34,22 @@
           </el-table-column>
         </el-table>
       </div>
-
-      <!-- 分頁器 -->
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="pageParams.pagenum"
-        :page-sizes="[5, 8, 10, 15]"
-        :page-size="pageParams.pagesize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      ></el-pagination>
     </el-card>
+
+    <!-- 分頁器 -->
+    <Pagination
+      v-if="total > 0"
+      @pagination="getItemList"
+      :limit.sync="pageParams.pagesize"
+      :page.sync="pageParams.pagenum"
+      :total="total"
+    ></Pagination>
   </div>
 </template>
 
 <script>
 import { getItemList, deleteItem } from '@/api/item'
+import Pagination from '@/components/Pagination'
 import indexMethod from '@/mixins/indexMethod'
 export default {
   data() {
@@ -64,6 +63,7 @@ export default {
       itemQuery: ''
     }
   },
+  components: { Pagination },
   mixins: [indexMethod],
   methods: {
     async getItemList() {

@@ -1,7 +1,7 @@
 <template>
   <div class="categoryContainer">
     <h1 class="title">分類列表</h1>
-    <el-card>
+    <el-card shadow="never">
       <div style="padding-bottom: 0.8rem">
         <el-button style="margin-bottom: 1rem" type="primary" icon="el-icon-plus" @click="showAddDialog"
           >創建分類</el-button

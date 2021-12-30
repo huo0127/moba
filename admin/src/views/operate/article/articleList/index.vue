@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1 class="title">文章列表</h1>
-    <el-card>
+    <el-card shadow="never">
       <el-row>
         <el-col :span="6">
           <el-input maxlength="50" clearable placeholder="請輸入文章名稱" v-model="articleQuery"></el-input>
@@ -41,22 +41,22 @@
           </el-table-column>
         </el-table>
       </div>
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="pageParams.pagenum"
-        :page-sizes="[5, 8, 10, 15]"
-        :page-size="pageParams.pagesize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      ></el-pagination>
     </el-card>
+    <!-- 分頁器 -->
+    <Pagination
+      v-if="total > 0"
+      @pagination="getArticleList"
+      :limit.sync="pageParams.pagesize"
+      :page.sync="pageParams.pagenum"
+      :total="total"
+    ></Pagination>
   </div>
 </template>
 
 <script>
 import dayjs from 'dayjs'
 import { getArticleList, deleteArticle } from '@/api/article'
+import Pagination from '@/components/Pagination'
 import indexMethod from '@/mixins/indexMethod'
 export default {
   name: 'ArticleList',
@@ -65,6 +65,7 @@ export default {
       return dayjs(val).format('YYYY-MM-DD')
     }
   },
+  components: { Pagination },
   mixins: [indexMethod],
   data() {
     return {

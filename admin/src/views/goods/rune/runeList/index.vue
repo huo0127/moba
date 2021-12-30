@@ -80,21 +80,20 @@
       </el-dialog>
     </div>
     <!-- 分頁器 -->
-    <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="pageParams.pagenum"
-      :page-sizes="[5, 8, 10, 15]"
-      :page-size="pageParams.pagesize"
-      layout="total, sizes, prev, pager, next, jumper"
+    <Pagination
+      v-if="total > 0"
+      @pagination="fetchRuneList"
+      :limit.sync="pageParams.pagesize"
+      :page.sync="pageParams.pagenum"
       :total="total"
-    ></el-pagination>
+    ></Pagination>
   </div>
 </template>
 
 <script>
 import upload from '@/mixins/upload'
 import { getRuneList, deleteRune, createRune, updateRune } from '@/api/rune'
+import Pagination from '@/components/Pagination'
 import indexMethod from '@/mixins/indexMethod'
 export default {
   name: 'RuneList',
@@ -112,6 +111,7 @@ export default {
       runeQuery: ''
     }
   },
+  components: { Pagination },
   mixins: [upload, indexMethod],
   mounted() {
     this.fetchRuneList()

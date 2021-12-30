@@ -9,7 +9,6 @@ const Spell = require('../../models/Spell')
 
 exports.getDataTotal = async (req, res, next) => {
   try {
-    const ad = await Ad.countDocuments()
     const article = await Article.countDocuments()
     const category = await Category.countDocuments()
     const hero = await Hero.countDocuments()
@@ -17,7 +16,7 @@ exports.getDataTotal = async (req, res, next) => {
     const rune = await Rune.countDocuments()
     const spell = await Spell.countDocuments()
 
-    const total = { ad, article, category, hero, item, rune, spell }
+    const total = { article, category, hero, item, rune, spell }
 
     res.status(200).json({ success: true, data: { data: total } })
   } catch (err) {

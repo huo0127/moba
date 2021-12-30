@@ -1,7 +1,7 @@
 <template>
   <div class="userConatiner">
     <h1 class="title">管理員列表</h1>
-    <el-card>
+    <el-card shadow="never">
       <el-button type="primary" icon="el-icon-plus" @click="showAddDialog">新增用戶</el-button>
       <div class="tableItem">
         <el-table :data="userList" border stripe>
