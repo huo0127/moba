@@ -2,14 +2,7 @@
   <div>
     <h1 class="title">裝備列表</h1>
     <el-card shadow="never">
-      <el-row>
-        <el-col :span="6">
-          <el-input maxlength="8" clearable placeholder="請輸入裝備名稱" v-model="itemQuery"></el-input>
-        </el-col>
-        <el-col :span="3">
-          <el-button style="margin-left: 20px" type="primary" icon="el-icon-search" @click="searchItem">搜索</el-button>
-        </el-col>
-      </el-row>
+      <SearchBar @search="searchItem"></SearchBar>
 
       <div class="tableItem">
         <el-table :data="itemList" border stripe>
@@ -50,6 +43,7 @@
 <script>
 import { getItemList, deleteItem } from '@/api/item'
 import Pagination from '@/components/Pagination'
+import SearchBar from '@/components/SearchBar'
 import indexMethod from '@/mixins/indexMethod'
 export default {
   data() {
@@ -59,11 +53,10 @@ export default {
         pagenum: 1,
         pagesize: 5
       },
-      total: 0,
-      itemQuery: ''
+      total: 0
     }
   },
-  components: { Pagination },
+  components: { Pagination, SearchBar },
   mixins: [indexMethod],
   methods: {
     async getItemList() {
@@ -87,16 +80,8 @@ export default {
         this.getItemList((this.pageParams.pagenum = 1))
       })
     },
-    handleSizeChange(pagesize) {
-      this.pageParams.pagesize = pagesize
-      this.getItemList()
-    },
-    handleCurrentChange(pagenum) {
-      this.pageParams.pagenum = pagenum
-      this.getItemList()
-    },
-    async searchItem() {
-      this.pageParams.query = this.itemQuery
+    async searchItem(val) {
+      this.pageParams.query = val
       this.pageParams.pagenum = 1
       this.getItemList(this.pageParams)
     }

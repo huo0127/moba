@@ -14,7 +14,6 @@
   </div>
 </template>
 
-
 <script>
 export default {
   name: 'Pagination',
@@ -82,6 +81,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-</style>

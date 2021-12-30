@@ -2,16 +2,8 @@
   <div>
     <h1 class="title">文章列表</h1>
     <el-card shadow="never">
-      <el-row>
-        <el-col :span="6">
-          <el-input maxlength="50" clearable placeholder="請輸入文章名稱" v-model="articleQuery"></el-input>
-        </el-col>
-        <el-col :span="3">
-          <el-button style="margin-left: 20px" type="primary" icon="el-icon-search" @click="searchArticle"
-            >搜索</el-button
-          >
-        </el-col>
-      </el-row>
+      <SearchBar @search="searchArticle"></SearchBar>
+
       <div class="tableItem">
         <el-table :data="articleList" @sort-change="sortChange" border stripe>
           <el-table-column type="index" label="序號" :index="indexMethod"> </el-table-column>
@@ -57,6 +49,7 @@
 import dayjs from 'dayjs'
 import { getArticleList, deleteArticle } from '@/api/article'
 import Pagination from '@/components/Pagination'
+import SearchBar from '@/components/SearchBar'
 import indexMethod from '@/mixins/indexMethod'
 export default {
   name: 'ArticleList',
@@ -65,7 +58,7 @@ export default {
       return dayjs(val).format('YYYY-MM-DD')
     }
   },
-  components: { Pagination },
+  components: { Pagination, SearchBar },
   mixins: [indexMethod],
   data() {
     return {
@@ -81,7 +74,6 @@ export default {
       },
 
       total: 0,
-      articleQuery: '',
       createdAt: ''
     }
   },
@@ -125,18 +117,8 @@ export default {
       })
     },
 
-    handleSizeChange(pagesize) {
-      this.pageParams.pagesize = pagesize
-      this.getArticleList()
-    },
-
-    handleCurrentChange(pagenum) {
-      this.pageParams.pagenum = pagenum
-      this.getArticleList()
-    },
-
-    async searchArticle() {
-      this.pageParams.query = this.articleQuery
+    async searchArticle(val) {
+      this.pageParams.query = val
       this.pageParams.pagenum = 1
       this.getArticleList(this.pageParams)
     }

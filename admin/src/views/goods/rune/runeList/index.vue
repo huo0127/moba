@@ -5,14 +5,7 @@
       <el-button type="primary" icon="el-icon-plus" @click="showAddDialog">新建天賦符文</el-button>
       <div style="margin-top: 1.3rem">
         <el-row>
-          <el-col :span="6">
-            <el-input maxlength="8" clearable placeholder="請輸入符文" v-model="runeQuery"></el-input>
-          </el-col>
-          <el-col :span="3">
-            <el-button style="margin-left: 20px" type="primary" icon="el-icon-search" @click="searchRune"
-              >搜索</el-button
-            >
-          </el-col>
+          <SearchBar @search="searchRune"></SearchBar>
         </el-row>
       </div>
 
@@ -94,6 +87,7 @@
 import upload from '@/mixins/upload'
 import { getRuneList, deleteRune, createRune, updateRune } from '@/api/rune'
 import Pagination from '@/components/Pagination'
+import SearchBar from '@/components/SearchBar'
 import indexMethod from '@/mixins/indexMethod'
 export default {
   name: 'RuneList',
@@ -107,11 +101,10 @@ export default {
         pagenum: 1,
         pagesize: 5
       },
-      total: 0,
-      runeQuery: ''
+      total: 0
     }
   },
-  components: { Pagination },
+  components: { Pagination, SearchBar },
   mixins: [upload, indexMethod],
   mounted() {
     this.fetchRuneList()
@@ -177,16 +170,8 @@ export default {
       }
     },
 
-    handleSizeChange(pagesize) {
-      this.pageParams.pagesize = pagesize
-      this.fetchRuneList()
-    },
-    handleCurrentChange(pagenum) {
-      this.pageParams.pagenum = pagenum
-      this.fetchRuneList()
-    },
-    async searchRune() {
-      this.pageParams.query = this.runeQuery
+    async searchRune(val) {
+      this.pageParams.query = val
       this.pageParams.pagenum = 1
       this.fetchRuneList(this.pageParams)
     }
@@ -194,27 +179,3 @@ export default {
 }
 </script>
 
-<style  lang="scss">
-.runeListContainer {
-  .runeDialogContainer {
-    .avatar-uploader .el-upload {
-      border: 1px dashed #d9d9d9;
-      border-radius: 6px;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-    }
-    .avatar-uploader .el-upload:hover {
-      border-color: #409eff;
-    }
-    .avatar-uploader-icon {
-      font-size: 28px;
-      color: #8c939d;
-      width: 178px;
-      height: 178px;
-      line-height: 178px;
-      text-align: center;
-    }
-  }
-}
-</style>

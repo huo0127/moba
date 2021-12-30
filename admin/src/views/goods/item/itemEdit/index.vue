@@ -24,6 +24,7 @@
         </el-form-item>
         <el-form-item label-width="100px">
           <el-button type="primary" native-type="submit">保存</el-button>
+          <el-button @click="$router.push('/goods/item/list')">取消</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -73,24 +74,6 @@ export default {
 </script>
 <style lang="scss">
 .createItemContainer {
-  .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .avatar-uploader .el-upload:hover {
-    border-color: #409eff;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-  }
   .el-input__inner {
     width: 250px;
   }

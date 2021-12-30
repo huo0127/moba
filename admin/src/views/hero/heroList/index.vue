@@ -2,14 +2,7 @@
   <div>
     <h1 class="title">英雄列表</h1>
     <el-card shadow="never">
-      <el-row>
-        <el-col :span="6">
-          <el-input maxlength="8" clearable placeholder="請輸入英雄名稱" v-model="heroQuery"></el-input>
-        </el-col>
-        <el-col :span="3">
-          <el-button style="margin-left: 20px" type="primary" icon="el-icon-search" @click="searchHero">搜索</el-button>
-        </el-col>
-      </el-row>
+      <SearchBar @search="searchHero"></SearchBar>
       <div class="tableItem">
         <el-table :data="heroList" border stripe>
           <el-table-column type="index" :index="indexMethod" label="序號"></el-table-column>
@@ -57,6 +50,7 @@
 <script>
 import { getHeroList, deleteHero } from '@/api/hero'
 import Pagination from '@/components/Pagination'
+import SearchBar from '@/components/SearchBar'
 import indexMethod from '@/mixins/indexMethod'
 export default {
   name: 'HeroList',
@@ -67,11 +61,10 @@ export default {
         pagenum: 1,
         pagesize: 5
       },
-      total: 0,
-      heroQuery: ''
+      total: 0
     }
   },
-  components: { Pagination },
+  components: { Pagination, SearchBar },
   mixins: [indexMethod],
   created() {
     this.getHeroList()
@@ -98,16 +91,8 @@ export default {
         this.getHeroList((this.pageParams.pagenum = 1))
       })
     },
-    handleSizeChange(pagesize) {
-      this.pageParams.pagesize = pagesize
-      this.getHeroList()
-    },
-    handleCurrentChange(pagenum) {
-      this.pageParams.pagenum = pagenum
-      this.getHeroList()
-    },
-    async searchHero() {
-      this.pageParams.query = this.heroQuery
+    async searchHero(val) {
+      this.pageParams.query = val
       this.pageParams.pagenum = 1
       this.getHeroList(this.pageParams)
     }
@@ -119,23 +104,5 @@ export default {
   border: 1px solid #000;
   width: 48px;
   height: 48px;
-}
-
-.el-pagination {
-  margin-top: 15px;
-  text-align: center;
-}
-.el-table {
-  margin-top: 15px;
-}
-.el-card {
-  position: relative;
-  margin-top: 15px;
-  padding: 5px 15px;
-}
-.el-table tr td,
-.el-table tr th {
-  text-align: center !important;
-  font-size: 13px !important;
 }
 </style>

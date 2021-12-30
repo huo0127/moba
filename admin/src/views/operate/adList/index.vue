@@ -27,7 +27,7 @@
         </div>
         <el-row :gutter="20" type="flex" style="flex-wrap: wrap">
           <el-col :span="12" v-for="(item, i) in model.items" :key="i">
-            <el-card>
+            <el-card shadow="never">
               <el-form-item label="跳轉連結 (URL)">
                 <el-input v-model="item.url"></el-input>
               </el-form-item>

@@ -182,15 +182,13 @@ export default {
 <style lang="scss">
 .categoryContainer {
   .createCatsName {
-    margin-top: 1rem;
     .el-input__inner {
-      width: 250px;
+      width: 217px;
     }
   }
   .categoryBtn {
     display: flex;
     justify-content: end;
-    padding-top: 2rem;
   }
 }
 </style>

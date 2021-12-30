@@ -149,11 +149,13 @@
 
           <!-- 進階攻略 -->
           <el-tab-pane label="進階攻略">
-            <el-form-item label="起手">
-              <el-select v-model="model.startItems" multiple filterable>
-                <el-option v-for="item of itemList" :key="item._id" :label="item.name" :value="item._id"></el-option>
-              </el-select>
-            </el-form-item>
+            <div style="margin-top: 1rem">
+              <el-form-item label="起手">
+                <el-select v-model="model.startItems" multiple filterable>
+                  <el-option v-for="item of itemList" :key="item._id" :label="item.name" :value="item._id"></el-option>
+                </el-select>
+              </el-form-item>
+            </div>
             <el-form-item label="推薦">
               <el-select v-model="model.items" multiple filterable>
                 <el-option v-for="item of itemList" :key="item._id" :label="item.name" :value="item._id"></el-option>
@@ -336,9 +338,12 @@
             </el-row>
           </el-tab-pane>
         </el-tabs>
-        <el-form-item style="margin-top: 1rem">
-          <el-button type="primary" native-type="submit">保存</el-button>
-        </el-form-item>
+        <div style="margin-top: 1rem">
+          <el-form-item>
+            <el-button type="primary" native-type="submit">保存</el-button>
+            <el-button @click="$router.push('/heroes/list')">取消</el-button>
+          </el-form-item>
+        </div>
       </el-form>
     </div>
   </div>
@@ -538,25 +543,6 @@ export default {
   .el-button--primary {
     margin-bottom: 1rem;
   }
-}
-
-.avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-.avatar-uploader .el-upload:hover {
-  border-color: #409eff;
-}
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  line-height: 178px;
-  text-align: center;
 }
 
 .avatar {
