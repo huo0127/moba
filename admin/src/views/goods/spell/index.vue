@@ -9,7 +9,7 @@
           <el-table-column prop="name" label="召喚師技能名" width="width" />
           <el-table-column prop="icon" label="圖標">
             <template slot-scope="scope">
-              <img :src="scope.row.icon" style="height: 3rem" />
+              <img :src="scope.row.icon" class="tableAvatar" />
             </template>
           </el-table-column>
           <el-table-column label="操作" width="width">

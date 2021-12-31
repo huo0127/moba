@@ -1,6 +1,6 @@
 :export {
   menuText: #bfcbd9;
-  menuActiveText: #409EFF;
+  menuActiveText: #409eff;
   subMenuActiveText: #f4f4f5;
   menuBg: #304156;
   menuHover: #263445;
@@ -23,7 +23,7 @@
 /* fade-transform */
 .fade-transform-leave-active,
 .fade-transform-enter-active {
-  transition: all .5s;
+  transition: all 0.5s;
 }
 
 .fade-transform-enter {
@@ -39,7 +39,7 @@
 /* breadcrumb transition */
 .breadcrumb-enter-active,
 .breadcrumb-leave-active {
-  transition: all .5s;
+  transition: all 0.5s;
 }
 
 .breadcrumb-enter,
@@ -49,7 +49,7 @@
 }
 
 .breadcrumb-move {
-  transition: all .5s;
+  transition: all 0.5s;
 }
 
 .breadcrumb-leave-active {
@@ -93,9 +93,55 @@
   box-sizing: content-box;
 }
 
+.el-pagination {
+  margin-top: 23px;
+  text-align: center;
+}
+
+.el-table {
+  margin-top: 15px;
+}
+
+.el-card {
+  position: relative;
+  margin-top: 15px;
+  padding: 5px;
+}
+
+.el-table tr td,
+.el-table tr th {
+  text-align: center !important;
+}
+
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px !important;
+  text-align: center;
+}
+
+.avatar {
+  width: 100%;
+  display: block;
+}
+
 #app .main-container {
   min-height: 100%;
-  transition: margin-left .28s;
+  transition: margin-left 0.28s;
   margin-left: 210px;
   position: relative;
 }
@@ -115,7 +161,8 @@
 }
 
 #app .sidebar-container .horizontal-collapse-transition {
-  transition: 0s width ease-in-out, 0s padding-left ease-in-out, 0s padding-right ease-in-out;
+  transition: 0s width ease-in-out, 0s padding-left ease-in-out,
+    0s padding-right ease-in-out;
 }
 
 #app .sidebar-container .scrollbar-wrapper {
@@ -241,7 +288,7 @@
 }
 
 #app .mobile .sidebar-container {
-  transition: transform .28s;
+  transition: transform 0.28s;
   width: 210px !important;
 }
 
@@ -293,7 +340,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,
+    Microsoft YaHei, Arial, sans-serif;
 }
 
 label {

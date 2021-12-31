@@ -40,7 +40,7 @@
               :on-success="(res) => $set(formData, 'icon', res.data.data.url)"
               :before-upload="beforeAvatarUpload"
             >
-              <img v-if="formData.icon" :src="formData.icon" class="avatar" />
+              <img v-if="formData.icon" :src="formData.icon" />
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
           </el-form-item>

@@ -11,7 +11,7 @@
           <el-table-column prop="plaintext" label="簡述"> </el-table-column>
           <el-table-column prop="icon" label="圖標">
             <template slot-scope="scope">
-              <img :src="scope.row.iconPath" style="height: 3rem" />
+              <img :src="scope.row.iconPath" class="tableAvatar" />
             </template>
           </el-table-column>
           <el-table-column fixed="right" label="操作" width="200" align="center">
@@ -91,4 +91,3 @@ export default {
   }
 }
 </script>
-

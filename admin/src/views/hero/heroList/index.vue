@@ -17,7 +17,7 @@
 
           <el-table-column prop="avatar" label="頭像">
             <template slot-scope="scope">
-              <img :src="scope.row.avatar" class="hero-image" />
+              <img :src="scope.row.avatar" class="tableAvatar" />
             </template>
           </el-table-column>
 
@@ -99,10 +99,3 @@ export default {
   }
 }
 </script>
-<style>
-.hero-image {
-  border: 1px solid #000;
-  width: 48px;
-  height: 48px;
-}
-</style>

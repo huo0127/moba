@@ -41,8 +41,10 @@
                 :on-success="(res) => $set(model, 'banner', res.data.data.url)"
                 :before-upload="beforeAvatarUpload"
               >
-                <img v-if="model.banner" :src="model.banner" class="banner" />
-                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                <div class="bannerContainer">
+                  <img v-if="model.banner" :src="model.banner" class="banner" />
+                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </div>
               </el-upload>
             </el-form-item>
           </el-tab-pane>
@@ -65,8 +67,10 @@
                       :on-success="(res) => $set(skin, 'img', res.data.data.url)"
                       :before-upload="beforeAvatarUpload"
                     >
-                      <img v-if="skin.img" :src="skin.img" class="banner" />
-                      <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                      <div class="bannerContainer">
+                        <img v-if="skin.img" :src="skin.img" class="banner" />
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                      </div>
                     </el-upload>
                   </el-form-item>
                   <el-form-item label-width="130px">
@@ -105,7 +109,7 @@
                       :on-success="(res) => $set(item, 'icon', res.data.data.url)"
                       :before-upload="beforeAvatarUpload"
                     >
-                      <img v-if="item.icon" :src="item.icon" class="skill" />
+                      <img v-if="item.icon" :src="item.icon" class="avatar" />
                       <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
                   </el-form-item>
@@ -130,8 +134,10 @@
                       :on-success="(res) => $set(item, 'video', res.data.data.url)"
                       :before-upload="beforeVideoUpload"
                     >
-                      <video :src="item.video" v-if="item.video" controls class="video" />
-                      <i v-else class="el-icon-upload avatar-uploader-icon"></i>
+                      <div class="videoContainer">
+                        <video :src="item.video" v-if="item.video" controls class="video" />
+                        <i v-else class="el-icon-upload avatar-uploader-icon"></i>
+                      </div>
                     </el-upload>
                   </el-form-item>
                   <el-form-item>
@@ -534,31 +540,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-.heroEditConatiner {
-  .el-input__inner {
-    width: 300px;
-  }
-  .el-button--primary {
-    margin-bottom: 1rem;
-  }
-}
-
-.avatar {
-  max-width: 100%;
-}
-
-.banner {
-  width: 300px;
-  margin-top: 10px;
-}
-.skill {
-  width: 80px;
-  margin-top: 10px;
-}
-.video {
-  width: 500px;
-  margin-top: 10px;
-}
-</style>

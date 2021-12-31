@@ -75,3 +75,40 @@
   line-height: 178px !important;
   text-align: center;
 }
+
+.avatar {
+  width: 100%;
+  display: block;
+}
+
+.heroEditConatiner .el-input__inner {
+  width: 300px;
+}
+
+.heroEditConatiner .el-button--primary {
+  margin-bottom: 1rem;
+}
+
+.heroEditConatiner .bannerContainer {
+  width: 300px;
+  line-height: 0px !important;
+}
+
+.heroEditConatiner .bannerContainer .banner {
+  max-width: 100%;
+}
+
+.heroEditConatiner .videoContainer {
+  line-height: 0px !important;
+  width: 500px;
+}
+
+.heroEditConatiner .videoContainer .video {
+  width: 100%;
+}
+
+.tableAvatar {
+  height: 3rem !important;
+  border-radius: 6px;
+  border: 1px solid #000;
+}
