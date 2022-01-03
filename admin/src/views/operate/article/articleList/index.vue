@@ -72,7 +72,6 @@ export default {
         prop: '',
         order: ''
       },
-
       total: 0,
       createdAt: ''
     }
@@ -106,15 +105,23 @@ export default {
         confirmButtonText: '確定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(async() => {
-        const res = await deleteArticle(row._id)
-        if (!res) return
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        })
-        this.getArticleList((this.pageParams.pagenum = 1))
       })
+        .then(async() => {
+          const res = await deleteArticle(row._id)
+          if (!res) return
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          this.getArticleList((this.pageParams.pagenum = 1))
+        })
+        .catch(() => {
+          // catch處理的就是點擊取消的邏輯
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
     },
 
     async searchArticle(val) {

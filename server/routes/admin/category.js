@@ -9,7 +9,9 @@ router.get('/:id', categoryValidator.getCategory, categoryCtrl.getCategory)
 
 router.put('/:id', categoryValidator.updateCategory, categoryCtrl.updateCategory)
 
-router.post('/', categoryValidator.createCategory, categoryCtrl.createCategory)
+// router.post('/', categoryValidator.createCategory, categoryCtrl.createCategory)
+
+router.post('/', categoryCtrl.createCategory)
 
 router.delete('/:id', categoryValidator.deleteCategory, categoryCtrl.deleteCategory)
 

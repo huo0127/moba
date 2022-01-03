@@ -2,7 +2,7 @@
   <div>
     <h1 class="title">召喚師技能列表</h1>
     <el-card shadow="never">
-      <el-button type="primary" icon="el-icon-plus" @click="showAddDialog">創建召喚師技能</el-button>
+      <el-button type="primary" icon="el-icon-plus" @click="dialogFormVisible = true">創建召喚師技能</el-button>
       <div class="tableItem">
         <el-table :data="spellList" border stripe>
           <el-table-column type="index" label="序號" />
@@ -22,15 +22,21 @@
       </div>
     </el-card>
 
-    <el-dialog :title="formData._id ? '編輯召喚師技能' : '創建召喚師技能'" :visible.sync="dialogFormVisible">
-      <el-form ref="formData" :model="formData" :label-position="labelPosition">
-        <el-form-item label="召喚師技能">
-          <el-input v-model="formData.name" autocomplete="off" />
+    <el-dialog
+      :title="formData._id ? '編輯召喚師技能' : '創建召喚師技能'"
+      :visible.sync="dialogFormVisible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :show-close="false"
+    >
+      <el-form ref="formData" :model="formData" :label-position="labelPosition" :rules="rules">
+        <el-form-item label="召喚師技能" prop="name">
+          <el-input ref="name" v-model="formData.name" autocomplete="off" />
         </el-form-item>
-        <el-form-item label="描述">
-          <el-input v-model="formData.description" autocomplete="off" type="textarea" />
+        <el-form-item label="描述" prop="description">
+          <el-input ref="description" v-model="formData.description" autocomplete="off" type="textarea" />
         </el-form-item>
-        <el-form-item label="圖標">
+        <el-form-item label="圖標" prop="icon">
           <el-upload
             class="avatar-uploader"
             :action="uploadUrl"
@@ -39,14 +45,14 @@
             :on-success="(res) => $set(formData, 'icon', res.data.data.url)"
             :before-upload="beforeAvatarUpload"
           >
-            <img v-if="formData.icon" :src="formData.icon" class="avatar" />
+            <img v-if="formData.icon" :src="formData.icon" class="avatar" ref="icon" />
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="save">確定</el-button>
+        <el-button @click="handleClose">取 消</el-button>
+        <el-button type="primary" @click="save">確 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -61,8 +67,16 @@ export default {
     return {
       labelPosition: 'top',
       spellList: [],
+
       dialogFormVisible: false,
-      formData: {}
+      formData: {
+        name: '',
+        description: '',
+        icon: ''
+      },
+      rules: {
+        name: [{ required: true, message: '請輸入招喚師技能名稱', trigger: 'blur' }]
+      }
     }
   },
   mixins: [upload],
@@ -75,32 +89,46 @@ export default {
       this.spellList = res.data.data
     },
 
-    showAddDialog() {
-      this.dialogFormVisible = true
-      this.formData = {}
-    },
-
     showUpdateDialog(row) {
       this.dialogFormVisible = true
-      this.formData = {
-        ...row
-      }
-      this.id = row._id
+      this.$nextTick(() => {
+        this.formData = {
+          ...row
+        }
+        this.id = row._id
+      })
     },
-    async save() {
-      if (!this.formData._id) {
-        const res = await createSpell(this.formData)
-        if (!res) return
-        this.$message.success('創建召喚師技能成功')
-        this.getSpellList()
-        this.dialogFormVisible = false
-      } else {
-        const res = await updateSpell(this.id, this.formData)
-        if (!res) return
-        this.$message.success('編輯召喚師技能成功')
-        this.getSpellList()
-        this.dialogFormVisible = false
-      }
+
+    handleReset() {
+      this.$nextTick(() => {
+        this.$refs.formData.resetFields()
+      })
+    },
+
+    handleClose() {
+      this.handleReset()
+      this.dialogFormVisible = false
+    },
+
+    save() {
+      this.$refs.formData.validate(async valid => {
+        if (valid) {
+          try {
+            if (this.formData._id) {
+              await updateSpell(this.id, this.formData)
+            } else {
+              await createSpell(this.formData)
+            }
+            this.$message.success(this.formData._id ? '編輯招喚師技能成功' : '創建招喚師技能成功')
+            this.dialogFormVisible = false
+            this.getSpellList()
+          } catch (error) {
+            this.$message.error(this.formData._id ? '編輯招喚師技能失敗' : '創建招喚師技能失敗')
+          }
+        } else {
+          return false
+        }
+      })
     },
 
     deleteUser(row) {

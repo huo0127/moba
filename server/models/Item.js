@@ -3,7 +3,8 @@ const baseModel = require('./base-model')
 
 const schema = new mongoose.Schema({
   ...baseModel,
-  name: { type: String, required: true },
+  name: { type: String },
+  // name: { type: String, required: true },
   iconPath: { type: String, default: '' },
   description: { type: String, default: '' },
   categories: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'Category' }],

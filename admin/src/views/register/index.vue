@@ -3,7 +3,7 @@
     <el-card header="註冊" class="login-card">
       <el-form :model="ruleForm" ref="ruleForm" :rules="rules" label-width="100px" class="demo-ruleForm" status-icon>
         <el-form-item label="用戶名" prop="username">
-          <el-input v-model="ruleForm.username"></el-input>
+          <el-input v-model="ruleForm.username" ref="username" v-focus></el-input>
         </el-form-item>
 
         <el-form-item label="密碼" prop="password">
@@ -18,9 +18,9 @@
           <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
           <el-button @click="resetForm('ruleForm')">重置</el-button>
         </el-form-item>
-        <div>
-          已經註冊了 ？
-          <router-link to="/login"> 前往登入頁 </router-link>
+        <div class="goLoginContainer">
+          已經註冊了嗎 ？
+          <router-link to="/login" class="goLogin"> 前往登入頁 </router-link>
         </div>
       </el-form>
     </el-card>
@@ -30,14 +30,17 @@
 import { register } from '@/api/adminUser'
 export default {
   data() {
+    // 對登入的用戶名進行驗證
+    const validateUsername = (rule, value, callback) => {
+      const regUsername = /^[-_a-zA-Z0-9]{5,16}$/
+      if (regUsername.test(value)) return callback()
+      callback(new Error('請輸入合法的用户名'))
+    }
     const validatePass = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('請輸入密碼'))
-      } else {
-        if (this.ruleForm.password !== '') {
-          this.$refs.ruleForm.validateField('checkPassword')
-        }
-        callback()
+      if (this.ruleForm.password !== '') {
+        const regPassword = /^[a-zA-Z0-9]{6,20}/
+        if (regPassword.test(value)) return callback()
+        callback(new Error('密碼只能是6到20位字母、數字'))
       }
     }
     const validatePass2 = (rule, value, callback) => {
@@ -58,35 +61,40 @@ export default {
       rules: {
         username: [
           { required: true, message: '請輸入用戶名', trigger: 'blur' },
-          { min: 5, max: 10, message: '長度必須在 5 到 10 個字符' }
+          { trigger: 'blur', validator: validateUsername }
         ],
         password: [
-          { min: 6, max: 20, message: '長度必須在 6 到 20 個英文字母與數字' },
+          { required: true, message: '請輸入密碼', trigger: 'blur' },
           { validator: validatePass, trigger: 'blur' }
         ],
-        checkPassword: [{ validator: validatePass2, trigger: 'blur' }]
+        checkPassword: [
+          { required: true, message: '請輸入確認密碼', trigger: 'blur' },
+          { validator: validatePass2, trigger: 'blur' }
+        ]
       }
     }
   },
+
   methods: {
     submitForm() {
       this.$refs.ruleForm.validate(async valid => {
-        try {
-          await register(this.ruleForm)
-          this.$message.success('註冊成功，前往登入頁面')
-          this.$router.push('/login')
-        } catch (err) {}
+        if (valid) {
+          try {
+            await register(this.ruleForm)
+            this.$message.success('註冊成功，前往登入頁面')
+            this.$router.push('/login')
+          } catch (error) {
+            this.$message.error('註冊失敗')
+          }
+        } else {
+          return false
+        }
       })
     },
+
     resetForm() {
-      this.$refs.registerForm.resetFields()
+      this.$refs.ruleForm.resetFields()
     }
   }
 }
 </script>
-<style lang="scss">
-.login-card {
-  width: 25rem;
-  margin: 5rem auto;
-}
-</style>

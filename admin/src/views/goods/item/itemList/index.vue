@@ -69,16 +69,20 @@ export default {
         confirmButtonText: '確定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(async() => {
-        const res = await deleteItem(row._id)
-        if (!res) return
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        })
-        // 刪除回第一頁
-        this.getItemList((this.pageParams.pagenum = 1))
       })
+        .then(async() => {
+          const res = await deleteItem(row._id)
+          if (!res) return
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          // 刪除回第一頁
+          this.getItemList((this.pageParams.pagenum = 1))
+        })
+        .catch(() => {
+          this.$message.info('已取消刪除')
+        })
     },
     async searchItem(val) {
       this.pageParams.query = val

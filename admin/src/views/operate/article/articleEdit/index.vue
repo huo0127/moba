@@ -1,15 +1,15 @@
 <template>
   <div class="createArticleContainer">
     <h1 class="title">{{ id ? '編輯' : '創建' }}文章</h1>
-    <el-form label-width="120px" @submit.native.prevent="save">
-      <el-form-item label="所属分類">
+    <el-form label-width="120px" @submit.native.prevent="save" ref="formData" :model="formData" :rules="rules">
+      <el-form-item label="所属分類" prop="categories">
         <el-select v-model="formData.categories" multiple>
           <el-option v-for="item in categories" :key="item._id" :label="item.name" :value="item._id"></el-option>
         </el-select>
       </el-form-item>
       <div class="createArtilceTitle">
-        <el-form-item label="標題">
-          <el-input v-model="formData.name"></el-input>
+        <el-form-item label="標題" prop="name">
+          <el-input v-model="formData.name" v-focus></el-input>
         </el-form-item>
       </div>
 
@@ -53,7 +53,11 @@ export default {
   data() {
     return {
       formData: {},
-      categories: []
+      categories: [],
+      rules: {
+        name: [{ required: true, message: '請輸入文章名稱', trigger: 'blur' }],
+        categories: [{ required: true, message: '請選擇文章分類', trigger: 'blur' }]
+      }
     }
   },
   methods: {
@@ -64,19 +68,26 @@ export default {
       Editor.insertEmbed(cursorLocation, 'image', res.data.data.url)
       resetUploader()
     },
-    async save() {
-      let res
-      if (this.id) {
-        res = await updateArticle(this.id, this.formData)
-      } else {
-        res = await createArticle(this.formData)
-      }
-      this.$router.push('/operate/article/list')
-      this.$message({
-        type: 'success',
-        message: '保存成功'
+    save() {
+      this.$refs.formData.validate(async valid => {
+        if (valid) {
+          try {
+            if (this.id) {
+              await updateArticle(this.id, this.formData)
+            } else {
+              await createArticle(this.formData)
+            }
+            this.$router.push('/operate/article/list')
+            this.$message.success(this.id ? '編輯文章成功' : '創建文章成功')
+          } catch (error) {
+            this.$message.error(this.id ? '編輯文章失敗' : '創建文章失敗')
+          }
+        } else {
+          return false
+        }
       })
     },
+
     async getArticle() {
       const res = await getArticle(this.id)
       this.formData = res.data.data
@@ -96,10 +107,3 @@ export default {
   }
 }
 </script>
-<style lang="scss">
-.createArtilceTitle {
-  .el-input__inner {
-    width: 500px;
-  }
-}
-</style>

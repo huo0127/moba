@@ -2,11 +2,15 @@
   <div class="createItemContainer">
     <h1 class="title">{{ id ? '編輯' : '創建' }}裝備</h1>
     <el-card shadow="never">
-      <el-form @submit.native.prevent="save" :model="formData" ref="formData">
-        <el-form-item label="名稱" label-width="100px">
-          <el-input v-model="formData.name"></el-input>
+      <el-form @submit.native.prevent="save" :model="formData" ref="formData" :rules="rules" label-width="120px">
+        <el-form-item label="名稱" prop="name">
+          <el-input v-model="formData.name" v-focus></el-input>
         </el-form-item>
-        <el-form-item label="圖標" label-width="100px">
+
+        <el-form-item label="簡述">
+          <el-input v-model="formData.plaintext" type="textarea"></el-input>
+        </el-form-item>
+        <el-form-item label="圖標">
           <el-upload
             class="avatar-uploader"
             :action="uploadUrl"
@@ -19,10 +23,7 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
-        <el-form-item label="簡述" label-width="100px">
-          <el-input v-model="formData.plaintext" type="textarea"></el-input>
-        </el-form-item>
-        <el-form-item label-width="100px">
+        <el-form-item>
           <el-button type="primary" native-type="submit">保存</el-button>
           <el-button @click="$router.push('/goods/item/list')">取消</el-button>
         </el-form-item>
@@ -42,26 +43,37 @@ export default {
   mixins: [upload],
   data() {
     return {
-      formData: {}
+      formData: {},
+      rules: {
+        name: [{ required: true, message: '請輸入裝備名稱', trigger: 'blur' }]
+      }
     }
   },
   methods: {
     afterUpload(res) {
       this.$set(this.formData, 'iconPath', res.data.data.url)
     },
-    async save() {
-      let res
-      if (this.id) {
-        res = await updateItem(this.id, this.formData)
-      } else {
-        res = await createItem(this.formData)
-      }
-      this.$router.push('/goods/item/list')
-      this.$message({
-        type: 'success',
-        message: '保存成功'
+
+    save() {
+      this.$refs.formData.validate(async valid => {
+        if (valid) {
+          try {
+            if (this.id) {
+              await updateItem(this.id, this.formData)
+            } else {
+              await createItem(this.formData)
+            }
+            this.$message.success(this.id ? '編輯裝備成功' : '創建裝備成功')
+            this.$router.push('/goods/item/list')
+          } catch (err) {
+            this.$message.error(this.id ? '編輯裝備失敗' : '創建裝備失敗')
+          }
+        } else {
+          return false
+        }
       })
     },
+
     async getItem() {
       const res = await getItem(this.id)
       this.formData = res.data.data

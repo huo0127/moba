@@ -2,14 +2,14 @@
   <div class="about">
     <h1 class="title">{{ id ? '編輯' : '創建' }}英雄</h1>
     <div class="heroEditConatiner">
-      <el-form label-width="120px" @submit.native.prevent="save">
+      <el-form label-width="120px" @submit.native.prevent="save" :rules="rules" :model="model" ref="model">
         <el-tabs value="basic" type="border-card">
           <!-- 基本訊息 -->
           <el-tab-pane label="基本訊息" name="basic">
-            <el-form-item label="名稱" style="margin-top: 1rem">
-              <el-input v-model="model.name"></el-input>
+            <el-form-item label="名稱" style="margin-top: 1rem" prop="name">
+              <el-input v-model="model.name" v-focus></el-input>
             </el-form-item>
-            <el-form-item label="路線">
+            <el-form-item label="路線" prop="categories">
               <el-select v-model="model.categories" multiple>
                 <el-option
                   v-for="item of heroCateList"
@@ -427,6 +427,10 @@ export default {
           rune_second: null,
           rune_third: null
         }
+      },
+      rules: {
+        name: [{ required: true, message: '請輸入英雄名稱', trigger: 'blur' }],
+        categories: [{ required: true, message: '請選擇英雄路線', trigger: 'blur' }]
       }
     }
   },
@@ -444,18 +448,23 @@ export default {
   },
 
   methods: {
-    async save() {
-      let res
-
-      if (this.id) {
-        res = await updateHero(this.id, this.model)
-      } else {
-        res = await createHero(this.model)
-      }
-      this.$router.push('/heroes/list')
-      this.$message({
-        type: 'success',
-        message: '保存成功'
+    save() {
+      this.$refs.model.validate(async valid => {
+        if (valid) {
+          try {
+            if (this.id) {
+              await updateHero(this.id, this.model)
+            } else {
+              await createHero(this.model)
+            }
+            this.$message.success(this.id ? '編輯英雄成功' : '創建英雄成功')
+            this.$router.push('/heroes/list')
+          } catch (err) {
+            this.$message.error(this.id ? '編輯英雄失敗' : '創建英雄失敗')
+          }
+        } else {
+          return false
+        }
       })
     },
     async getHero() {

@@ -81,15 +81,23 @@ export default {
         confirmButtonText: '確定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(async() => {
-        const res = await deleteHero(row._id)
-        if (!res) return
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        })
-        this.getHeroList((this.pageParams.pagenum = 1))
       })
+        .then(async() => {
+          try {
+            const res = await deleteHero(row._id)
+            if (!res) return
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.getHeroList((this.pageParams.pagenum = 1))
+          } catch (error) {
+            this.$message.error('刪除失敗!')
+          }
+        })
+        .catch(() => {
+          this.$message.info('已取消刪除')
+        })
     },
     async searchHero(val) {
       this.pageParams.query = val

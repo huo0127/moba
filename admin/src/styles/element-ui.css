@@ -112,3 +112,39 @@
   border-radius: 6px;
   border: 1px solid #000;
 }
+
+.createAdContainer .el-input__inner {
+  width: 250px;
+}
+
+.categoryContainer .createCatsName .el-input__inner {
+  width: 217px;
+}
+
+.categoryContainer .categoryBtn {
+  display: flex;
+  justify-content: end;
+}
+
+.createArtilceTitle .el-input__inner {
+  width: 500px;
+}
+
+.login-card {
+  width: 25rem;
+  margin: 5rem auto;
+}
+
+.login-card .goLoginContainer {
+  color: #999;
+  display: flex;
+  justify-content: center;
+}
+
+.login-card .goLoginContainer .goLogin {
+  color: #409eff;
+}
+
+.userConatiner .el-input__inner {
+  width: 250px;
+}

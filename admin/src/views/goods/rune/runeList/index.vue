@@ -2,7 +2,7 @@
   <div class="runeListContainer">
     <h1 class="title">天賦符文列表</h1>
     <el-card shadow="never">
-      <el-button type="primary" icon="el-icon-plus" @click="showAddDialog">新建天賦符文</el-button>
+      <el-button type="primary" icon="el-icon-plus" @click="dialogFormVisible = true">新建天賦符文</el-button>
       <div style="margin-top: 1.3rem">
         <el-row>
           <SearchBar @search="searchRune"></SearchBar>
@@ -29,9 +29,15 @@
       </div>
     </el-card>
     <div class="runeDialogContainer">
-      <el-dialog :title="formData._id ? '編輯天賦符文' : '創建天賦符文'" :visible.sync="dialogFormVisible">
-        <el-form ref="formData" :model="formData" :label-position="labelPosition">
-          <el-form-item label="圖標" label-width="100px">
+      <el-dialog
+        :title="formData._id ? '編輯天賦符文' : '創建天賦符文'"
+        :visible.sync="dialogFormVisible"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+        :show-close="false"
+      >
+        <el-form ref="formData" :model="formData" :label-position="labelPosition" :rules="rules">
+          <el-form-item label="圖標" prop="icon">
             <el-upload
               class="avatar-uploader"
               :action="uploadUrl"
@@ -40,34 +46,34 @@
               :on-success="(res) => $set(formData, 'icon', res.data.data.url)"
               :before-upload="beforeAvatarUpload"
             >
-              <img v-if="formData.icon" :src="formData.icon" />
+              <img v-if="formData.icon" :src="formData.icon" class="avatar" />
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
           </el-form-item>
-          <el-form-item label="ID" label-width="100px">
+          <el-form-item label="名稱" prop="name">
+            <el-input v-model="formData.name" ref="name" />
+          </el-form-item>
+          <el-form-item label="ID" prop="ID">
             <el-input v-model="formData.ID" />
           </el-form-item>
-          <el-form-item label="名稱" label-width="100px">
-            <el-input v-model="formData.name" />
-          </el-form-item>
-          <el-form-item label="slotLabel" label-width="100px">
+          <el-form-item label="slotLabel" prop="slotLabel">
             <el-input v-model="formData.slotLabel" />
           </el-form-item>
-          <el-form-item label="主符文" label-width="100px">
+          <el-form-item label="主符文" prop="styleName">
             <el-input v-model="formData.styleName" />
           </el-form-item>
-          <el-form-item label="長述" label-width="100px">
+          <el-form-item label="長述" prop="longdesc">
             <el-input v-model="formData.longdesc" type="textarea" />
           </el-form-item>
-          <el-form-item label="短述" label-width="100px">
+          <el-form-item label="短述" prop="shortdesc">
             <el-input v-model="formData.shortdesc" type="textarea" />
           </el-form-item>
-          <el-form-item label="tip" label-width="100px">
+          <el-form-item label="tip" prop="tooltip">
             <el-input v-model="formData.tooltip" type="textarea" />
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取消</el-button>
+          <el-button @click="handleClose">取消</el-button>
           <el-button type="primary" @click="save">確定</el-button>
         </div>
       </el-dialog>
@@ -92,16 +98,40 @@ import indexMethod from '@/mixins/indexMethod'
 export default {
   name: 'RuneList',
   data() {
+    const checkRuneId = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('請輸入天賦符文ID'))
+      } else if (!Number.isInteger(value)) {
+        callback(new Error('天賦符雯ID必須是數字'))
+      } else {
+        callback()
+      }
+    }
     return {
-      labelPosition: 'right',
+      labelPosition: 'top',
       runeList: [],
       dialogFormVisible: false,
-      formData: {},
+      formData: {
+        icon: '',
+        name: '',
+        ID: '',
+        slotLabel: '',
+        styleName: '',
+        longdesc: '',
+        shortdesc: '',
+        tooltip: ''
+      },
       pageParams: {
         pagenum: 1,
         pagesize: 5
       },
-      total: 0
+      total: 0,
+
+      // 驗證
+      rules: {
+        name: [{ required: true, message: '請輸入符文天賦名稱', trigger: 'blur' }],
+        ID: [{ required: true, validator: checkRuneId, trigger: 'blur' }]
+      }
     }
   },
   components: { Pagination, SearchBar },
@@ -109,6 +139,7 @@ export default {
   mounted() {
     this.fetchRuneList()
   },
+
   methods: {
     async fetchRuneList() {
       const res = await getRuneList(this.pageParams)
@@ -116,17 +147,26 @@ export default {
       this.total = res.data.total
     },
 
-    showAddDialog() {
-      this.dialogFormVisible = true
-
-      this.formData = {}
-    },
     showUpdateDialog(row) {
       this.dialogFormVisible = true
-      this.formData = {
-        ...row
-      }
-      this.id = row._id
+      this.$nextTick(() => {
+        this.formData = {
+          ...row
+        }
+        this.id = row._id
+        this.$refs.name.focus()
+      })
+    },
+
+    handleReset() {
+      this.$nextTick(() => {
+        this.$refs.formData.resetFields()
+      })
+    },
+
+    handleClose() {
+      this.handleReset()
+      this.dialogFormVisible = false
     },
 
     deleteRune(row) {
@@ -153,27 +193,35 @@ export default {
           })
         })
     },
-
-    async save() {
-      if (!this.formData._id) {
-        const res = await createRune(this.formData)
-        if (!res) return
-        this.$message.success('創建天賦符文成功')
-        this.fetchRuneList()
-        this.dialogFormVisible = false
-      } else {
-        const res = await updateRune(this.id, this.formData)
-        if (!res) return
-        this.$message.success('編輯天賦符文成功')
-        this.fetchRuneList()
-        this.dialogFormVisible = false
-      }
+    save() {
+      this.$refs.formData.validate(async valid => {
+        if (valid) {
+          try {
+            if (this.formData._id) {
+              await updateRune(this.id, this.formData)
+            } else {
+              await createRune(this.formData)
+            }
+            this.$message.success(this.formData._id ? '編輯天賦符文成功' : '創建天賦符文成功')
+            this.dialogFormVisible = false
+            this.fetchRuneList()
+          } catch (err) {
+            this.$message.error(this.formData._id ? '編輯天賦符文失敗' : '創建天賦符文失敗')
+          }
+        } else {
+          return false
+        }
+      })
     },
 
     async searchRune(val) {
       this.pageParams.query = val
       this.pageParams.pagenum = 1
       this.fetchRuneList(this.pageParams)
+    },
+
+    closeDialog() {
+      this.fetchRuneList()
     }
   }
 }
