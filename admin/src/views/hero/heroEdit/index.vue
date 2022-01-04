@@ -20,32 +20,10 @@
               </el-select>
             </el-form-item>
             <el-form-item label="頭像">
-              <el-upload
-                class="avatar-uploader"
-                :action="uploadUrl"
-                :headers="getAuthHeaders()"
-                :show-file-list="false"
-                :on-success="(res) => $set(model, 'avatar', res.data.data.url)"
-                :before-upload="beforeAvatarUpload"
-              >
-                <img v-if="model.avatar" :src="model.avatar" class="avatar" />
-                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-              </el-upload>
+              <UploadImage v-model="model.avatar" @getUploadImage="getUploadImage"></UploadImage>
             </el-form-item>
             <el-form-item label="背景圖片">
-              <el-upload
-                class="avatar-uploader"
-                :action="uploadUrl"
-                :headers="getAuthHeaders()"
-                :show-file-list="false"
-                :on-success="(res) => $set(model, 'banner', res.data.data.url)"
-                :before-upload="beforeAvatarUpload"
-              >
-                <div class="bannerContainer">
-                  <img v-if="model.banner" :src="model.banner" class="banner" />
-                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                </div>
-              </el-upload>
+              <UploadImage v-model="model.banner" @getUploadImage="getBannerImage"></UploadImage>
             </el-form-item>
           </el-tab-pane>
 
@@ -59,19 +37,7 @@
                     <el-input v-model="skin.name"></el-input>
                   </el-form-item>
                   <el-form-item label="造型圖片" label-width="130px">
-                    <el-upload
-                      class="avatar-uploader"
-                      :action="uploadUrl"
-                      :headers="getAuthHeaders()"
-                      :show-file-list="false"
-                      :on-success="(res) => $set(skin, 'img', res.data.data.url)"
-                      :before-upload="beforeAvatarUpload"
-                    >
-                      <div class="bannerContainer">
-                        <img v-if="skin.img" :src="skin.img" class="banner" />
-                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                      </div>
-                    </el-upload>
+                    <UploadImage v-model="skin.img" @getUploadImage="getSkinImage"></UploadImage>
                   </el-form-item>
                   <el-form-item label-width="130px">
                     <HintButton
@@ -101,17 +67,7 @@
                     <el-input v-model="item.skillOrder"></el-input>
                   </el-form-item>
                   <el-form-item label="圖標">
-                    <el-upload
-                      class="avatar-uploader"
-                      :action="uploadUrl"
-                      :headers="getAuthHeaders()"
-                      :show-file-list="false"
-                      :on-success="(res) => $set(item, 'icon', res.data.data.url)"
-                      :before-upload="beforeAvatarUpload"
-                    >
-                      <img v-if="item.icon" :src="item.icon" class="avatar" />
-                      <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                    </el-upload>
+                    <UploadImage v-model="item.icon" @getUploadImage="getSkillImage"></UploadImage>
                   </el-form-item>
                   <el-form-item label="冷卻時間(秒)">
                     <el-input v-model="item.delay"></el-input>
@@ -126,19 +82,7 @@
                     <el-input v-model="item.description" type="textarea"></el-input>
                   </el-form-item>
                   <el-form-item label="影片">
-                    <el-upload
-                      class="avatar-uploader"
-                      :action="uploadUrl"
-                      :headers="getAuthHeaders()"
-                      :show-file-list="false"
-                      :on-success="(res) => $set(item, 'video', res.data.data.url)"
-                      :before-upload="beforeVideoUpload"
-                    >
-                      <div class="videoContainer">
-                        <video :src="item.video" v-if="item.video" controls class="video" />
-                        <i v-else class="el-icon-upload avatar-uploader-icon"></i>
-                      </div>
-                    </el-upload>
+                    <UploadVideo v-model="item.video" @getUploadVideo="getUploadVideo"></UploadVideo>
                   </el-form-item>
                   <el-form-item>
                     <HintButton
@@ -370,7 +314,8 @@ import {
   get_little_third_rune
 } from '@/api/rune'
 
-import upload from '@/mixins/upload'
+import UploadImage from '@/components/UploadImage'
+import UploadVideo from '@/components/UploadVideo'
 import rune from '@/mixins/rune'
 
 export default {
@@ -378,8 +323,8 @@ export default {
   props: {
     id: {}
   },
-
-  mixins: [upload, rune],
+  components: { UploadImage, UploadVideo },
+  mixins: [rune],
 
   data() {
     return {
@@ -448,6 +393,27 @@ export default {
   },
 
   methods: {
+    getUploadImage(val) {
+      this.model.avatar = val
+    },
+    getBannerImage(val) {
+      this.model.banner = val
+    },
+    getSkinImage(val) {
+      this.model.skins.forEach(skin => {
+        skin.img = val
+      })
+    },
+    getSkillImage(val) {
+      this.model.skills.forEach(item => {
+        item.icon = val
+      })
+    },
+    getUploadVideo(val) {
+      this.model.skills.forEach(item => {
+        item.video = val
+      })
+    },
     save() {
       this.$refs.model.validate(async valid => {
         if (valid) {

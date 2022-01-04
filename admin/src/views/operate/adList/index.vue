@@ -38,17 +38,7 @@
                 <el-input v-model="item.url"></el-input>
               </el-form-item>
               <el-form-item label="圖片" style="margin-top: 0.5rem" prop="image">
-                <el-upload
-                  class="avatar-uploader"
-                  :action="uploadUrl"
-                  :headers="getAuthHeaders()"
-                  :show-file-list="false"
-                  :on-success="(res) => $set(item, 'image', res.data.data.url)"
-                  :before-upload="beforeAvatarUpload"
-                >
-                  <img v-if="item.image" :src="item.image" style="width: 300px" />
-                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                </el-upload>
+                <UploadImage v-model="item.image" @getUploadImage="getUploadImage"></UploadImage>
               </el-form-item>
               <!-- 創建或修改廣告位的刪除 -->
               <el-form-item>
@@ -73,7 +63,7 @@
 
 <script>
 import { createAd, updateAd, deleteAd, getAdList } from '@/api/ad'
-import upload from '@/mixins/upload'
+import UploadImage from '@/components/UploadImage'
 export default {
   name: 'AdList',
   data() {
@@ -91,7 +81,7 @@ export default {
       }
     }
   },
-  mixins: [upload],
+  components: { UploadImage },
   created() {
     this.getAdList()
   },
@@ -111,18 +101,20 @@ export default {
       })
     },
 
-    handleReset() {
+    handleClose() {
+      this.dialogFormVisible = false
       this.model = {
         items: []
       }
       this.$nextTick(() => {
-        this.$refs.model.resetFields()
+        this.$refs.model.clearValidate()
       })
     },
 
-    handleClose() {
-      this.handleReset()
-      this.dialogFormVisible = false
+    getUploadImage(val) {
+      this.model.items.forEach(item => {
+        item.image = val
+      })
     },
 
     remove(row) {

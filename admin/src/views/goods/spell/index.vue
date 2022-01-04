@@ -36,18 +36,9 @@
         <el-form-item label="描述" prop="description">
           <el-input ref="description" v-model="formData.description" autocomplete="off" type="textarea" />
         </el-form-item>
+
         <el-form-item label="圖標" prop="icon">
-          <el-upload
-            class="avatar-uploader"
-            :action="uploadUrl"
-            :headers="getAuthHeaders()"
-            :show-file-list="false"
-            :on-success="(res) => $set(formData, 'icon', res.data.data.url)"
-            :before-upload="beforeAvatarUpload"
-          >
-            <img v-if="formData.icon" :src="formData.icon" class="avatar" ref="icon" />
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-          </el-upload>
+          <UploadImage v-model="formData.icon" @getUploadImage="getUploadImage"></UploadImage>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -60,14 +51,13 @@
 
 <script>
 import { getSpellList, createSpell, deleteSpell, updateSpell } from '@/api/spell'
-import upload from '@/mixins/upload'
+import UploadImage from '@/components/UploadImage'
 export default {
   name: 'SpellList',
   data() {
     return {
       labelPosition: 'top',
       spellList: [],
-
       dialogFormVisible: false,
       formData: {
         name: '',
@@ -79,7 +69,7 @@ export default {
       }
     }
   },
-  mixins: [upload],
+  components: { UploadImage },
   created() {
     this.getSpellList()
   },
@@ -99,15 +89,16 @@ export default {
       })
     },
 
-    handleReset() {
-      this.$nextTick(() => {
-        this.$refs.formData.resetFields()
-      })
+    getUploadImage(val) {
+      this.formData.icon = val
     },
 
     handleClose() {
-      this.handleReset()
       this.dialogFormVisible = false
+      this.formData = {}
+      this.$nextTick(() => {
+        this.$refs.formData.clearValidate()
+      })
     },
 
     save() {

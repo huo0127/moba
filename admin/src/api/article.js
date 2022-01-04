@@ -42,11 +42,4 @@ export function getArticleList (params) {
   })
 }
 
-// 獲取物品分類列表
-export function articleImageUpload (data) {
-  return request({
-    url: '/upload',
-    method: 'post',
-    data
-  })
-}
+

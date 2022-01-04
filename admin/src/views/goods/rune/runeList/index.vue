@@ -38,17 +38,7 @@
       >
         <el-form ref="formData" :model="formData" :label-position="labelPosition" :rules="rules">
           <el-form-item label="圖標" prop="icon">
-            <el-upload
-              class="avatar-uploader"
-              :action="uploadUrl"
-              :headers="getAuthHeaders()"
-              :show-file-list="false"
-              :on-success="(res) => $set(formData, 'icon', res.data.data.url)"
-              :before-upload="beforeAvatarUpload"
-            >
-              <img v-if="formData.icon" :src="formData.icon" class="avatar" />
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-            </el-upload>
+            <UploadImage v-model="formData.icon" @getUploadImage="getUploadImage"></UploadImage>
           </el-form-item>
           <el-form-item label="名稱" prop="name">
             <el-input v-model="formData.name" ref="name" />
@@ -90,11 +80,11 @@
 </template>
 
 <script>
-import upload from '@/mixins/upload'
 import { getRuneList, deleteRune, createRune, updateRune } from '@/api/rune'
+import UploadImage from '@/components/UploadImage'
 import Pagination from '@/components/Pagination'
 import SearchBar from '@/components/SearchBar'
-import indexMethod from '@/mixins/indexMethod'
+
 export default {
   name: 'RuneList',
   data() {
@@ -134,8 +124,8 @@ export default {
       }
     }
   },
-  components: { Pagination, SearchBar },
-  mixins: [upload, indexMethod],
+  components: { Pagination, SearchBar, UploadImage },
+
   mounted() {
     this.fetchRuneList()
   },
@@ -154,19 +144,7 @@ export default {
           ...row
         }
         this.id = row._id
-        this.$refs.name.focus()
       })
-    },
-
-    handleReset() {
-      this.$nextTick(() => {
-        this.$refs.formData.resetFields()
-      })
-    },
-
-    handleClose() {
-      this.handleReset()
-      this.dialogFormVisible = false
     },
 
     deleteRune(row) {
@@ -214,14 +192,27 @@ export default {
       })
     },
 
+    indexMethod(index) {
+      // this.pageParams.pagenum當前頁    this.pageParams.pagesize一頁展示行數
+      return index + 1 + (this.pageParams.pagenum - 1) * this.pageParams.pagesize
+    },
+
     async searchRune(val) {
       this.pageParams.query = val
       this.pageParams.pagenum = 1
       this.fetchRuneList(this.pageParams)
     },
 
-    closeDialog() {
-      this.fetchRuneList()
+    getUploadImage(val) {
+      this.formData.iconPath = val
+    },
+
+    handleClose() {
+      this.dialogFormVisible = false
+      this.formData = {}
+      this.$nextTick(() => {
+        this.$refs.formData.clearValidate()
+      })
     }
   }
 }

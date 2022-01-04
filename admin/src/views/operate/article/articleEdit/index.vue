@@ -14,17 +14,7 @@
       </div>
 
       <el-form-item label="圖片">
-        <el-upload
-          class="avatar-uploader"
-          :action="uploadUrl"
-          :headers="getAuthHeaders()"
-          :show-file-list="false"
-          :on-success="afterUpload"
-          :before-upload="beforeAvatarUpload"
-        >
-          <img v-if="formData.iconPath" :src="formData.iconPath" class="avatar" />
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
+        <UploadImage v-model="formData.iconPath" @getUploadImage="getUploadImage"></UploadImage>
       </el-form-item>
 
       <el-form-item label="詳情">
@@ -32,6 +22,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" native-type="submit">保存</el-button>
+        <el-button @click="$router.push('/operate/article/list')">取消</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -39,17 +30,18 @@
 
 <script>
 import { VueEditor } from 'vue2-editor'
-import { updateArticle, createArticle, getArticle, articleImageUpload } from '@/api/article'
+import { updateArticle, createArticle, getArticle } from '@/api/article'
+import { imageUpload } from '@/api/upload'
 import { getCateList } from '@/api/category'
-import upload from '@/mixins/upload'
+import UploadImage from '@/components/UploadImage'
 export default {
   props: {
     id: {}
   },
   components: {
-    VueEditor
+    VueEditor,
+    UploadImage
   },
-  mixins: [upload],
   data() {
     return {
       formData: {},
@@ -64,10 +56,11 @@ export default {
     async handleImageAdded(file, Editor, cursorLocation, resetUploader) {
       const formData = new FormData()
       formData.append('file', file)
-      const res = await articleImageUpload(formData)
+      const res = await imageUpload(formData)
       Editor.insertEmbed(cursorLocation, 'image', res.data.data.url)
       resetUploader()
     },
+
     save() {
       this.$refs.formData.validate(async valid => {
         if (valid) {
@@ -92,13 +85,15 @@ export default {
       const res = await getArticle(this.id)
       this.formData = res.data.data
     },
+
     async getCateList() {
       const res = await getCateList()
       const data = res.data.data.find(item => item.name === '新聞資訊')
       this.categories = data.children
     },
-    afterUpload(res) {
-      this.$set(this.formData, 'iconPath', res.data.data.url)
+
+    getUploadImage(val) {
+      this.formData.iconPath = val
     }
   },
   created() {

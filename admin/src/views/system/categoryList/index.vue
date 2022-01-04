@@ -98,6 +98,9 @@ export default {
       }
     }
   },
+  created() {
+    this.getCateList()
+  },
   methods: {
     // 獲取分類列表
     async getCateList() {
@@ -138,16 +141,12 @@ export default {
       })
     },
 
-    handleReset() {
+    handleClose() {
+      this.dialogFormVisible = false
       this.model = {}
       this.$nextTick(() => {
         this.$refs.model.clearValidate()
       })
-    },
-
-    handleClose() {
-      this.handleReset()
-      this.dialogFormVisible = false
     },
 
     save() {
@@ -191,9 +190,6 @@ export default {
           })
         })
     }
-  },
-  created() {
-    this.getCateList()
   }
 }
 </script>

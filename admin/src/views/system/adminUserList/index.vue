@@ -116,15 +116,12 @@ export default {
       })
     },
 
-    handleReset() {
-      this.$nextTick(() => {
-        this.$refs.formData.resetFields()
-      })
-    },
-
     handleClose() {
-      this.handleReset()
       this.dialogFormVisible = false
+      this.formData = {}
+      this.$nextTick(() => {
+        this.$refs.formData.clearValidate()
+      })
     },
 
     save() {

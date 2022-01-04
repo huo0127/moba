@@ -50,7 +50,7 @@ import dayjs from 'dayjs'
 import { getArticleList, deleteArticle } from '@/api/article'
 import Pagination from '@/components/Pagination'
 import SearchBar from '@/components/SearchBar'
-import indexMethod from '@/mixins/indexMethod'
+
 export default {
   name: 'ArticleList',
   filters: {
@@ -59,7 +59,7 @@ export default {
     }
   },
   components: { Pagination, SearchBar },
-  mixins: [indexMethod],
+
   data() {
     return {
       articleList: [],
@@ -82,6 +82,10 @@ export default {
   },
 
   methods: {
+    indexMethod(index) {
+      // this.pageParams.pagenum當前頁    this.pageParams.pagesize一頁展示行數
+      return index + 1 + (this.pageParams.pagenum - 1) * this.pageParams.pagesize
+    },
     // 觸發升序或降序
     sortChange(column, prop, order) {
       if (column.prop == null || column.order == null) {

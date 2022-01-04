@@ -11,17 +11,7 @@
           <el-input v-model="formData.plaintext" type="textarea"></el-input>
         </el-form-item>
         <el-form-item label="圖標">
-          <el-upload
-            class="avatar-uploader"
-            :action="uploadUrl"
-            :headers="getAuthHeaders()"
-            :show-file-list="false"
-            :on-success="afterUpload"
-            :before-upload="beforeAvatarUpload"
-          >
-            <img v-if="formData.iconPath" :src="formData.iconPath" class="avatar" />
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-          </el-upload>
+          <UploadImage v-model="formData.iconPath" @getUploadImage="getUploadImage"></UploadImage>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" native-type="submit">保存</el-button>
@@ -34,13 +24,12 @@
 
 <script>
 import { getItem, updateItem, createItem } from '@/api/item'
-import upload from '@/mixins/upload'
+import UploadImage from '@/components/UploadImage'
 export default {
   name: 'ItmeEdit',
   props: {
     id: {}
   },
-  mixins: [upload],
   data() {
     return {
       formData: {},
@@ -49,9 +38,11 @@ export default {
       }
     }
   },
+
+  components: { UploadImage },
   methods: {
-    afterUpload(res) {
-      this.$set(this.formData, 'iconPath', res.data.data.url)
+    getUploadImage(val) {
+      this.formData.iconPath = val
     },
 
     save() {
