@@ -13,8 +13,6 @@ module.exports = app => {
 
   app.use('/admin/api', authMiddleware(), require('./total'))
 
-  app.use('/admin/api', authMiddleware(), require('./rune'))
-
   app.use('/admin/api', authMiddleware(), require('./upload'))
 
 }
