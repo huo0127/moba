@@ -31,7 +31,6 @@
 <script>
 import { VueEditor } from 'vue2-editor'
 import { updateArticle, createArticle, getArticle } from '@/api/article'
-import { imageUpload } from '@/api/upload'
 import { getCateList } from '@/api/category'
 import UploadImage from '@/components/UploadImage'
 export default {

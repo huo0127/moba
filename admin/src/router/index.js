@@ -140,7 +140,7 @@ export const constantRoutes = [
 
       {
         path: 'spell/list',
-        name: 'AdList',
+        name: 'spellList',
         component: () => import('@/views/goods/spell/index.vue'),
         meta: { title: '召喚師技能列表', }
       },

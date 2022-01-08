@@ -155,7 +155,7 @@
               </el-col>
             </el-row>
           </el-tab-pane>
-          <el-tab-pane label="符文" name="runes">
+          <el-tab-pane label="進階攻略 - 符文" name="runes">
             <el-row :gutter="20">
               <el-col :span="8">
                 <PrimaryRune

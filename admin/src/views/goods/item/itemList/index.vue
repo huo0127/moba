@@ -8,7 +8,6 @@
         <el-table :data="itemList" border stripe>
           <el-table-column type="index" label="序號" :index="indexMethod"></el-table-column>
           <el-table-column prop="name" label="裝備名稱" align="center"></el-table-column>
-          <el-table-column prop="plaintext" label="簡述"> </el-table-column>
           <el-table-column prop="icon" label="圖標">
             <template slot-scope="scope">
               <img :src="scope.row.iconPath" class="tableAvatar" />
@@ -57,6 +56,9 @@ export default {
     }
   },
   components: { Pagination, SearchBar },
+  created() {
+    this.getItemList()
+  },
   methods: {
     async getItemList() {
       const res = await getItemList(this.pageParams)
@@ -92,9 +94,6 @@ export default {
       // this.pageParams.pagenum當前頁    this.pageParams.pagesize一頁展示行數
       return index + 1 + (this.pageParams.pagenum - 1) * this.pageParams.pagesize
     }
-  },
-  created() {
-    this.getItemList()
   }
 }
 </script>
