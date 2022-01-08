@@ -2,7 +2,7 @@
   <div>
     <h1 class="title">文章列表</h1>
     <el-card shadow="never">
-      <SearchBar @search="searchArticle"></SearchBar>
+      <SearchBar @search="searchArticle" :placeholder="placeholder"></SearchBar>
 
       <div class="tableItem">
         <el-table :data="articleList" @sort-change="sortChange" border stripe>
@@ -62,6 +62,7 @@ export default {
 
   data() {
     return {
+      placeholder: '請輸入您想查詢的文章',
       articleList: [],
       queryTotal: 0,
 

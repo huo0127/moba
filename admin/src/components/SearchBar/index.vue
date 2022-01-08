@@ -5,10 +5,10 @@
         <el-input
           ref="searchValue"
           maxlength="8"
-          clearable
           v-model="searchValue"
           @keyup.enter.native="searchInput"
           v-focus
+          :placeholder="placeholder"
         ></el-input>
       </el-col>
       <el-col :span="3">
@@ -21,6 +21,11 @@
 <script>
 export default {
   name: 'SearchBar',
+  props: {
+    placeholder: {
+      type: String
+    }
+  },
   data() {
     return {
       searchValue: ''

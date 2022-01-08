@@ -2,7 +2,7 @@
   <div>
     <h1 class="title">英雄列表</h1>
     <el-card shadow="never">
-      <SearchBar @search="searchHero"></SearchBar>
+      <SearchBar @search="searchHero" :placeholder="placeholder"></SearchBar>
       <div class="tableItem">
         <el-table :data="heroList" border stripe>
           <el-table-column type="index" :index="indexMethod" label="序號"></el-table-column>
@@ -29,6 +29,7 @@
                 icon="el-icon-edit"
                 @click="$router.push(`/heroes/edit/${scope.row._id}`)"
               ></HintButton>
+
               <HintButton title="删除" type="danger" icon="el-icon-delete" @click="remove(scope.row)"></HintButton>
             </template>
           </el-table-column>
@@ -51,11 +52,11 @@
 import { getHeroList, deleteHero } from '@/api/hero'
 import Pagination from '@/components/Pagination'
 import SearchBar from '@/components/SearchBar'
-import indexMethod from '@/mixins/indexMethod'
 export default {
   name: 'HeroList',
   data() {
     return {
+      placeholder: '請輸入您想查詢的英雄',
       heroList: [],
       pageParams: {
         pagenum: 1,
@@ -65,7 +66,6 @@ export default {
     }
   },
   components: { Pagination, SearchBar },
-  mixins: [indexMethod],
   created() {
     this.getHeroList()
   },
@@ -103,6 +103,10 @@ export default {
       this.pageParams.query = val
       this.pageParams.pagenum = 1
       this.getHeroList(this.pageParams)
+    },
+    indexMethod(index) {
+      // this.pageParams.pagenum當前頁    this.pageParams.pagesize一頁展示行數
+      return index + 1 + (this.pageParams.pagenum - 1) * this.pageParams.pagesize
     }
   }
 }

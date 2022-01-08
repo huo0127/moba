@@ -35,25 +35,31 @@ const schema = new mongoose.Schema({
 
   spells: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'Spell' }],
 
-  primary_rune: {
-    rune: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
-    rune_first: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
-    rune_second: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
-    rune_third: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
-    rune_fourth: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' }
-  },
+  primary_rune: [
+    {
+      level1_rune: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
+      level2_rune: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
+      level3_rune: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
+      level4_rune: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
+      level5_rune: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' }
+    }
+  ],
 
-  secondary_rune: {
-    rune: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
-    rune_first: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
-    rune_second: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
-  },
+  secondary_rune: [
+    {
+      level1_rune: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
+      level2_rune: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
+      level3_rune: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
+    }
+  ],
 
-  little_rune: {
-    rune_first: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
-    rune_second: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
-    rune_third: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
-  },
+  little_rune: [
+    {
+      level1_rune: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
+      level2_rune: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
+      level3_rune: { type: mongoose.SchemaTypes.ObjectId, ref: 'Rune' },
+    }
+  ],
 })
 
 module.exports = mongoose.model('Hero', schema, 'heroes')

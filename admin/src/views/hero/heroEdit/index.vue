@@ -3,7 +3,7 @@
     <h1 class="title">{{ id ? '編輯' : '創建' }}英雄</h1>
     <div class="heroEditConatiner">
       <el-form label-width="120px" @submit.native.prevent="save" :rules="rules" :model="model" ref="model">
-        <el-tabs value="basic" type="border-card">
+        <el-tabs value="basic" type="border-card" v-model="activeName">
           <!-- 基本訊息 -->
           <el-tab-pane label="基本訊息" name="basic">
             <el-form-item label="名稱" style="margin-top: 1rem" prop="name">
@@ -155,135 +155,34 @@
               </el-col>
             </el-row>
           </el-tab-pane>
-          <el-tab-pane label="進階攻略 - 天賦符文" name="runes">
+          <el-tab-pane label="符文" name="runes">
             <el-row :gutter="20">
               <el-col :span="8">
-                <!-- 主符文 -->
-                <el-card shadow="never">
-                  <span>主符文</span>
-                  <el-form-item label="主符文" label-width="128px">
-                    <el-select v-model="model.primary_rune.rune" @change="handle_get_first_runes">
-                      <el-option
-                        v-for="rune of primaryRuneList"
-                        :key="rune._id"
-                        :label="rune.name"
-                        :value="rune._id"
-                      ></el-option>
-                    </el-select>
-                  </el-form-item>
-                  <el-form-item label="第一層符文" label-width="128px">
-                    <el-select v-model="model.primary_rune.rune_first">
-                      <el-option
-                        v-for="rune of rune_first"
-                        :key="rune._id"
-                        :label="rune.name"
-                        :value="rune._id"
-                      ></el-option>
-                    </el-select>
-                  </el-form-item>
-                  <el-form-item label="第二層符文" label-width="128px">
-                    <el-select v-model="model.primary_rune.rune_second">
-                      <el-option
-                        v-for="rune of rune_second"
-                        :key="rune._id"
-                        :label="rune.name"
-                        :value="rune._id"
-                      ></el-option>
-                    </el-select>
-                  </el-form-item>
-                  <el-form-item label="第三層符文" label-width="128px">
-                    <el-select v-model="model.primary_rune.rune_third">
-                      <el-option
-                        v-for="rune of rune_third"
-                        :key="rune._id"
-                        :label="rune.name"
-                        :value="rune._id"
-                      ></el-option>
-                    </el-select>
-                  </el-form-item>
-                  <el-form-item label="第四層符文" label-width="128px">
-                    <el-select v-model="model.primary_rune.rune_fourth">
-                      <el-option
-                        v-for="rune of rune_fourth"
-                        :key="rune._id"
-                        :label="rune.name"
-                        :value="rune._id"
-                      ></el-option>
-                    </el-select>
-                  </el-form-item>
-                </el-card>
+                <PrimaryRune
+                  v-for="runeObj in model.primary_rune"
+                  :key="runeObj.id"
+                  :runeObj="runeObj"
+                  :dataRuneList="runeList"
+                  ref="primary"
+                ></PrimaryRune>
               </el-col>
               <el-col :span="8">
-                <!-- 副符文 -->
-                <el-card shadow="never">
-                  <span>副符文</span>
-                  <el-form-item label="副符文" label-width="128px">
-                    <el-select v-model="model.secondary_rune.rune" @change="handle_get_secondary_runes">
-                      <el-option
-                        v-for="rune of secondaryRuneList"
-                        :key="rune._id"
-                        :label="rune.name"
-                        :value="rune._id"
-                      ></el-option>
-                    </el-select>
-                  </el-form-item>
-                  <el-form-item label="第一層符文" label-width="128px">
-                    <el-select v-model="model.secondary_rune.rune_first" @change="handle_get_secondary_secondRunes">
-                      <el-option
-                        v-for="rune of relatedSecondaryRuneList"
-                        :key="rune._id"
-                        :label="rune.name"
-                        :value="rune._id"
-                      ></el-option>
-                    </el-select>
-                  </el-form-item>
-                  <el-form-item label="第二層符文" label-width="128px">
-                    <el-select v-model="model.secondary_rune.rune_second">
-                      <el-option
-                        v-for="rune of relatedSecondarySecondRuneList"
-                        :key="rune._id"
-                        :label="rune.name"
-                        :value="rune._id"
-                      ></el-option>
-                    </el-select>
-                  </el-form-item>
-                </el-card>
+                <SecondaryRune
+                  v-for="runeObj in model.secondary_rune"
+                  :key="runeObj.id"
+                  :runeObj="runeObj"
+                  :dataRuneList="runeList"
+                  ref="second"
+                ></SecondaryRune>
               </el-col>
               <el-col :span="8">
-                <!-- 小符文 -->
-                <el-card shadow="never">
-                  <span>小符文</span>
-                  <el-form-item label="第一層符文" label-width="128px">
-                    <el-select v-model="model.little_rune.rune_first">
-                      <el-option
-                        v-for="rune of littleFirstRuneList"
-                        :key="rune._id"
-                        :label="rune.name"
-                        :value="rune._id"
-                      ></el-option>
-                    </el-select>
-                  </el-form-item>
-                  <el-form-item label="第二層符文" label-width="128px">
-                    <el-select v-model="model.little_rune.rune_second">
-                      <el-option
-                        v-for="rune of littleSecondRuneList"
-                        :key="rune._id"
-                        :label="rune.name"
-                        :value="rune._id"
-                      ></el-option>
-                    </el-select>
-                  </el-form-item>
-                  <el-form-item label="第三層符文" label-width="128px">
-                    <el-select v-model="model.little_rune.rune_third">
-                      <el-option
-                        v-for="rune of littleThirdRuneList"
-                        :key="rune._id"
-                        :label="rune.name"
-                        :value="rune._id"
-                      ></el-option>
-                    </el-select>
-                  </el-form-item>
-                </el-card>
+                <LittleRune
+                  v-for="runeObj in model.little_rune"
+                  :key="runeObj.id"
+                  :runeObj="runeObj"
+                  :dataRuneList="runeList"
+                  ref="little"
+                ></LittleRune>
               </el-col>
             </el-row>
           </el-tab-pane>
@@ -304,45 +203,28 @@ import { updateHero, createHero, getHero, getHeroList } from '@/api/hero'
 import { getItemList } from '@/api/item'
 import { getCateList } from '@/api/category'
 import { getSpellList } from '@/api/spell'
-import {
-  get_primary_rune,
-  get_related_rune,
-  get_secondary_rune,
-  get_related_second_rune,
-  get_little_first_rune,
-  get_little_second_rune,
-  get_little_third_rune
-} from '@/api/rune'
-
+import { getRuneList } from '@/api/rune'
 import UploadImage from '@/components/UploadImage'
 import UploadVideo from '@/components/UploadVideo'
-import rune from '@/mixins/rune'
+import PrimaryRune from './components/PrimaryRune.vue'
+import SecondaryRune from './components/SecondaryRune.vue'
+import LittleRune from './components/LittleRune.vue'
 
 export default {
   name: 'HeroEdit',
   props: {
     id: {}
   },
-  components: { UploadImage, UploadVideo },
-  mixins: [rune],
+  components: { UploadImage, UploadVideo, PrimaryRune, SecondaryRune, LittleRune },
 
   data() {
     return {
-      heroCateList: null,
+      activeName: 'basic',
+      heroCateList: '',
       itemList: [],
       heroes: [],
       spellList: [],
-      // 主符文
-      primaryRuneList: [],
-      relatedRuneList: [],
-      // 副符文
-      secondaryRuneList: [],
-      relatedSecondaryRuneList: [],
-      relatedSecondarySecondRuneList: [],
-      // 小符文
-      littleFirstRuneList: [],
-      littleSecondRuneList: [],
-      littleThirdRuneList: [],
+      runeList: [],
 
       // 英雄訊息
       model: {
@@ -353,26 +235,33 @@ export default {
         spells: [],
         skins: [],
 
-        primary_rune: {
-          rune: null,
-          rune_first: null,
-          rune_second: null,
-          rune_third: null,
-          rune_fourth: null
-        },
+        primary_rune: [
+          {
+            level1_rune: '',
+            level2_rune: '',
+            level3_rune: '',
+            level4_rune: '',
+            level5_rune: ''
+          }
+        ],
 
-        secondary_rune: {
-          rune: null,
-          rune_first: null,
-          rune_second: null
-        },
+        secondary_rune: [
+          {
+            level1_rune: '',
+            level2_rune: '',
+            level3_rune: ''
+          }
+        ],
 
-        little_rune: {
-          rune_first: null,
-          rune_second: null,
-          rune_third: null
-        }
+        little_rune: [
+          {
+            rune_first: '',
+            rune_second: '',
+            rune_third: ''
+          }
+        ]
       },
+
       rules: {
         name: [{ required: true, message: '請輸入英雄名稱', trigger: 'blur' }],
         categories: [{ required: true, message: '請選擇英雄路線', trigger: 'blur' }]
@@ -381,18 +270,49 @@ export default {
   },
 
   mounted() {
-    this.fetch_primary_rune()
-    this.fetch_little_first_rune()
-    this.fetch_little_second_rune()
-    this.fetch_little_third_rune()
     this.getItemList()
     this.getCateList()
     this.getHeroList()
     this.getSpellList()
+    this.getRuneList()
     this.id && this.getHero()
   },
 
   methods: {
+    async getHero() {
+      const res = await getHero(this.id)
+      this.model = Object.assign({}, this.model, res.data.data)
+    },
+    async getCateList() {
+      const res = await getCateList()
+      for (const cate of res.data.data) {
+        if (cate.name === '英雄分類') {
+          this.heroCateList = cate.children
+          break
+        }
+      }
+    },
+
+    async getItemList() {
+      const res = await getItemList()
+      this.itemList = res.data.data
+    },
+
+    async getHeroList() {
+      const res = await getHeroList()
+      this.heroes = res.data.data
+    },
+
+    async getSpellList() {
+      const res = await getSpellList()
+      this.spellList = res.data.data
+    },
+
+    async getRuneList() {
+      const res = await getRuneList()
+      this.runeList = res.data.data
+    },
+
     getUploadImage(val) {
       this.model.avatar = val
     },
@@ -414,7 +334,17 @@ export default {
         item.video = val
       })
     },
+
     save() {
+      const primaryRuneArr = []
+      const secondRuneArr = []
+      const littleRuneArr = []
+      primaryRuneArr.push(this.$refs.primary[0].runeData)
+      secondRuneArr.push(this.$refs.second[0].runeData)
+      littleRuneArr.push(this.$refs.little[0].runeData)
+      this.model.primary_rune = primaryRuneArr
+      this.model.secondary_rune = secondRuneArr
+      this.model.little_rune = littleRuneArr
       this.$refs.model.validate(async valid => {
         if (valid) {
           try {
@@ -432,85 +362,6 @@ export default {
           return false
         }
       })
-    },
-    async getHero() {
-      const res = await getHero(this.id)
-      this.model = Object.assign({}, this.model, res.data.data)
-    },
-    async getCateList() {
-      const res = await getCateList()
-      for (const cate of res.data.data) {
-        if (cate.name === '英雄分類') {
-          this.heroCateList = cate.children
-          break
-        }
-      }
-    },
-    async getItemList() {
-      const res = await getItemList()
-      this.itemList = res.data.data
-    },
-    async getHeroList() {
-      const res = await getHeroList()
-      this.heroes = res.data.data
-    },
-    async getSpellList() {
-      const res = await getSpellList()
-      this.spellList = res.data.data
-    },
-
-    // 一上來就拿到主符文
-    async fetch_primary_rune() {
-      const res = await get_primary_rune()
-      this.primaryRuneList = res.data.data
-    },
-
-    // 選取主符文後加載
-    async handle_get_first_runes(runeId) {
-      if (runeId) {
-        // 每個重新選就清空已選的符文
-        this.$set(this.model.primary_rune, 'rune_first', '')
-        this.$set(this.model.primary_rune, 'rune_second', '')
-        this.$set(this.model.primary_rune, 'rune_third', '')
-        this.$set(this.model.primary_rune, 'rune_fourth', '')
-        this.$set(this.model.secondary_rune, 'rune', '')
-        this.$set(this.model.secondary_rune, 'rune_first', '')
-        this.$set(this.model.secondary_rune, 'rune_second', '')
-
-        // 獲取相關符文
-        const res = await get_related_rune(runeId)
-        this.relatedRuneList = res.data.data
-
-        //  獲取副符文
-        const secondaryRes = await get_secondary_rune(runeId)
-        this.secondaryRuneList = secondaryRes.data.data
-      }
-    },
-    async handle_get_secondary_runes(runeId) {
-      if (runeId) {
-        this.$set(this.model.secondary_rune, 'rune_first', '')
-        this.$set(this.model.secondary_rune, 'rune_second', '')
-        const res = await get_related_second_rune(runeId)
-        this.relatedSecondaryRuneList = res.data.data
-      }
-    },
-    async handle_get_secondary_secondRunes(runeId) {
-      const data = this.relatedSecondaryRuneList.filter(rune => rune._id === runeId)
-      const slotLabel = data[0].slotLabel
-      const result = this.relatedSecondaryRuneList.filter(rune => rune.slotLabel !== slotLabel)
-      this.relatedSecondarySecondRuneList = result
-    },
-    async fetch_little_first_rune() {
-      const res = await get_little_first_rune()
-      this.littleFirstRuneList = res.data.data
-    },
-    async fetch_little_second_rune() {
-      const res = await get_little_second_rune()
-      this.littleSecondRuneList = res.data.data
-    },
-    async fetch_little_third_rune() {
-      const res = await get_little_third_rune()
-      this.littleThirdRuneList = res.data.data
     }
   }
 }

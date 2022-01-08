@@ -5,7 +5,7 @@
       <el-button type="primary" icon="el-icon-plus" @click="dialogFormVisible = true">新建天賦符文</el-button>
       <div style="margin-top: 1.3rem">
         <el-row>
-          <SearchBar @search="searchRune"></SearchBar>
+          <SearchBar @search="searchRune" :placeholder="placeholder"></SearchBar>
         </el-row>
       </div>
 
@@ -98,6 +98,7 @@ export default {
       }
     }
     return {
+      placeholder: '請輸入您想查詢的符文',
       labelPosition: 'top',
       runeList: [],
       dialogFormVisible: false,

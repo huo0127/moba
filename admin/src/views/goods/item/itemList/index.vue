@@ -2,7 +2,7 @@
   <div>
     <h1 class="title">裝備列表</h1>
     <el-card shadow="never">
-      <SearchBar @search="searchItem"></SearchBar>
+      <SearchBar @search="searchItem" :placeholder="placeholder"></SearchBar>
 
       <div class="tableItem">
         <el-table :data="itemList" border stripe>
@@ -44,10 +44,10 @@
 import { getItemList, deleteItem } from '@/api/item'
 import Pagination from '@/components/Pagination'
 import SearchBar from '@/components/SearchBar'
-import indexMethod from '@/mixins/indexMethod'
 export default {
   data() {
     return {
+      placeholder: '請輸入您想查詢的裝備',
       itemList: [],
       pageParams: {
         pagenum: 1,
@@ -57,7 +57,6 @@ export default {
     }
   },
   components: { Pagination, SearchBar },
-  mixins: [indexMethod],
   methods: {
     async getItemList() {
       const res = await getItemList(this.pageParams)
@@ -88,6 +87,10 @@ export default {
       this.pageParams.query = val
       this.pageParams.pagenum = 1
       this.getItemList(this.pageParams)
+    },
+    indexMethod(index) {
+      // this.pageParams.pagenum當前頁    this.pageParams.pagesize一頁展示行數
+      return index + 1 + (this.pageParams.pagenum - 1) * this.pageParams.pagesize
     }
   },
   created() {

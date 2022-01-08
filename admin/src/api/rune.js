@@ -34,7 +34,7 @@ export function deleteRune (runeId) {
 }
 
 
-// 獲取物品分類列表
+
 export function getRuneList (params) {
   return request({
     url: `/rest/runes`,

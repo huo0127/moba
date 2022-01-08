@@ -9,10 +9,13 @@ import '@/plugins/element.js'
 import router from '@/router'
 import App from '@/App.vue'
 import store from '@/store'
+import EventBus from '@/EventBus'
 
 import '@/icons'
 
 import HintButton from '@/components/HintButton'
+
+
 
 Vue.config.productionTip = false
 
@@ -24,6 +27,7 @@ Vue.directive('focus', {
   }
 })
 
+Vue.prototype.$EventBus = EventBus
 
 new Vue({
   router,
