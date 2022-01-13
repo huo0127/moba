@@ -1,27 +1,30 @@
 import axios from 'axios'
 
-function request (config) {
+function myAxios (axiosConfig, customOptions) {
 
-  const instance = axios.create({
+  const service = axios.create({
     // baseURL: 'http://101.201.199.139/web/api',
     baseURL: 'http://localhost:3000/web/api',
     timeout: 5000
   })
 
-  instance.interceptors.request.use(config => {
+  let custom_options = Object.assign({
+    reduct_data_format: true
+  }, customOptions)
+
+  service.interceptors.request.use(config => {
     return config
-  }, err => {
-
+  }, error => {
+    return Promise.reject(error)
   })
 
-  instance.interceptors.response.use(res => {
-    return res
-  }, err => {
-
+  service.interceptors.response.use(response => {
+    return custom_options.reduct_data_format ? response.data : response
+  }, error => {
+    return Promise.reject(error)
   })
 
-  return instance(config)
-
+  return service(axiosConfig)
 }
 
 function twitchRequest (config) {
@@ -49,12 +52,12 @@ function twitchRequest (config) {
 
   })
 
-  return instance(config)
+  return service(axiosConfig)
 
 }
 
 
 export {
-  request,
+  myAxios,
   twitchRequest
 }

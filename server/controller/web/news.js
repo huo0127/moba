@@ -17,6 +17,7 @@ exports.getNewsList = async (req, res, next) => {
           as: 'newsList',
         },
       },
+
     ])
 
     res.status(200).json({

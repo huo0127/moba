@@ -2,7 +2,7 @@
   <div>
     <h1 class="title">召喚師技能列表</h1>
     <el-card shadow="never">
-      <el-button type="primary" icon="el-icon-plus" @click="dialogFormVisible = true">創建召喚師技能</el-button>
+      <el-button type="primary" icon="el-icon-plus" @click="showAddDialog">創建召喚師技能</el-button>
       <div class="tableItem">
         <el-table :data="spellList" border stripe>
           <el-table-column type="index" label="序號" />
@@ -77,6 +77,15 @@ export default {
     async getSpellList() {
       const res = await getSpellList()
       this.spellList = res.data.data
+    },
+
+    showAddDialog() {
+      this.formData = {}
+      this.$nextTick(() => {
+        this.$refs.formData.clearValidate()
+      })
+
+      this.dialogFormVisible = true
     },
 
     showUpdateDialog(row) {

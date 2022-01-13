@@ -1,15 +1,15 @@
-import { request } from '../utils/request'
+import { myAxios } from '../utils/request'
 
 // 新聞列表
 export const getNewsList = () => {
-  return request({
+  return myAxios({
     url: '/news/list',
   })
 }
 
 // 文章詳情
 export const getArticle = (id) => {
-  return request({
+  return myAxios({
     url: `/articles/${id}`,
   })
 }

@@ -2,7 +2,7 @@
   <div class="runeListContainer">
     <h1 class="title">天賦符文列表</h1>
     <el-card shadow="never">
-      <el-button type="primary" icon="el-icon-plus" @click="dialogFormVisible = true">新建天賦符文</el-button>
+      <el-button type="primary" icon="el-icon-plus" @click="showAddDialog">新建天賦符文</el-button>
       <div style="margin-top: 1.3rem">
         <el-row>
           <SearchBar @search="searchRune" :placeholder="placeholder"></SearchBar>
@@ -206,6 +206,14 @@ export default {
 
     getUploadImage(val) {
       this.formData.iconPath = val
+    },
+
+    showAddDialog() {
+      this.dialogFormVisible = true
+      this.formData = {}
+      this.$nextTick(() => {
+        this.$refs.formData.clearValidate()
+      })
     },
 
     handleClose() {

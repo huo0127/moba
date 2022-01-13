@@ -1,33 +1,47 @@
 const Category = require('../../models/Category')
 const Hero = require('../../models/Hero')
 
+exports.getHeroLane = async (req, res, next) => {
+  try {
+    const lane = await Category.find({ parent: '61822bf9dd2c361c96fd9127' }).lean()
+    lane.unshift({ name: '全部' })
+    res.status(200).json({
+      success: true,
+      data: {
+        data: lane
+      }
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
 exports.getHeroList = async (req, res, next) => {
   try {
-    const parent = await Category.findOne({
-      name: '英雄分類',
-    })
-    const cats = await Category.aggregate([
-      // 條件查詢，像是where，但速度較快
-      { $match: { parent: parent._id } },
-      {
-        // 關聯查詢
-        $lookup: {
-          // 要去model去指定heroes
-          from: 'heroes',
-          localField: '_id',
-          foreignField: 'categories',
-          as: 'heroList',
-        },
-      },
-    ])
+    const { heroLane, query } = req.query
+    console.log(query)
+    let heroList = []
+    // 搜索條件
+    const reg = new RegExp(query, 'i')
+    const filter = {
+      name: { $regex: reg }
+    }
+
+    if (heroLane === '全部') {
+      heroList = await Hero.find(filter)
+    } else {
+      const category = await Category.findOne().where({ name: heroLane })
+      heroList = await Hero.find(filter).where({
+        categories: { $in: [category._id] }
+      })
+    }
 
     res.status(200).json({
       success: true,
       data: {
-        data: cats
+        data: heroList
       }
     })
-
   } catch (err) {
     next(err)
   }
@@ -49,7 +63,7 @@ exports.getHero = async (req, res, next) => {
   }
 }
 
-exports.initHero = async (res, res, next) => {
+exports.initHero = async (req, res, next) => {
   try {
     await Hero.deleteMany({})
 

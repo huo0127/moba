@@ -37,7 +37,9 @@
                     <el-input v-model="skin.name"></el-input>
                   </el-form-item>
                   <el-form-item label="造型圖片" label-width="130px">
-                    <UploadImage v-model="skin.img" @getUploadImage="getSkinImage"></UploadImage>
+                    <div @click="getSkinIndex(i)">
+                      <UploadImage v-model="skin.img" @getUploadImage="getSkinImage"></UploadImage>
+                    </div>
                   </el-form-item>
                   <el-form-item label-width="130px">
                     <HintButton
@@ -66,9 +68,11 @@
                   <el-form-item label="加點順序">
                     <el-input v-model="item.skillOrder"></el-input>
                   </el-form-item>
-                  <el-form-item label="圖標">
-                    <UploadImage v-model="item.icon" @getUploadImage="getSkillImage"></UploadImage>
-                  </el-form-item>
+                  <div @click="getSkillIndex(i)">
+                    <el-form-item label="圖標">
+                      <UploadImage v-model="item.icon" @getUploadImage="getSkillImage"></UploadImage>
+                    </el-form-item>
+                  </div>
                   <el-form-item label="冷卻時間(秒)">
                     <el-input v-model="item.delay"></el-input>
                   </el-form-item>
@@ -81,9 +85,11 @@
                   <el-form-item label="描述">
                     <el-input v-model="item.description" type="textarea"></el-input>
                   </el-form-item>
-                  <el-form-item label="影片">
-                    <UploadVideo v-model="item.video" @getUploadVideo="getUploadVideo"></UploadVideo>
-                  </el-form-item>
+                  <div @click="getSkillVideoIndex(i)">
+                    <el-form-item label="影片">
+                      <UploadVideo v-model="item.video" @getUploadVideo="getUploadVideo"></UploadVideo>
+                    </el-form-item>
+                  </div>
                   <el-form-item>
                     <HintButton
                       title="删除技能"
@@ -219,12 +225,15 @@ export default {
 
   data() {
     return {
-      activeName: 'basic',
+      activeName: 'skills',
       heroCateList: '',
       itemList: [],
       heroes: [],
       spellList: [],
       runeList: [],
+      skinImgIndex: '',
+      skillImgIndex: '',
+      skillVideoIndex: '',
 
       // 英雄訊息
       model: {
@@ -319,20 +328,28 @@ export default {
     getBannerImage(val) {
       this.model.banner = val
     },
+
+    getSkinIndex(index) {
+      this.skinImgIndex = index
+    },
     getSkinImage(val) {
-      this.model.skins.forEach(skin => {
-        skin.img = val
-      })
+      this.model.skins[this.skinImgIndex].img = val
     },
+
+    getSkillIndex(index) {
+      this.skillImgIndex = index
+    },
+
     getSkillImage(val) {
-      this.model.skills.forEach(item => {
-        item.icon = val
-      })
+      this.model.skills[this.skillImgIndex].icon = val
     },
+
+    getSkillVideoIndex(index) {
+      this.skillVideoIndex = index
+    },
+
     getUploadVideo(val) {
-      this.model.skills.forEach(item => {
-        item.video = val
-      })
+      this.model.skills[this.skillVideoIndex].video = val
     },
 
     save() {

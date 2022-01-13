@@ -37,9 +37,11 @@
               <el-form-item label="跳轉連結 (URL)" prop="url">
                 <el-input v-model="item.url"></el-input>
               </el-form-item>
-              <el-form-item label="圖片" style="margin-top: 0.5rem" prop="image">
-                <UploadImage v-model="item.image" @getUploadImage="getUploadImage"></UploadImage>
-              </el-form-item>
+              <div @click="getAdImgIndex(i)">
+                <el-form-item label="圖片" style="margin-top: 0.5rem" prop="image">
+                  <UploadImage v-model="item.image" @getUploadImage="getUploadImage"></UploadImage>
+                </el-form-item>
+              </div>
               <!-- 創建或修改廣告位的刪除 -->
               <el-form-item>
                 <HintButton
@@ -71,6 +73,7 @@ export default {
       labelPosition: 'top',
       adList: [],
       dialogFormVisible: false,
+      adImgIndex: '',
       //  廣告位數據
       model: {
         items: []
@@ -111,10 +114,12 @@ export default {
       })
     },
 
+    getAdImgIndex(index) {
+      this.adImgIndex = index
+    },
+
     getUploadImage(val) {
-      this.model.items.forEach(item => {
-        item.image = val
-      })
+      this.model.items[this.adImgIndex].image = val
     },
 
     remove(row) {

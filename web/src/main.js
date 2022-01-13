@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from '@/router'
+import { Search } from 'vant';
 
 Vue.config.productionTip = false
 
@@ -16,6 +17,8 @@ Vue.component('m-card', Card)
 
 import ListCard from './components/ListCard'
 Vue.component('m-list-card', ListCard)
+
+Vue.use(Search);
 
 
 

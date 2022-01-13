@@ -1,12 +1,12 @@
 <template>
-  <m-card :icon="icon" :title="title" class="mb-2">
+  <m-card class="mb-2" :icon="icon" :title="title" :list="list" v-on="$listeners" v-bind="$attrs">
     <div class="nav jc-between">
       <div
         class="nav-item"
         :class="{ active: active === i }"
         v-for="(category, i) in categories"
         :key="i"
-        @click="$refs.list.$swiper.slideTo(i)"
+        @click="toggleNav(i, category.name)"
       >
         <div class="nav-link">{{ category.name }}</div>
       </div>
@@ -14,7 +14,7 @@
     <div class="pt-3">
       <swiper ref="list" :options="{ autoHeight: true }" @slide-change="() => (active = $refs.list.$swiper.realIndex)">
         <swiper-slide v-for="(category, i) in categories" :key="i">
-          <slot name="items" :category="category"></slot>
+          <slot name="items" :list="list"></slot>
         </swiper-slide>
       </swiper>
     </div>
@@ -24,13 +24,25 @@
 <script>
 export default {
   props: {
-    icon: { type: String, required: true },
-    title: { type: String, required: true },
-    categories: { type: Array, required: true }
+    icon: { type: String },
+    title: { type: String },
+    categories: { type: Array, required: true },
+    list: { type: Array, required: true }
   },
+
   data() {
     return {
-      active: 0
+      active: 0,
+      category: ''
+    }
+  },
+  methods: {
+    toggleNav(index, category) {
+      if (this.active == index) return
+      this.active = index
+      this.category = category
+      this.$emit('fetchCategory', this.category)
+      this.$refs.list.$swiper.slideTo(index)
     }
   }
 }

@@ -1,15 +1,15 @@
-import { request } from '../utils/request'
+import { myAxios } from '../utils/request'
 
 // 輪播圖
 export const getAds = () => {
-  return request({
+  return myAxios({
     url: '/ads',
   })
 }
 
 // 活動列表
 export const getEvents = () => {
-  return request({
+  return myAxios({
     url: '/news/event',
   })
 }

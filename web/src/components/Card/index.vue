@@ -1,11 +1,9 @@
 <template>
   <div class="card bg-white p-3 mt-2">
-    <div class="card-header d-flex ai-center" :class="{ 'border-bottom': !plain, 'pb-3': !plain }">
-      <i class="iconfont" :class="`icon-${icon}`"></i>
-      <div class="fs-xl flex-1 px-2">
-        <strong>{{ title }}</strong>
-      </div>
-      <i class="iconfont icon-menu" v-if="!plain"></i>
+    <div class="card-header">
+      <form action="/">
+        <van-search :placeholder="placeholder" v-model="value" @search="sendSearchValue" :clearable="clearable" />
+      </form>
     </div>
     <div class="card-body pt-3">
       <slot></slot>
@@ -15,10 +13,30 @@
 
 <script>
 export default {
+  name: 'Card',
+  data() {
+    return {
+      value: ''
+    }
+  },
   props: {
-    title: { type: String, required: true },
+    title: { type: String },
     icon: { type: String },
-    plain: { type: Boolean }
+    plain: { type: Boolean },
+    clearable: { type: Boolean, default: false },
+    placeholder: { type: String }
+  },
+  watch: {
+    value(val) {
+      if (val === '') {
+        this.sendSearchValue(val)
+      }
+    }
+  },
+  methods: {
+    sendSearchValue(val) {
+      this.$listeners.getSearchValue(val)
+    }
   }
 }
 </script>
